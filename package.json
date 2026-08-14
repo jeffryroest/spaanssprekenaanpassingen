@@ -1,9 +1,24 @@
 {
+  "$schema": "https://www.schemastore.org/package.json",
   "name": "spaansspreken",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "validate": "node scripts/validate-foundation.mjs"
+    "build": "vite build",
+    "dev": "vite",
+    "validate": "npm run validate:foundation && npm run validate:laravel",
+    "validate:foundation": "node scripts/validate-foundation.mjs",
+    "validate:laravel": "node scripts/validate-laravel-foundation.mjs"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "concurrently": "^10.0.3",
+    "laravel-vite-plugin": "^3.1",
+    "tailwindcss": "^4.0.0",
+    "vite": "^8.0.0"
+  },
+  "optionalDependencies": {
+    "@laravel/multiplex": "^0.4.1"
   }
 }
