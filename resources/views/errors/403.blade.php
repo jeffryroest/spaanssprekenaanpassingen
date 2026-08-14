@@ -4,27 +4,35 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#172033">
     <title>Geen toegang · Spaansspreken.nl</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-stone-950 text-stone-100 antialiased">
-    <main class="flex min-h-screen items-center justify-center px-6 py-12">
-        <section class="w-full max-w-xl rounded-3xl border border-white/10 bg-white/[0.06] p-8 text-center shadow-2xl shadow-black/30 sm:p-10" aria-labelledby="error-title">
-            <p class="text-sm font-semibold uppercase tracking-[0.18em] text-orange-300">HTTP 403</p>
-            <h1 id="error-title" class="mt-3 text-3xl font-bold text-white">Je hebt geen toegang tot de Content Studio</h1>
-            <p class="mt-4 leading-7 text-stone-300">Je bent ingelogd, maar er is nog geen bevoegde redactierol aan dit account toegewezen.</p>
-            <div class="mt-8 flex flex-wrap justify-center gap-3">
-                <a href="{{ route('home') }}" class="rounded-xl bg-orange-500 px-5 py-3 font-semibold text-white transition hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-300">
-                    Terug naar de startpagina
-                </a>
+<body class="min-h-screen bg-slate-50 text-slate-700 antialiased">
+    <main class="relative isolate flex min-h-screen items-center justify-center overflow-hidden px-5 py-12">
+        <div aria-hidden="true" class="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-brand-50 to-transparent"></div>
+
+        <section class="cs-panel relative w-full max-w-2xl overflow-hidden text-center" aria-labelledby="error-title">
+            <div class="border-b border-slate-100 p-8 sm:p-10">
+                <span class="mx-auto grid size-16 place-items-center rounded-2xl bg-red-50 text-red-700 shadow-sm">
+                    <x-content-studio.icon name="shield" class="size-8" />
+                </span>
+                <p class="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-red-600">HTTP 403 · Toegang geweigerd</p>
+                <h1 id="error-title" class="mx-auto mt-3 max-w-lg text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Je hebt geen toegang tot de Content Studio</h1>
+                <p class="mx-auto mt-4 max-w-lg text-sm leading-6 text-slate-500 sm:text-base">Je bent ingelogd, maar aan dit account is nog geen bevoegde redactierol toegewezen.</p>
+            </div>
+
+            <div class="flex flex-col-reverse justify-center gap-3 bg-slate-50 px-6 py-5 sm:flex-row">
                 @auth
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="rounded-xl border border-white/10 px-5 py-3 font-semibold text-stone-200 transition hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-orange-400">
+                        <button type="submit" class="cs-button-secondary w-full sm:w-auto">
+                            <x-content-studio.icon name="logout" class="size-4" />
                             Uitloggen
                         </button>
                     </form>
                 @endauth
+                <a href="{{ route('home') }}" class="cs-button-primary">Terug naar de startpagina</a>
             </div>
         </section>
     </main>

@@ -3,11 +3,20 @@
 @section('title', 'Concept bewerken')
 
 @section('content')
-    <div class="max-w-4xl">
-        <a href="{{ route('content-studio.content.show', $contentNode) }}" class="text-sm font-medium text-orange-300 hover:text-orange-200">← Terug naar het contentobject</a>
-        <p class="mt-6 text-sm font-semibold uppercase tracking-[0.18em] text-orange-300">Versie {{ $contentNode->current_version }}</p>
-        <h1 class="mt-2 text-3xl font-bold tracking-tight text-white">Concept bewerken</h1>
-        <p class="mt-3 text-stone-300">Opslaan wijzigt geen bestaande revisie, maar maakt een nieuwe conceptrevisie.</p>
+    <div class="max-w-5xl">
+        <a href="{{ route('content-studio.content.show', $contentNode) }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-brand-700">
+            <x-content-studio.icon name="arrow-left" class="size-4" />
+            Terug naar het contentobject
+        </a>
+
+        <div class="mt-6 flex flex-wrap items-start justify-between gap-4">
+            <div>
+                <p class="cs-eyebrow">Concept · versie {{ $contentNode->current_version }}</p>
+                <h1 class="cs-page-title">Concept bewerken</h1>
+                <p class="cs-page-description">Opslaan overschrijft niets, maar maakt een nieuwe conceptrevisie voor een volledig controleerbare geschiedenis.</p>
+            </div>
+            <x-content-studio.status-badge :status="$contentNode->status" class="mt-1" />
+        </div>
 
         <form method="POST" action="{{ route('content-studio.content.update', $contentNode) }}" class="mt-8">
             @csrf
