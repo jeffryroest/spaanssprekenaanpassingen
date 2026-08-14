@@ -16,9 +16,22 @@
                 <a href="{{ route('home') }}" class="text-lg font-semibold tracking-tight text-white">
                     Spaansspreken<span class="text-orange-400">.nl</span>
                 </a>
-                <span class="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-medium text-emerald-200">
-                    Fundament actief
-                </span>
+                <div class="flex items-center gap-3">
+                    <span class="hidden rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-medium text-emerald-200 sm:inline-flex">
+                        Fundament actief
+                    </span>
+                    @auth
+                        @can('content-studio.view')
+                            <a href="{{ route('content-studio.dashboard') }}" class="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-stone-200 transition hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                Content Studio
+                            </a>
+                        @endcan
+                    @else
+                        <a href="{{ route('login') }}" class="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-stone-200 transition hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-orange-400">
+                            Inloggen
+                        </a>
+                    @endauth
+                </div>
             </header>
 
             <section class="grid flex-1 items-center gap-12 py-16 lg:grid-cols-[1.2fr_0.8fr]">
