@@ -41,7 +41,9 @@ Fase 0: fundament, domeinmodel, Content Studio, importcontract en specificatie v
 
 Fase 1A: beveiligde Content Studio-toegang met login, redactierollen, server-side autorisatie en audit van roltoewijzingen.
 
-Zie [AGENTS.md](AGENTS.md) voor de samenwerking, [docs/roadmap.md](docs/roadmap.md) voor de ontwikkelvolgorde en [docs/content-studio-access.md](docs/content-studio-access.md) voor de toegangslaag.
+Fase 1B: canonieke content-envelop, lokalisaties en onveranderlijke revisies voor veilige conceptcontent.
+
+Zie [AGENTS.md](AGENTS.md) voor de samenwerking, [docs/roadmap.md](docs/roadmap.md) voor de ontwikkelvolgorde, [docs/content-studio-access.md](docs/content-studio-access.md) voor de toegangslaag en [docs/content-foundation.md](docs/content-foundation.md) voor het contentfundament.
 
 ## Applicatiefundament
 
