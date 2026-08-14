@@ -46,6 +46,20 @@ class ContentNode extends Model
         });
     }
 
+    public function isEditableDraft(): bool
+    {
+        return in_array($this->status, [
+            ContentStatus::Draft,
+            ContentStatus::ChangesRequested,
+        ], true);
+    }
+
+    public function defaultLocalization(): ?ContentLocalization
+    {
+        return $this->localizations->firstWhere('locale', $this->default_locale)
+            ?? $this->localizations->first();
+    }
+
     public function localizations(): HasMany
     {
         return $this->hasMany(ContentLocalization::class);

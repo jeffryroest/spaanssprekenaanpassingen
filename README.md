@@ -43,7 +43,9 @@ Fase 1A: beveiligde Content Studio-toegang met login, redactierollen, server-sid
 
 Fase 1B: canonieke content-envelop, lokalisaties en onveranderlijke revisies voor veilige conceptcontent.
 
-Zie [AGENTS.md](AGENTS.md) voor de samenwerking, [docs/roadmap.md](docs/roadmap.md) voor de ontwikkelvolgorde, [docs/content-studio-access.md](docs/content-studio-access.md) voor de toegangslaag en [docs/content-foundation.md](docs/content-foundation.md) voor het contentfundament.
+Fase 1C: beveiligde contentcatalogus en basis-CRUD met zoeken, filters, nieuwe revisies, veilig archiveren en inhoudelijk auditlog.
+
+Zie [AGENTS.md](AGENTS.md) voor de samenwerking, [docs/roadmap.md](docs/roadmap.md) voor de ontwikkelvolgorde, [docs/content-studio-access.md](docs/content-studio-access.md) voor de toegangslaag, [docs/content-foundation.md](docs/content-foundation.md) voor het contentfundament en [docs/content-studio-crud.md](docs/content-studio-crud.md) voor de beheerinterface.
 
 ## Applicatiefundament
 

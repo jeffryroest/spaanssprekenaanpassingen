@@ -2,10 +2,10 @@
 
 namespace App\Actions\ContentStudio;
 
-use App\Enums\ContentPermission;
 use App\Enums\ContentStatus;
 use App\Enums\ContentType;
 use App\Enums\RevisionStatus;
+use App\Models\AuditLog;
 use App\Models\ContentNode;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +29,7 @@ final class CreateDraftContent
         array $metadata = [],
         array $domainData = [],
     ): ContentNode {
-        Gate::forUser($actor)->authorize('content-studio.'.ContentPermission::Edit->value);
+        Gate::forUser($actor)->authorize('create', ContentNode::class);
 
         $validated = Validator::make([
             'slug' => $slug,
@@ -89,6 +89,23 @@ final class CreateDraftContent
                 'created_by' => $actor->getKey(),
                 'created_at' => now(),
             ]);
+
+            AuditLog::recordContentChange(
+                actor: $actor,
+                action: 'content.created',
+                contentNode: $contentNode,
+                before: null,
+                after: [
+                    'content_type' => $contentType->value,
+                    'slug' => $contentNode->slug,
+                    'status' => ContentStatus::Draft->value,
+                    'locale' => $localization->locale,
+                    'title' => $localization->title,
+                    'summary' => $localization->summary,
+                    'body' => $localization->body,
+                    'version' => 1,
+                ],
+            );
 
             return $contentNode->load(['localizations', 'revisions']);
         });
