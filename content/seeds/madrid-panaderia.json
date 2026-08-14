@@ -1,0 +1,469 @@
+{
+  "schemaVersion": "1.0.0",
+  "contentVersion": "1.0.0",
+  "id": "madrid.panaderia.v1",
+  "slug": "madrid-la-panaderia",
+  "status": "draft",
+  "locale": "es-ES",
+  "supportLocale": "nl-NL",
+  "title": {
+    "es": "Madrid: La panadería",
+    "nl": "Madrid: De bakkerij"
+  },
+  "summary": {
+    "es": "Compra pan y algo dulce para el desayuno.",
+    "nl": "Koop brood en iets zoets voor het ontbijt."
+  },
+  "level": {
+    "cefrMin": "A0",
+    "cefrMax": "A2",
+    "estimatedMinutes": 15
+  },
+  "source": {
+    "type": "native",
+    "origin": "spaansspreken-content-studio",
+    "inspirationImportsAllowed": true,
+    "reviewRequired": true
+  },
+  "world": {
+    "country": "ES",
+    "region": "Comunidad de Madrid",
+    "city": "Madrid",
+    "hubId": "madrid.centro.hub",
+    "intro": {
+      "sceneId": "madrid.arrival.metro",
+      "narration": {
+        "es": "Acabas de llegar a Madrid. Es hora de desayunar.",
+        "nl": "Je bent net aangekomen in Madrid. Het is tijd voor ontbijt."
+      },
+      "objective": {
+        "es": "Compra una barra de pan y algo dulce. Intenta pedirlo tú.",
+        "nl": "Koop een brood en iets zoets. Probeer het zelf te bestellen."
+      },
+      "visualNotes": [
+        "Hedendaagse Madrileense zijstraat bij een metro-ingang",
+        "Warme steen, terracotta, saffraan, olijfgroen en nachtblauw",
+        "Metalen balkons, Madrileens straatnaambord en subtiele straatactiviteit",
+        "Geen generieke flamenco- of stierenvechtdecoratie"
+      ],
+      "audioLayers": [
+        "madrid_street_ambience",
+        "distant_conversation",
+        "bakery_door_bell"
+      ]
+    },
+    "hotspots": [
+      {
+        "id": "madrid.panaderia",
+        "label": { "es": "Panadería La Espiga", "nl": "Bakkerij La Espiga" },
+        "state": "open",
+        "action": "start_mission",
+        "target": "mission.madrid.panaderia.breakfast"
+      },
+      {
+        "id": "madrid.metro.sol",
+        "label": { "es": "Metro Sol", "nl": "Metro Sol" },
+        "state": "locked",
+        "preview": { "es": "Próximamente: viajar en metro", "nl": "Binnenkort: reizen met de metro" }
+      },
+      {
+        "id": "madrid.cafe.reloj",
+        "label": { "es": "Café El Reloj", "nl": "Café El Reloj" },
+        "state": "locked",
+        "preview": { "es": "Próximamente: pedir en una cafetería", "nl": "Binnenkort: bestellen in een café" }
+      },
+      {
+        "id": "madrid.mercado.plaza",
+        "label": { "es": "Mercado de la Plaza", "nl": "Markt op het plein" },
+        "state": "locked",
+        "preview": { "es": "Próximamente: hacer la compra", "nl": "Binnenkort: boodschappen doen" }
+      }
+    ],
+    "inspectables": [
+      {
+        "id": "panaderia.chalkboard",
+        "reward": { "curiosidad": 1 },
+        "items": ["vocab.pan", "vocab.napolitana", "vocab.croissant"]
+      },
+      {
+        "id": "madrid.street.sign",
+        "reward": { "curiosidad": 1 },
+        "cultureCard": "culture.madrid.street-signs"
+      },
+      {
+        "id": "madrid.neighbor.greeting",
+        "reward": { "curiosidad": 1 },
+        "audio": { "text": "Buenos días", "locale": "es-ES" }
+      }
+    ]
+  },
+  "npcs": [
+    {
+      "id": "npc.lucia.martin",
+      "name": "Lucía Martín",
+      "role": { "es": "panadera", "nl": "bakker" },
+      "ageApprox": 38,
+      "voice": {
+        "locale": "es-ES",
+        "style": "warm_clear_natural",
+        "defaultSpeed": 1.0,
+        "adaptedSpeed": 0.82
+      },
+      "personality": ["energética", "paciente", "amable", "práctica"],
+      "visual": {
+        "clothing": "Nachtblauw werkjasje en licht schort met tarwemotief",
+        "nameBadge": "Lucía"
+      },
+      "behaviorRules": [
+        "Reageert als winkelmedewerker en niet als leraar",
+        "Onderbreekt een begrijpelijke bestelling niet voor grammaticale correcties",
+        "Herformuleert eenmaal en biedt daarna contextuele hulp",
+        "Onthoudt beleefdheid, herstelstrategie, productkeuze en afhaalkeuze binnen de missie"
+      ]
+    }
+  ],
+  "learningObjectives": [
+    { "id": "lo.greet", "type": "speaking", "nl": "Een winkelmedewerker begroeten", "required": true },
+    { "id": "lo.order", "type": "speaking", "nl": "Beleefd brood en gebak bestellen", "required": true },
+    { "id": "lo.article", "type": "grammar", "nl": "Un en una bij kernproducten herkennen en gebruiken", "required": false },
+    { "id": "lo.followup", "type": "listening_speaking", "nl": "Een vraag over aantal of variant beantwoorden", "required": true },
+    { "id": "lo.takeaway", "type": "listening_speaking", "nl": "Aangeven dat de bestelling meegenomen wordt", "required": true },
+    { "id": "lo.repair", "type": "strategy", "nl": "Om herhaling of lager tempo vragen", "required": false }
+  ],
+  "vocabulary": [
+    { "id": "vocab.pan", "es": "el pan", "nl": "het brood", "partOfSpeech": "noun", "gender": "masculine" },
+    { "id": "vocab.barra", "es": "la barra de pan", "nl": "het stokbrood", "partOfSpeech": "noun", "gender": "feminine" },
+    { "id": "vocab.barra_integral", "es": "la barra integral", "nl": "het volkoren stokbrood", "partOfSpeech": "noun", "gender": "feminine" },
+    { "id": "vocab.napolitana", "es": "la napolitana de chocolate", "nl": "het chocoladebroodje", "partOfSpeech": "noun", "gender": "feminine" },
+    { "id": "vocab.croissant", "es": "el croissant", "nl": "de croissant", "partOfSpeech": "noun", "gender": "masculine" },
+    { "id": "vocab.por_favor", "es": "por favor", "nl": "alstublieft", "partOfSpeech": "phrase" },
+    { "id": "vocab.para_llevar", "es": "para llevar", "nl": "om mee te nemen", "partOfSpeech": "phrase" },
+    { "id": "vocab.con_tarjeta", "es": "con tarjeta", "nl": "met pin/kaart", "partOfSpeech": "phrase" },
+    { "id": "vocab.integral", "es": "integral", "nl": "volkoren", "partOfSpeech": "adjective" }
+  ],
+  "phrases": [
+    { "id": "phrase.order.quiero", "es": "Quiero una barra de pan y una napolitana, por favor.", "nl": "Ik wil graag een stokbrood en een chocoladebroodje." },
+    { "id": "phrase.order.quisiera", "es": "Quisiera una barra integral y una napolitana de chocolate.", "nl": "Ik zou graag een volkoren stokbrood en een chocoladebroodje willen." },
+    { "id": "phrase.order.me_pone", "es": "¿Me pone una barra de pan y un croissant, por favor?", "nl": "Mag ik een stokbrood en een croissant, alstublieft?" },
+    { "id": "phrase.repair.repeat", "es": "¿Puede repetir, por favor?", "nl": "Kunt u dat herhalen, alstublieft?" },
+    { "id": "phrase.repair.slower", "es": "Más despacio, por favor.", "nl": "Langzamer, alstublieft." },
+    { "id": "phrase.repair.understand", "es": "No entiendo.", "nl": "Ik begrijp het niet." },
+    { "id": "phrase.repair.mean", "es": "Quiero decir…", "nl": "Ik bedoel…" },
+    { "id": "phrase.takeaway", "es": "Sí, para llevar, gracias.", "nl": "Ja, om mee te nemen, dank u." },
+    { "id": "phrase.payment.card", "es": "Con tarjeta, por favor.", "nl": "Met pin/kaart, alstublieft." }
+  ],
+  "mission": {
+    "id": "mission.madrid.panaderia.breakfast",
+    "title": { "es": "El primer desayuno", "nl": "Het eerste ontbijt" },
+    "objective": {
+      "es": "Pide pan y algo dulce, resuelve una pregunta y paga.",
+      "nl": "Bestel brood en iets zoets, los een vervolgvraag op en betaal."
+    },
+    "resumePolicy": "last_completed_step",
+    "completionRequirements": [
+      "conversation_completed",
+      "order_intent_recognized",
+      "complication_resolved",
+      "takeaway_confirmed"
+    ],
+    "spokenCompletionRequirements": {
+      "minimumSpeechTurns": 3,
+      "requiredObjectives": ["lo.greet", "lo.order", "lo.followup"]
+    },
+    "steps": [
+      {
+        "id": "step.orient",
+        "type": "world_navigation",
+        "objectiveNl": "Vind Panadería La Espiga",
+        "completion": "hotspot:madrid.panaderia:opened",
+        "next": "step.choose"
+      },
+      {
+        "id": "step.choose",
+        "type": "product_selection",
+        "prompt": { "es": "¿Qué quieres comprar?", "nl": "Wat wil je kopen?" },
+        "defaultSelection": ["vocab.barra", "vocab.napolitana"],
+        "minimumSelection": { "bread": 1, "pastry": 1 },
+        "next": "step.wait_turn"
+      },
+      {
+        "id": "step.wait_turn",
+        "type": "listening_context",
+        "npcLine": { "speaker": "npc.lucia.martin", "es": "Hola, buenos días. ¿Qué te pongo?", "nl": "Hallo, goedemorgen. Wat mag het zijn?" },
+        "next": "turn.greet_order"
+      },
+      {
+        "id": "turn.greet_order",
+        "type": "speech",
+        "promptNl": "Begroet Lucía en begin je bestelling.",
+        "maxSeconds": 12,
+        "expectedIntents": ["greeting", "order_product"],
+        "validExamples": ["Buenos días. Quiero una barra de pan, por favor.", "Hola. ¿Me pone una barra de pan?"],
+        "statesOnSuccess": ["greeted_lucia", "order_intent_recognized", "ordered_bread"],
+        "partialSuccessAllowed": true,
+        "next": "turn.finish_order"
+      },
+      {
+        "id": "turn.finish_order",
+        "type": "speech",
+        "npcLine": { "speaker": "npc.lucia.martin", "es": "Muy bien. ¿Algo más?", "nl": "Prima. Nog iets anders?" },
+        "promptNl": "Bestel iets zoets.",
+        "maxSeconds": 12,
+        "expectedIntents": ["order_pastry"],
+        "validExamples": ["Una napolitana de chocolate, por favor.", "Quisiera un croissant."],
+        "statesOnSuccess": ["ordered_pastry"],
+        "next": "branch.complication"
+      },
+      {
+        "id": "branch.complication",
+        "type": "adaptive_branch",
+        "strategy": "select_by_level_and_prior_performance",
+        "variants": ["branch.quantity", "branch.unavailable", "branch.bread_type"]
+      },
+      {
+        "id": "branch.quantity",
+        "type": "speech",
+        "recommendedLevel": ["A0", "A1"],
+        "npcLine": { "speaker": "npc.lucia.martin", "es": "¿Una napolitana o dos?", "nl": "Eén chocoladebroodje of twee?" },
+        "expectedIntents": ["choose_quantity"],
+        "validExamples": ["Una, por favor.", "Dos, por favor."],
+        "statesOnSuccess": ["complication_resolved"],
+        "stateValues": { "complication_variant": "quantity" },
+        "next": "turn.takeaway"
+      },
+      {
+        "id": "branch.unavailable",
+        "type": "speech",
+        "recommendedLevel": ["A1", "A2"],
+        "npcLine": { "speaker": "npc.lucia.martin", "es": "Lo siento, no quedan napolitanas. ¿Quieres un croissant?", "nl": "Sorry, de chocoladebroodjes zijn op. Wil je een croissant?" },
+        "expectedIntents": ["accept_alternative", "request_other_alternative"],
+        "validExamples": ["Sí, un croissant, por favor.", "No, gracias. ¿Tiene otra cosa?"],
+        "statesOnSuccess": ["complication_resolved"],
+        "stateValues": { "complication_variant": "unavailable" },
+        "next": "turn.takeaway"
+      },
+      {
+        "id": "branch.bread_type",
+        "type": "speech",
+        "recommendedLevel": ["A1", "A2"],
+        "npcLine": { "speaker": "npc.lucia.martin", "es": "¿La barra normal o integral?", "nl": "Het gewone of het volkoren stokbrood?" },
+        "expectedIntents": ["choose_bread_type"],
+        "validExamples": ["La normal, por favor.", "Prefiero la integral."],
+        "statesOnSuccess": ["complication_resolved"],
+        "stateValues": { "complication_variant": "bread_type" },
+        "next": "turn.takeaway"
+      },
+      {
+        "id": "turn.takeaway",
+        "type": "speech_or_choice",
+        "npcLine": { "speaker": "npc.lucia.martin", "es": "¿Es para llevar?", "nl": "Is het om mee te nemen?" },
+        "expectedIntents": ["confirm_takeaway", "decline_takeaway"],
+        "validExamples": ["Sí, para llevar, gracias.", "No, es para tomar aquí."],
+        "statesOnSuccess": ["takeaway_confirmed"],
+        "next": "turn.payment"
+      },
+      {
+        "id": "turn.payment",
+        "type": "speech_or_choice",
+        "npcLine": { "speaker": "npc.lucia.martin", "es": "Son cuatro euros con veinte. ¿En efectivo o con tarjeta?", "nl": "Dat is vier euro twintig. Contant of met kaart?" },
+        "expectedIntents": ["choose_payment_method"],
+        "validExamples": ["Con tarjeta, por favor.", "En efectivo."],
+        "stateValueFromIntent": { "payment_method": { "card": "card", "cash": "cash" } },
+        "next": "step.farewell"
+      },
+      {
+        "id": "step.farewell",
+        "type": "conditional_npc_line",
+        "conditions": [
+          {
+            "when": ["greeted_lucia", "used_politeness"],
+            "line": { "es": "¡Muy bien! Da gusto atenderte. Hasta la próxima.", "nl": "Heel goed! Fijn om je te helpen. Tot de volgende keer." }
+          },
+          {
+            "when": ["default"],
+            "line": { "es": "Gracias. Que tengas un buen día.", "nl": "Bedankt. Fijne dag." }
+          }
+        ],
+        "statesOnComplete": ["conversation_completed"],
+        "next": "step.reward"
+      },
+      {
+        "id": "step.reward",
+        "type": "reward",
+        "rewardBundle": "reward.madrid.panaderia.first_purchase",
+        "next": null
+      }
+    ],
+    "repairPolicy": {
+      "unintelligibleNpcLine": { "es": "Perdona, no te he entendido. ¿Puedes repetirlo?", "nl": "Sorry, ik heb je niet begrepen. Kun je het herhalen?" },
+      "freeRetryCount": 1,
+      "longSilenceSeconds": 8,
+      "afterLongSilence": "show_contextual_phrase_card",
+      "recognizedRepairPhrases": [
+        "phrase.repair.repeat",
+        "phrase.repair.slower",
+        "phrase.repair.understand",
+        "phrase.repair.mean"
+      ],
+      "repairCountsAsSkill": true,
+      "neverLoseLives": true
+    }
+  },
+  "difficultyProfiles": {
+    "A0": {
+      "supports": ["images", "playable_model", "sentence_tiles"],
+      "minimumProduction": "greeting_products_politeness",
+      "npcSpeed": 0.82
+    },
+    "A1": {
+      "supports": ["product_card", "optional_sentence_starter"],
+      "minimumProduction": "complete_order_and_followup",
+      "npcSpeed": 0.92
+    },
+    "A2": {
+      "supports": ["on_demand_help_only"],
+      "minimumProduction": "free_order_complication_takeaway",
+      "npcSpeed": 1.0
+    }
+  },
+  "speech": {
+    "primaryInput": true,
+    "recording": {
+      "mimePreferences": ["audio/webm;codecs=opus", "audio/webm"],
+      "maxSeconds": 12,
+      "allowPlaybackBeforeSubmit": true,
+      "requiresExplicitStart": true,
+      "ffmpegConversion": false
+    },
+    "fallbacks": ["typed_assist", "choice_assist"],
+    "fallbackCompletesSpokenMission": false,
+    "transcriptCorrectionAllowed": true,
+    "evaluation": {
+      "rubricVersion": "madrid-panaderia-rubric-v1",
+      "dimensions": [
+        { "id": "task", "labelNl": "Taakuitvoering", "weight": 0.25, "range": [0, 4] },
+        { "id": "intelligibility", "labelNl": "Begrijpelijkheid", "weight": 0.25, "range": [0, 4] },
+        { "id": "vocabulary", "labelNl": "Woordkeuze", "weight": 0.125, "range": [0, 4] },
+        { "id": "grammar", "labelNl": "Grammaticale controle", "weight": 0.125, "range": [0, 4] },
+        { "id": "pronunciation", "labelNl": "Uitspraak", "weight": 0.125, "range": [0, 4] },
+        { "id": "strategy", "labelNl": "Gespreksstrategie", "weight": 0.125, "range": [0, 4] }
+      ],
+      "rules": [
+        "Communicatieve begrijpelijkheid gaat vóór moedertaalgelijkheid",
+        "Een begrijpelijke grammaticale fout blokkeert de dialoog niet",
+        "Maximaal één uitspraakverbeterpunt per beurt",
+        "Eerst benoemen wat goed ging, dan één concrete volgende stap",
+        "Transcriptie onder de confidence-drempel veroorzaakt geen negatieve uitspraakscore",
+        "Gespreksregisseur en beoordelaar hebben afzonderlijke versies"
+      ]
+    }
+  },
+  "rewards": {
+    "id": "reward.madrid.panaderia.first_purchase",
+    "baseXp": 80,
+    "maximumXp": 120,
+    "passportStamp": {
+      "id": "stamp.first_purchase",
+      "title": { "es": "Mi primera compra", "nl": "Mijn eerste aankoop" }
+    },
+    "collectible": {
+      "id": "item.la_espiga_bread_bag",
+      "title": { "es": "Bolsa de pan de La Espiga", "nl": "Broodzak van La Espiga" }
+    },
+    "confidenceRange": [1, 3],
+    "courage": 1,
+    "conditionalBadge": {
+      "condition": "used_repair_strategy",
+      "id": "badge.sin_miedo",
+      "title": { "es": "Sin miedo", "nl": "Zonder angst" }
+    },
+    "unlocks": ["madrid.panaderia.free_practice", "madrid.cafe.preview"]
+  },
+  "stateDefinitions": {
+    "world": [
+      "madrid.discovered",
+      "madrid.hub.intro_seen",
+      "madrid.panaderia.discovered",
+      "madrid.panaderia.mission_started",
+      "madrid.panaderia.mission_completed",
+      "madrid.panaderia.free_practice_unlocked",
+      "madrid.cafe.preview_unlocked"
+    ],
+    "conversation": [
+      "greeted_lucia",
+      "order_intent_recognized",
+      "ordered_bread",
+      "ordered_pastry",
+      "used_politeness",
+      "complication_variant",
+      "complication_resolved",
+      "used_repair_strategy",
+      "takeaway_confirmed",
+      "payment_method",
+      "conversation_completed"
+    ],
+    "attemptFields": [
+      "attemptId",
+      "audioId",
+      "inputSource",
+      "transcript",
+      "transcriptConfidence",
+      "correctedTranscript",
+      "rubricScores",
+      "evaluatorVersion",
+      "strength",
+      "focusPoint",
+      "hintsUsed",
+      "audioConsent",
+      "audioRetentionUntil"
+    ]
+  },
+  "accessibility": {
+    "target": "WCAG 2.2 AA",
+    "keyboardComplete": true,
+    "semanticHotspotList": true,
+    "spanishCaptionsDefault": true,
+    "dutchTranslationOnDemand": true,
+    "screenReaderStatusUpdates": true,
+    "recordingStateUsesTextIconAndColor": true,
+    "supportsTextZoomPercent": 200,
+    "timedResponsesRequired": false,
+    "supportsReducedMotion": true,
+    "separateAudioLayerControls": true,
+    "silentMode": true,
+    "typedFallbackOnMicrophoneDenial": true,
+    "essentialAudioHasVisualEquivalent": true
+  },
+  "analytics": {
+    "events": [
+      "world_hub_opened",
+      "hotspot_inspected",
+      "mission_started",
+      "speech_prompt_shown",
+      "speech_recording_started",
+      "speech_attempt_evaluated",
+      "speech_retry_chosen",
+      "assist_used",
+      "branch_entered",
+      "mission_completed",
+      "reward_claimed",
+      "free_practice_started"
+    ],
+    "exclude": ["raw_audio", "literal_transcript"],
+    "allowedSpeechMetrics": ["technical_status", "content_id", "assist_level", "aggregate_score_band"]
+  },
+  "acceptanceCriteria": [
+    "De speler kan de bakkerij vanaf de hub zelfstandig vinden en openen",
+    "De standaardroute bevat minimaal drie spreekbeurten",
+    "Alle drie complicatievarianten zijn voltooi- en herstelbaar",
+    "Vrije formuleringen worden op intentie en niet op exacte tekst beoordeeld",
+    "Begrijpelijke grammaticale fouten blokkeren de missie niet",
+    "WebM/Opus werkt voor opnemen, terugluisteren en verzenden zonder ffmpeg",
+    "Lage transcript-confidence verlaagt de uitspraakscore niet automatisch",
+    "De route is volledig met toetsenbord en schermlezer te voltooien",
+    "Audio-opname start uitsluitend na expliciete actie",
+    "Gesproken afronding is in analytics te onderscheiden van hulp via tekst of keuzes",
+    "Beloning en ontgrendeling blijven na opnieuw inloggen behouden",
+    "Spaanse content is vóór publicatie door een bevoegde taalredacteur beoordeeld"
+  ]
+}
