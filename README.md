@@ -40,3 +40,17 @@ De definitieve frameworkversies worden pas vastgezet wanneer de uitvoeringsomgev
 Fase 0: fundament, domeinmodel, Content Studio, importcontract en specificatie van Madrid → La panadería.
 
 Zie [AGENTS.md](AGENTS.md) voor de samenwerking en [docs/roadmap.md](docs/roadmap.md) voor de ontwikkelvolgorde.
+
+## Applicatiefundament
+
+De applicatiebasis gebruikt Laravel 13 op PHP 8.4, MySQL, Vite en Tailwind CSS 4. De startpagina toont de status van de eerste vertical slice; de gezondheidscontrole is beschikbaar via `/up`.
+
+Belangrijkste lokale controles:
+
+```bash
+npm run validate
+npm run build
+php artisan test
+```
+
+Voor Ploi-instellingen, omgevingsvariabelen en de deploymentvolgorde: zie [docs/deployment/ploi.md](docs/deployment/ploi.md).
