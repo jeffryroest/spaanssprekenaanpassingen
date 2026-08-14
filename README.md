@@ -45,7 +45,11 @@ Fase 1B: canonieke content-envelop, lokalisaties en onveranderlijke revisies voo
 
 Fase 1C: beveiligde contentcatalogus en basis-CRUD met zoeken, filters, nieuwe revisies, veilig archiveren en inhoudelijk auditlog.
 
-Zie [AGENTS.md](AGENTS.md) voor de samenwerking, [docs/roadmap.md](docs/roadmap.md) voor de ontwikkelvolgorde, [docs/content-studio-access.md](docs/content-studio-access.md) voor de toegangslaag, [docs/content-foundation.md](docs/content-foundation.md) voor het contentfundament en [docs/content-studio-crud.md](docs/content-studio-crud.md) voor de beheerinterface.
+Fase 1C.1: responsief Content Studio-designsystem met gedeelde navigatie, componenten en toegankelijke interactiepatronen.
+
+Fase 1D: versiegebonden reviewworkflow met reviewwachtrij, vier-ogencontrole, gemotiveerde beslissingen en append-only historie.
+
+Zie [AGENTS.md](AGENTS.md) voor de samenwerking, [docs/roadmap.md](docs/roadmap.md) voor de ontwikkelvolgorde, [docs/content-studio-access.md](docs/content-studio-access.md) voor de toegangslaag, [docs/content-foundation.md](docs/content-foundation.md) voor het contentfundament, [docs/content-studio-crud.md](docs/content-studio-crud.md) voor de beheerinterface en [docs/content-studio-review-workflow.md](docs/content-studio-review-workflow.md) voor de reviewworkflow.
 
 ## Applicatiefundament
 

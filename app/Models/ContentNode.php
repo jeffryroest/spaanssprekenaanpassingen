@@ -70,6 +70,11 @@ class ContentNode extends Model
         return $this->hasMany(ContentRevision::class)->orderBy('version');
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ContentReview::class)->orderBy('created_at');
+    }
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

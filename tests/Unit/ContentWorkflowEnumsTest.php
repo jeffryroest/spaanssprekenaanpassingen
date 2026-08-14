@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Enums\ContentReviewAction;
 use App\Enums\ContentStatus;
 use App\Enums\ContentType;
 use App\Enums\RevisionStatus;
@@ -38,5 +39,16 @@ class ContentWorkflowEnumsTest extends TestCase
 
         $this->assertContains('rejected', $values);
         $this->assertNotContains('staged', $values);
+    }
+
+    public function test_review_actions_are_explicit_and_do_not_publish(): void
+    {
+        $values = array_map(
+            static fn (ContentReviewAction $action): string => $action->value,
+            ContentReviewAction::cases(),
+        );
+
+        $this->assertSame(['submitted', 'approved', 'changes_requested'], $values);
+        $this->assertNotContains('published', $values);
     }
 }

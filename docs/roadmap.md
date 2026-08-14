@@ -16,6 +16,7 @@
 - MySQL-migraties en seeders.
 - Content Studio-navigatie en basis-CRUD.
 - Gedeeld Content Studio-designsystem en responsieve beheerschil.
+- Versiegebonden reviewworkflow met vier-ogencontrole.
 - Wereld-, missie- en conversatie-API.
 - Test- en kwaliteitsstraat.
 
