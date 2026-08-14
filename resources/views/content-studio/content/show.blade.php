@@ -6,8 +6,8 @@
     @php($localization = $contentNode->defaultLocalization())
 
     @if ($errors->any())
-        <div class="mb-8 rounded-xl border border-red-300/20 bg-red-300/10 p-5 text-sm text-red-100" role="alert">
-            <p class="font-semibold">De actie kon niet worden uitgevoerd.</p>
+        <div class="cs-alert-error mb-6" role="alert">
+            <p class="font-bold">De actie kon niet worden uitgevoerd.</p>
             <ul class="mt-2 list-disc space-y-1 pl-5">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -16,69 +16,99 @@
         </div>
     @endif
 
-    <div class="flex flex-wrap items-start justify-between gap-6">
-        <div>
-            <a href="{{ route('content-studio.content.index') }}" class="text-sm font-medium text-orange-300 hover:text-orange-200">← Terug naar de catalogus</a>
-            <div class="mt-6 flex flex-wrap items-center gap-3">
-                <span class="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs text-stone-200">{{ $contentNode->status->label() }}</span>
-                <span class="text-sm text-stone-400">{{ $contentNode->content_type->label() }} · versie {{ $contentNode->current_version }}</span>
+    <a href="{{ route('content-studio.content.index') }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-brand-700">
+        <x-content-studio.icon name="arrow-left" class="size-4" />
+        Terug naar de catalogus
+    </a>
+
+    <div class="mt-6 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-3">
+                <x-content-studio.status-badge :status="$contentNode->status" />
+                <span class="text-sm font-medium text-slate-500">{{ $contentNode->content_type->label() }} · versie {{ $contentNode->current_version }}</span>
             </div>
-            <h1 class="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">{{ $localization?->title ?? 'Zonder titel' }}</h1>
-            <p class="mt-2 text-sm text-stone-500">#{{ $contentNode->id }} · {{ $contentNode->slug }} · {{ $contentNode->default_locale }}</p>
+            <h1 class="mt-3 break-words text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl lg:text-4xl">{{ $localization?->title ?? 'Zonder titel' }}</h1>
+            <p class="mt-2 break-all text-sm text-slate-500">#{{ $contentNode->id }} · {{ $contentNode->slug }} · {{ $contentNode->default_locale }}</p>
         </div>
 
         @can('update', $contentNode)
             @if ($contentNode->isEditableDraft())
-                <a href="{{ route('content-studio.content.edit', $contentNode) }}" class="rounded-xl bg-orange-400 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-stone-950">
+                <a href="{{ route('content-studio.content.edit', $contentNode) }}" class="cs-button-primary shrink-0">
+                    <x-content-studio.icon name="edit" class="size-4" />
                     Bewerken
                 </a>
             @endif
         @endcan
     </div>
 
-    <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
-        <article class="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
-            <h2 class="text-lg font-semibold text-white">Inhoud</h2>
-            @if ($localization?->summary)
-                <p class="mt-4 text-base leading-7 text-stone-300">{{ $localization->summary }}</p>
-            @endif
-            @if ($localization?->body)
-                <div class="mt-6 whitespace-pre-line text-sm leading-7 text-stone-300">{{ $localization->body }}</div>
-            @else
-                <p class="mt-4 text-sm text-stone-500">Er is nog geen uitgebreide inhoud ingevuld.</p>
-            @endif
+    <div class="mt-8 grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+        <article class="cs-panel overflow-hidden" aria-labelledby="content-title">
+            <div class="cs-panel-header">
+                <h2 id="content-title" class="font-bold text-slate-900">Inhoud</h2>
+                <p class="mt-1 text-sm text-slate-500">Actuele inhoud van revisie {{ $contentNode->current_version }}</p>
+            </div>
+            <div class="p-5 sm:p-6">
+                @if ($localization?->summary)
+                    <div class="rounded-xl border border-brand-100 bg-brand-50 px-4 py-3.5 text-sm font-medium leading-6 text-brand-900">{{ $localization->summary }}</div>
+                @endif
+                @if ($localization?->body)
+                    <div class="{{ $localization?->summary ? 'mt-6' : '' }} whitespace-pre-line text-sm leading-7 text-slate-700">{{ $localization->body }}</div>
+                @else
+                    <div class="py-8 text-center">
+                        <span class="mx-auto grid size-12 place-items-center rounded-xl bg-slate-100 text-slate-400"><x-content-studio.icon name="document" /></span>
+                        <p class="mt-4 text-sm text-slate-500">Er is nog geen uitgebreide inhoud ingevuld.</p>
+                    </div>
+                @endif
+            </div>
         </article>
 
-        <aside class="rounded-2xl border border-white/10 bg-white/[0.04] p-6" aria-labelledby="metadata-title">
-            <h2 id="metadata-title" class="text-lg font-semibold text-white">Metadata</h2>
-            <dl class="mt-4 space-y-4 text-sm">
-                <div>
-                    <dt class="text-stone-500">Aangemaakt door</dt>
-                    <dd class="mt-1 text-stone-200">{{ $contentNode->creator?->name ?? 'Onbekend' }}</dd>
+        <aside class="cs-panel self-start overflow-hidden" aria-labelledby="metadata-title">
+            <div class="cs-panel-header">
+                <h2 id="metadata-title" class="font-bold text-slate-900">Metadata</h2>
+                <p class="mt-1 text-sm text-slate-500">Eigenaarschap en actualiteit</p>
+            </div>
+            <dl class="divide-y divide-slate-100 px-5 sm:px-6">
+                <div class="py-4">
+                    <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Aangemaakt door</dt>
+                    <dd class="mt-1.5 text-sm font-semibold text-slate-800">{{ $contentNode->creator?->name ?? 'Onbekend' }}</dd>
                 </div>
-                <div>
-                    <dt class="text-stone-500">Laatst bijgewerkt door</dt>
-                    <dd class="mt-1 text-stone-200">{{ $contentNode->updater?->name ?? 'Onbekend' }}</dd>
+                <div class="py-4">
+                    <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Laatst bijgewerkt door</dt>
+                    <dd class="mt-1.5 text-sm font-semibold text-slate-800">{{ $contentNode->updater?->name ?? 'Onbekend' }}</dd>
                 </div>
-                <div>
-                    <dt class="text-stone-500">Laatst bijgewerkt</dt>
-                    <dd class="mt-1 text-stone-200">{{ $contentNode->updated_at->timezone('Europe/Madrid')->format('d-m-Y H:i') }}</dd>
+                <div class="py-4">
+                    <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Laatst bijgewerkt</dt>
+                    <dd class="mt-1.5 text-sm font-semibold text-slate-800">{{ $contentNode->updated_at->timezone('Europe/Madrid')->format('d-m-Y H:i') }}</dd>
                 </div>
             </dl>
         </aside>
     </div>
 
-    <section class="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-6" aria-labelledby="revisions-title">
-        <h2 id="revisions-title" class="text-lg font-semibold text-white">Revisiegeschiedenis</h2>
-        <ol class="mt-5 space-y-4">
+    <section class="cs-panel mt-6 overflow-hidden" aria-labelledby="revisions-title">
+        <div class="cs-panel-header flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <h2 id="revisions-title" class="font-bold text-slate-900">Revisiegeschiedenis</h2>
+                <p class="mt-1 text-sm text-slate-500">Alle snapshots blijven onveranderlijk bewaard.</p>
+            </div>
+            <span class="status-chip">{{ $contentNode->revisions->count() }} {{ $contentNode->revisions->count() === 1 ? 'revisie' : 'revisies' }}</span>
+        </div>
+        <ol class="divide-y divide-slate-100">
             @foreach ($contentNode->revisions->reverse() as $revision)
-                <li class="rounded-xl border border-white/10 bg-stone-900/70 p-4">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <p class="font-medium text-white">Versie {{ $revision->version }} · {{ $revision->status->value }}</p>
-                        <time datetime="{{ $revision->created_at->toAtomString() }}" class="text-xs text-stone-500">{{ $revision->created_at->timezone('Europe/Madrid')->format('d-m-Y H:i') }}</time>
+                <li class="flex gap-4 p-5 sm:p-6">
+                    <span class="mt-1 grid size-9 shrink-0 place-items-center rounded-full {{ $revision->version === $contentNode->current_version ? 'bg-brand-100 text-brand-700' : 'bg-slate-100 text-slate-500' }}">
+                        <x-content-studio.icon name="clock" class="size-4" />
+                    </span>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <p class="font-bold text-slate-900">Versie {{ $revision->version }}</p>
+                                <x-content-studio.status-badge :status="$revision->status" />
+                            </div>
+                            <time datetime="{{ $revision->created_at->toAtomString() }}" class="text-xs font-medium text-slate-500">{{ $revision->created_at->timezone('Europe/Madrid')->format('d-m-Y H:i') }}</time>
+                        </div>
+                        <p class="mt-2 text-sm text-slate-600">{{ $revision->change_summary ?? 'Geen toelichting' }}</p>
+                        <p class="mt-1 text-xs text-slate-500">Door {{ $revision->creator?->name ?? 'Onbekend' }}</p>
                     </div>
-                    <p class="mt-2 text-sm text-stone-300">{{ $revision->change_summary ?? 'Geen toelichting' }}</p>
-                    <p class="mt-1 text-xs text-stone-500">Door {{ $revision->creator?->name ?? 'Onbekend' }}</p>
                 </li>
             @endforeach
         </ol>
@@ -86,19 +116,27 @@
 
     @can('delete', $contentNode)
         @if ($contentNode->isEditableDraft())
-            <section class="mt-8 rounded-2xl border border-red-300/20 bg-red-300/5 p-6" aria-labelledby="archive-title">
-                <h2 id="archive-title" class="font-semibold text-red-100">Concept archiveren</h2>
-                <p class="mt-2 text-sm leading-6 text-red-100/70">Archiveren verwijdert niets. De statuswijziging, reden en revisiegeschiedenis blijven bewaard.</p>
-                <form method="POST" action="{{ route('content-studio.content.destroy', $contentNode) }}" class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+            <section class="mt-6 rounded-2xl border border-red-200 bg-red-50/70 p-5 sm:p-6" aria-labelledby="archive-title">
+                <div class="flex items-start gap-3">
+                    <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-red-100 text-red-700"><x-content-studio.icon name="archive" /></span>
+                    <div>
+                        <h2 id="archive-title" class="font-bold text-red-900">Concept archiveren</h2>
+                        <p class="mt-1 text-sm leading-6 text-red-700">Archiveren verwijdert niets. De statuswijziging, reden en volledige revisiegeschiedenis blijven bewaard.</p>
+                    </div>
+                </div>
+                <form method="POST" action="{{ route('content-studio.content.destroy', $contentNode) }}" class="mt-5 flex flex-col gap-4 lg:flex-row lg:items-end">
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="expected_version" value="{{ $contentNode->current_version }}">
                     <div class="flex-1">
-                        <label for="reason" class="block text-sm font-medium text-red-100">Reden</label>
-                        <input id="reason" name="reason" type="text" required minlength="3" maxlength="480" value="{{ old('reason') }}" class="mt-2 w-full rounded-xl border border-red-300/20 bg-stone-900 px-4 py-3 text-white focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-300/30">
-                        @error('reason')<p class="mt-2 text-sm text-red-300">{{ $message }}</p>@enderror
+                        <label for="reason" class="cs-label text-red-900">Reden voor archiveren</label>
+                        <input id="reason" name="reason" type="text" required minlength="3" maxlength="480" value="{{ old('reason') }}" class="cs-field border-red-200 focus:border-red-500 focus:ring-red-500/10" @error('reason') aria-invalid="true" aria-describedby="reason-error" @enderror>
+                        @error('reason')<p id="reason-error" class="cs-error">{{ $message }}</p>@enderror
                     </div>
-                    <button type="submit" class="rounded-xl border border-red-300/30 px-5 py-3 text-sm font-semibold text-red-100 hover:bg-red-300/10 focus:outline-none focus:ring-2 focus:ring-red-300">Archiveren</button>
+                    <button type="submit" class="cs-button-danger shrink-0">
+                        <x-content-studio.icon name="archive" class="size-4" />
+                        Archiveren
+                    </button>
                 </form>
             </section>
         @endif

@@ -6,11 +6,123 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-brand-50: #fff7ed;
+    --color-brand-100: #ffedd5;
+    --color-brand-200: #fed7aa;
+    --color-brand-300: #fdba74;
+    --color-brand-400: #fb923c;
+    --color-brand-500: #f97316;
+    --color-brand-600: #ea580c;
+    --color-brand-700: #c2410c;
+    --color-brand-800: #9a3412;
+    --color-brand-900: #7c2d12;
+    --color-studio-900: #172033;
+    --color-studio-950: #101828;
+}
+
+@layer base {
+    html {
+        @apply scroll-smooth;
+    }
+
+    body {
+        @apply bg-slate-50 text-slate-700 antialiased;
+    }
+
+    button,
+    [role='button'] {
+        cursor: pointer;
+    }
+
+    button:disabled,
+    [aria-disabled='true'] {
+        cursor: not-allowed;
+    }
+
+    ::selection {
+        @apply bg-brand-200 text-brand-900;
+    }
 }
 
 @layer components {
+    .cs-skip-link {
+        @apply fixed left-4 top-4 z-[100] -translate-y-24 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-studio-950 shadow-lg transition focus:translate-y-0 focus:outline-none focus:ring-2 focus:ring-brand-500;
+    }
+
+    .cs-panel {
+        @apply rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-900/[0.03];
+    }
+
+    .cs-panel-header {
+        @apply border-b border-slate-100 px-5 py-4 sm:px-6;
+    }
+
+    .cs-eyebrow {
+        @apply text-xs font-bold uppercase tracking-[0.16em] text-brand-600;
+    }
+
+    .cs-page-title {
+        @apply mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl;
+    }
+
+    .cs-page-description {
+        @apply mt-2 max-w-3xl text-sm leading-6 text-slate-500 sm:text-base;
+    }
+
+    .cs-button-primary {
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2;
+    }
+
+    .cs-button-secondary {
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2;
+    }
+
+    .cs-button-danger {
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-red-300 bg-white px-4 py-2.5 text-sm font-semibold text-red-700 shadow-sm transition hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+    }
+
+    .cs-label {
+        @apply block text-sm font-semibold text-slate-700;
+    }
+
+    .cs-field {
+        @apply mt-2 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10;
+    }
+
+    .cs-field-error {
+        @apply border-red-400 focus:border-red-500 focus:ring-red-500/10;
+    }
+
+    .cs-help {
+        @apply mt-2 text-xs leading-5 text-slate-500;
+    }
+
+    .cs-error {
+        @apply mt-2 text-sm font-medium text-red-600;
+    }
+
+    .cs-alert-success {
+        @apply flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3.5 text-sm text-emerald-800 shadow-sm;
+    }
+
+    .cs-alert-error {
+        @apply rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800;
+    }
+
+    .cs-nav-link {
+        @apply flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/[0.07] hover:text-white focus:outline-none focus:ring-2 focus:ring-brand-400;
+    }
+
+    .cs-nav-link-active {
+        @apply bg-brand-500 text-white shadow-sm shadow-black/20 hover:bg-brand-500;
+    }
+
+    .cs-nav-link-disabled {
+        @apply flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500;
+    }
+
     .status-chip {
-        @apply rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-medium text-stone-200;
+        @apply inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm;
     }
 
     .status-item {
@@ -19,6 +131,17 @@
 
     .status-item::before {
         content: '';
-        @apply mt-2 size-2 shrink-0 rounded-full bg-emerald-400;
+        @apply mt-2 size-2 shrink-0 rounded-full bg-emerald-500;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
     }
 }

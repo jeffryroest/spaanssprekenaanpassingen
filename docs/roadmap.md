@@ -15,6 +15,7 @@
 - Laravel-applicatie met authenticatie en rollen.
 - MySQL-migraties en seeders.
 - Content Studio-navigatie en basis-CRUD.
+- Gedeeld Content Studio-designsystem en responsieve beheerschil.
 - Wereld-, missie- en conversatie-API.
 - Test- en kwaliteitsstraat.
 
