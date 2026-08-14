@@ -47,8 +47,22 @@
 
             <p class="mt-8 px-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-slate-500">Workflow</p>
             <div class="mt-2 space-y-1">
+                @can('content-studio.review')
+                    <a href="{{ route('content-studio.reviews.index') }}"
+                       @if (request()->routeIs('content-studio.reviews.*')) aria-current="page" @endif
+                       class="cs-nav-link {{ request()->routeIs('content-studio.reviews.*') ? 'cs-nav-link-active' : '' }}">
+                        <x-content-studio.icon name="review" />
+                        Reviewwachtrij
+                    </a>
+                @else
+                    <span class="cs-nav-link-disabled" aria-disabled="true">
+                        <x-content-studio.icon name="review" />
+                        <span class="flex-1">Reviewwachtrij</span>
+                        <span class="rounded-full bg-white/[0.06] px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wide text-slate-500">Alleen reviewers</span>
+                    </span>
+                @endcan
+
                 @foreach ([
-                    ['review', 'Reviewwachtrij'],
                     ['import', 'Importcentrum'],
                     ['release', 'Releases'],
                     ['audit', 'Auditlog'],
@@ -91,7 +105,9 @@
                             @if (! request()->routeIs('content-studio.dashboard'))
                                 <li class="text-slate-300" aria-hidden="true">/</li>
                                 <li class="truncate font-semibold text-slate-800" aria-current="page">
-                                    @if (request()->routeIs('content-studio.content.index'))
+                                    @if (request()->routeIs('content-studio.reviews.*'))
+                                        Reviewwachtrij
+                                    @elseif (request()->routeIs('content-studio.content.index'))
                                         Contentcatalogus
                                     @elseif (request()->routeIs('content-studio.content.create'))
                                         Nieuw concept

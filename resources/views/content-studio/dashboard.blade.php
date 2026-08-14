@@ -5,9 +5,9 @@
 @section('content')
     <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
-            <p class="cs-eyebrow">Fase 1C.1 · Werkruimte</p>
+            <p class="cs-eyebrow">Fase 1D · Redactionele workflow</p>
             <h1 id="dashboard-title" class="cs-page-title">Welkom, {{ auth()->user()->name }}</h1>
-            <p class="cs-page-description">Beheer conceptcontent vanuit één rustige, veilige werkruimte. Publiceren blijft geblokkeerd totdat de review- en releaseworkflow gereed is.</p>
+            <p class="cs-page-description">Beheer conceptcontent en laat iedere versie onafhankelijk beoordelen. Publiceren blijft geblokkeerd totdat de releaseworkflow gereed is.</p>
         </div>
 
         @can('create', App\Models\ContentNode::class)
@@ -21,7 +21,7 @@
     <section class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Status van de Content Studio">
         @foreach ([
             ['document', '11', 'Contenttypen', 'Klaar voor concepten', 'bg-brand-50 text-brand-700'],
-            ['catalog', '1', 'Actieve module', 'Contentcatalogus', 'bg-blue-50 text-blue-700'],
+            ['review', $canReview ? (string) $pendingReviewCount : '—', 'Wacht op review', $canReview ? 'Open reviewverzoeken' : 'Alleen voor reviewers', 'bg-blue-50 text-blue-700'],
             ['shield', 'Server-side', 'Autorisatie', auth()->user()->content_role->label(), 'bg-emerald-50 text-emerald-700'],
             ['release', 'Geblokkeerd', 'Publicatie', 'Tot releaseworkflow', 'bg-violet-50 text-violet-700'],
         ] as [$icon, $value, $label, $detail, $color])
@@ -47,7 +47,7 @@
                     <h2 id="workspace-title" class="font-bold text-slate-900">Contentworkflow</h2>
                     <p class="mt-1 text-sm text-slate-500">Beschikbare en geplande onderdelen</p>
                 </div>
-                <span class="status-chip">1 actief</span>
+                <span class="status-chip">{{ $canReview ? '2' : '1' }} actief</span>
             </div>
 
             <div class="divide-y divide-slate-100">
@@ -65,8 +65,32 @@
                     <x-content-studio.icon name="arrow-right" class="size-5 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-brand-600" />
                 </a>
 
+                @if ($canReview)
+                    <a href="{{ route('content-studio.reviews.index') }}" class="group flex items-center gap-4 p-5 transition hover:bg-blue-50/50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:p-6">
+                        <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-blue-100 text-blue-700">
+                            <x-content-studio.icon name="review" />
+                        </span>
+                        <span class="min-w-0 flex-1">
+                            <span class="flex flex-wrap items-center gap-2">
+                                <span class="font-bold text-slate-900">Reviewwachtrij</span>
+                                <span class="rounded-full bg-blue-50 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-blue-700">{{ $pendingReviewCount }} open</span>
+                            </span>
+                            <span class="mt-1 block text-sm text-slate-500">Versies beoordelen, goedkeuren of gemotiveerd terugsturen.</span>
+                        </span>
+                        <x-content-studio.icon name="arrow-right" class="size-5 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-blue-600" />
+                    </a>
+                @else
+                    <div class="flex items-center gap-4 p-5 sm:p-6">
+                        <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-500"><x-content-studio.icon name="review" /></span>
+                        <span class="min-w-0 flex-1">
+                            <span class="font-semibold text-slate-700">Reviewwachtrij</span>
+                            <span class="mt-1 block text-sm text-slate-500">Je kunt eigen concepten indienen; bevoegde reviewers behandelen ze.</span>
+                        </span>
+                        <span class="hidden rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500 sm:inline-flex">Rolgebonden</span>
+                    </div>
+                @endif
+
                 @foreach ([
-                    ['review', 'Reviewwachtrij', 'Concepten beoordelen en wijzigingen aanvragen.', 'Volgende fase'],
                     ['import', 'Importcentrum', 'Externe bestanden gecontroleerd in staging verwerken.', 'Gepland'],
                     ['release', 'Releases', 'Goedgekeurde versies gecontroleerd publiceren.', 'Gepland'],
                 ] as [$icon, $title, $description, $status])
@@ -101,8 +125,8 @@
 
             <aside class="cs-panel p-6" aria-labelledby="next-step-title">
                 <p class="cs-eyebrow">Blauwdruk</p>
-                <h2 id="next-step-title" class="mt-2 font-bold text-slate-900">Volgende bouwstap</h2>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Na deze visuele basis volgt de reviewworkflow, zonder de bestaande concept- en revisieveiligheid te doorbreken.</p>
+                <h2 id="next-step-title" class="mt-2 font-bold text-slate-900">Vier-ogencontrole actief</h2>
+                <p class="mt-2 text-sm leading-6 text-slate-500">Een reviewer kan alleen een revisie van iemand anders beoordelen. Een goedkeuring geldt uitsluitend voor de ingediende versie.</p>
             </aside>
         </div>
     </div>

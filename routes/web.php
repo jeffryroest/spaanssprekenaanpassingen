@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ContentStudio\ContentController;
+use App\Http\Controllers\ContentStudio\ContentReviewController;
 use App\Http\Controllers\ContentStudio\DashboardController;
+use App\Http\Controllers\ContentStudio\ReviewQueueController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -22,6 +24,11 @@ Route::prefix('content-studio')
     ->group(function (): void {
         Route::get('/', DashboardController::class)->name('dashboard');
 
+        Route::get('/reviews', ReviewQueueController::class)->name('reviews.index');
+        Route::post('/reviews/{contentNode}/decision', [ContentReviewController::class, 'decide'])
+            ->whereNumber('contentNode')
+            ->name('reviews.decide');
+
         Route::get('/content', [ContentController::class, 'index'])->name('content.index');
         Route::get('/content/create', [ContentController::class, 'create'])->name('content.create');
         Route::post('/content', [ContentController::class, 'store'])->name('content.store');
@@ -34,6 +41,9 @@ Route::prefix('content-studio')
         Route::put('/content/{contentNode}', [ContentController::class, 'update'])
             ->whereNumber('contentNode')
             ->name('content.update');
+        Route::post('/content/{contentNode}/submit-review', [ContentReviewController::class, 'submit'])
+            ->whereNumber('contentNode')
+            ->name('content.submit-review');
         Route::delete('/content/{contentNode}', [ContentController::class, 'destroy'])
             ->whereNumber('contentNode')
             ->name('content.destroy');

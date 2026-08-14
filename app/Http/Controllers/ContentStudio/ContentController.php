@@ -93,7 +93,7 @@ class ContentController extends Controller
 
     public function show(ContentNode $contentNode): View
     {
-        $contentNode->load(['localizations', 'revisions.creator', 'creator', 'updater']);
+        $contentNode->load(['localizations', 'revisions.creator', 'reviews.actor', 'creator', 'updater']);
 
         return view('content-studio.content.show', compact('contentNode'));
     }
