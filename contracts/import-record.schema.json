@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaansspreken.nl/contracts/import-record.schema.json",
+  "title": "Spaansspreken import record",
+  "description": "Stagingcontract voor optioneel extern inspiratiemateriaal. Dit contract publiceert niets.",
+  "type": "object",
+  "required": ["external_id", "source_name", "record_type", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "external_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 190
+    },
+    "source_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 190
+    },
+    "source_url": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "maxLength": 2048
+    },
+    "license_note": {
+      "type": ["string", "null"],
+      "maxLength": 2000
+    },
+    "record_type": {
+      "type": "string",
+      "enum": ["word", "phrase", "example_sentence", "dialogue_seed", "grammar_note"]
+    },
+    "language": {
+      "type": "string",
+      "default": "es",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+    },
+    "payload": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": true
+    },
+    "imported_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "spaansspreken",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate-foundation.mjs"
+  }
+}
