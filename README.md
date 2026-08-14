@@ -39,7 +39,9 @@ De definitieve frameworkversies worden pas vastgezet wanneer de uitvoeringsomgev
 
 Fase 0: fundament, domeinmodel, Content Studio, importcontract en specificatie van Madrid → La panadería.
 
-Zie [AGENTS.md](AGENTS.md) voor de samenwerking en [docs/roadmap.md](docs/roadmap.md) voor de ontwikkelvolgorde.
+Fase 1A: beveiligde Content Studio-toegang met login, redactierollen, server-side autorisatie en audit van roltoewijzingen.
+
+Zie [AGENTS.md](AGENTS.md) voor de samenwerking, [docs/roadmap.md](docs/roadmap.md) voor de ontwikkelvolgorde en [docs/content-studio-access.md](docs/content-studio-access.md) voor de toegangslaag.
 
 ## Applicatiefundament
 
