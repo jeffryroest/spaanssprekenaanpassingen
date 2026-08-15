@@ -53,7 +53,7 @@ final class PublicContentTransformer
     }
 
     /**
-     * @param array<int, mixed> $localizations
+     * @param  array<int, mixed>  $localizations
      * @return array{0: array<string, mixed>, 1: string, 2: list<string>}
      */
     private function resolveLocalization(

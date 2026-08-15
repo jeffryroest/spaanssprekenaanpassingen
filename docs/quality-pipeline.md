@@ -37,7 +37,7 @@ Gebruik lokaal of op staging nooit productiegegevens voor de testdatabase.
 
 ## Dependency-locks
 
-`package-lock.json` legt de frontenddependencyboom vast en maakt `npm ci` mogelijk. De eerste CI-run exporteert daarnaast het door Composer opgeloste `composer.lock` als kortlevend artifact. Dat bestand wordt in dezelfde fase aan de repository toegevoegd, waarna Composer-installaties eveneens exact reproduceerbaar zijn.
+`package-lock.json` en `composer.lock` leggen de opgeloste frontend- en PHP-dependencybomen vast. De workflow gebruikt daardoor uitsluitend reproduceerbare installaties en audits tegen de versies die in de repository zijn beoordeeld.
 
 ## Branch protection
 

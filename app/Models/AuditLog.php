@@ -40,7 +40,7 @@ class AuditLog extends Model
 
     /**
      * @param  array<string, mixed>|null  $before
-     * @param  array<string, mixed>       $after
+     * @param  array<string, mixed>  $after
      */
     public static function recordContentChange(
         User $actor,
@@ -65,7 +65,7 @@ class AuditLog extends Model
 
     /**
      * @param  array<string, mixed>|null  $before
-     * @param  array<string, mixed>       $after
+     * @param  array<string, mixed>  $after
      */
     public static function recordReleaseChange(
         User $actor,

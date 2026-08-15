@@ -14,6 +14,7 @@ async function read(relativePath) {
 
 const requiredPaths = [
   '.github/workflows/quality.yml',
+  'composer.lock',
   'docs/quality-pipeline.md',
   'package-lock.json',
 ];
@@ -52,7 +53,6 @@ for (const command of [
   'composer validate --strict',
   'vendor/bin/pint --test',
   'composer audit --locked',
-  'npm install --package-lock-only --ignore-scripts',
   'npm ci --ignore-scripts',
   'npm run validate',
   'npm run build',
@@ -76,4 +76,4 @@ for (const dependencyGroup of ['devDependencies', 'optionalDependencies']) {
   }
 }
 
-console.log('Kwaliteitsstraat geldig: triggers, rechten, jobs, audits, MySQL-tests en npm-lock zijn consistent.');
+console.log('Kwaliteitsstraat geldig: triggers, rechten, jobs, audits, MySQL-tests en dependency-locks zijn consistent.');
