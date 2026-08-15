@@ -74,6 +74,6 @@ php artisan test
 
 Open vervolgens `https://v2.spaansspreken.nl/up`. Een succesvolle respons bevestigt dat Laravel is opgestart. De startpagina op `/` bevestigt daarnaast dat de Vite-assets zijn gebouwd.
 
-## Eerste lockbestanden
+## Lockbestanden
 
-Het officiële Laravel-skelet levert geen lockbestanden mee. De eerste dependency-installatie maakt `composer.lock` en `package-lock.json`. Voeg beide daarna in een afzonderlijke wijziging toe aan GitHub, zodat volgende deployments exact dezelfde dependencyversies gebruiken.
+`composer.lock` en `package-lock.json` staan in GitHub. Laat Ploi deze bestanden ongewijzigd gebruiken, zodat iedere deployment exact de beoordeelde dependencyversies installeert.

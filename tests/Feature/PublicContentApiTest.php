@@ -46,7 +46,6 @@ class PublicContentApiTest extends TestCase
         $response
             ->assertOk()
             ->assertHeader('X-Content-API-Version', PublicApiResponder::API_VERSION)
-            ->assertHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
             ->assertJsonPath('schema_version', PublicApiResponder::API_VERSION)
             ->assertJsonPath('data.type', ContentType::Mission->value)
             ->assertJsonPath('data.slug', 'bestel-een-cafe')
@@ -56,6 +55,12 @@ class PublicContentApiTest extends TestCase
             ->assertJsonPath('data.content.summary', 'Oefen een bestelling in Madrid.')
             ->assertJsonPath('data.content.domain_data.difficulty', 'starter')
             ->assertJsonPath('data.content.domain_data.objectives.1', 'bestellen');
+
+        $cacheControl = $response->headers->get('Cache-Control');
+        $this->assertNotNull($cacheControl);
+        $this->assertStringContainsString('public', $cacheControl);
+        $this->assertStringContainsString('max-age=60', $cacheControl);
+        $this->assertStringContainsString('stale-while-revalidate=300', $cacheControl);
 
         $payload = $response->json('data');
         $this->assertArrayNotHasKey('created_by', $payload);

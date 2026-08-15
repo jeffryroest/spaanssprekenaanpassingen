@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use App\Enums\ContentReviewAction;
 use App\Enums\ContentReleaseChannel;
 use App\Enums\ContentReleaseStatus;
+use App\Enums\ContentReviewAction;
 use App\Enums\ContentStatus;
 use App\Enums\ContentType;
 use App\Enums\RevisionStatus;

@@ -31,8 +31,7 @@ final class PublishedContentRepository
     public function latestProductionItem(ContentNode $contentNode): ?ContentReleaseItem
     {
         return $contentNode->releaseItems
-            ->filter(fn (ContentReleaseItem $item): bool =>
-                $item->version === $contentNode->current_version
+            ->filter(fn (ContentReleaseItem $item): bool => $item->version === $contentNode->current_version
                 && $item->contentRevision?->version === $contentNode->current_version
                 && (int) $item->contentRevision?->content_node_id === (int) $contentNode->getKey()
                 && $item->release?->target_channel === ContentReleaseChannel::Production

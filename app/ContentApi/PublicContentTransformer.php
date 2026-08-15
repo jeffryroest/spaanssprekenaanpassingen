@@ -53,7 +53,7 @@ final class PublicContentTransformer
     }
 
     /**
-     * @param array<int, mixed> $localizations
+     * @param  array<int, mixed>  $localizations
      * @return array{0: array<string, mixed>, 1: string, 2: list<string>}
      */
     private function resolveLocalization(
@@ -62,8 +62,7 @@ final class PublicContentTransformer
         string $defaultLocale,
     ): array {
         $validLocalizations = collect($localizations)
-            ->filter(fn (mixed $localization): bool =>
-                is_array($localization)
+            ->filter(fn (mixed $localization): bool => is_array($localization)
                 && is_string($localization['locale'] ?? null)
             )
             ->values();

@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Validator;
 final class CreateDraftContent
 {
     /**
-     * @param array<string, mixed> $metadata
-     * @param array<string, mixed> $domainData
+     * @param  array<string, mixed>  $metadata
+     * @param  array<string, mixed>  $domainData
      */
     public function handle(
         User $actor,

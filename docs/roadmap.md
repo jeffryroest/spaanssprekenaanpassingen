@@ -19,7 +19,7 @@
 - Versiegebonden reviewworkflow met vier-ogencontrole.
 - Versiegebonden releaseworkflow met kanaalpreflight en expliciete productiebevestiging.
 - Versieerbare read-only wereld-, locatie-, missie- en conversatie-API met productiepublicatiegrens.
-- Test- en kwaliteitsstraat.
+- GitHub Actions-test- en kwaliteitsstraat voor PHP, frontend, API-contracten en MySQL-integratie.
 
 **Beslispoort:** content kan veilig als concept worden aangemaakt, bekeken en gepubliceerd.
 
