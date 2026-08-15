@@ -5,9 +5,9 @@
 @section('content')
     <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
-            <p class="cs-eyebrow">Fase 1D · Redactionele workflow</p>
+            <p class="cs-eyebrow">Fase 1E · Releaseworkflow</p>
             <h1 id="dashboard-title" class="cs-page-title">Welkom, {{ auth()->user()->name }}</h1>
-            <p class="cs-page-description">Beheer conceptcontent en laat iedere versie onafhankelijk beoordelen. Publiceren blijft geblokkeerd totdat de releaseworkflow gereed is.</p>
+            <p class="cs-page-description">Beheer, beoordeel en bundel versiegebonden content. Alleen een geslaagde preflight kan een release gecontroleerd uitvoeren.</p>
         </div>
 
         @can('create', App\Models\ContentNode::class)
@@ -23,7 +23,7 @@
             ['document', '11', 'Contenttypen', 'Klaar voor concepten', 'bg-brand-50 text-brand-700'],
             ['review', $canReview ? (string) $pendingReviewCount : '—', 'Wacht op review', $canReview ? 'Open reviewverzoeken' : 'Alleen voor reviewers', 'bg-blue-50 text-blue-700'],
             ['shield', 'Server-side', 'Autorisatie', auth()->user()->content_role->label(), 'bg-emerald-50 text-emerald-700'],
-            ['release', 'Geblokkeerd', 'Publicatie', 'Tot releaseworkflow', 'bg-violet-50 text-violet-700'],
+            ['release', (string) $draftReleaseCount, 'Conceptreleases', $approvedContentCount.' goedgekeurd beschikbaar', 'bg-violet-50 text-violet-700'],
         ] as [$icon, $value, $label, $detail, $color])
             <article class="cs-panel p-5">
                 <div class="flex items-start justify-between gap-4">
@@ -47,7 +47,7 @@
                     <h2 id="workspace-title" class="font-bold text-slate-900">Contentworkflow</h2>
                     <p class="mt-1 text-sm text-slate-500">Beschikbare en geplande onderdelen</p>
                 </div>
-                <span class="status-chip">{{ $canReview ? '2' : '1' }} actief</span>
+                <span class="status-chip">{{ $canReview ? '3' : '2' }} actief</span>
             </div>
 
             <div class="divide-y divide-slate-100">
@@ -90,9 +90,22 @@
                     </div>
                 @endif
 
+                <a href="{{ route('content-studio.releases.index') }}" class="group flex items-center gap-4 p-5 transition hover:bg-violet-50/50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500 sm:p-6">
+                    <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-700">
+                        <x-content-studio.icon name="release" />
+                    </span>
+                    <span class="min-w-0 flex-1">
+                        <span class="flex flex-wrap items-center gap-2">
+                            <span class="font-bold text-slate-900">Releases</span>
+                            <span class="rounded-full bg-violet-50 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-violet-700">{{ $draftReleaseCount }} concept</span>
+                        </span>
+                        <span class="mt-1 block text-sm text-slate-500">Goedgekeurde revisies versiegebonden plannen, controleren en uitvoeren.</span>
+                    </span>
+                    <x-content-studio.icon name="arrow-right" class="size-5 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-violet-600" />
+                </a>
+
                 @foreach ([
                     ['import', 'Importcentrum', 'Externe bestanden gecontroleerd in staging verwerken.', 'Gepland'],
-                    ['release', 'Releases', 'Goedgekeurde versies gecontroleerd publiceren.', 'Gepland'],
                 ] as [$icon, $title, $description, $status])
                     <div class="flex items-center gap-4 p-5 sm:p-6">
                         <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-500">
@@ -125,8 +138,8 @@
 
             <aside class="cs-panel p-6" aria-labelledby="next-step-title">
                 <p class="cs-eyebrow">Blauwdruk</p>
-                <h2 id="next-step-title" class="mt-2 font-bold text-slate-900">Vier-ogencontrole actief</h2>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Een reviewer kan alleen een revisie van iemand anders beoordelen. Een goedkeuring geldt uitsluitend voor de ingediende versie.</p>
+                <h2 id="next-step-title" class="mt-2 font-bold text-slate-900">Publicatie blijft menselijk</h2>
+                <p class="mt-2 text-sm leading-6 text-slate-500">Productie vereist een bevoegde uitgever, een foutloze preflight, expliciete bevestiging en een vastgelegde motivatie.</p>
             </aside>
         </div>
     </div>

@@ -17,6 +17,7 @@
 - Content Studio-navigatie en basis-CRUD.
 - Gedeeld Content Studio-designsystem en responsieve beheerschil.
 - Versiegebonden reviewworkflow met vier-ogencontrole.
+- Versiegebonden releaseworkflow met kanaalpreflight en expliciete productiebevestiging.
 - Wereld-, missie- en conversatie-API.
 - Test- en kwaliteitsstraat.
 

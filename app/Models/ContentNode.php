@@ -75,6 +75,11 @@ class ContentNode extends Model
         return $this->hasMany(ContentReview::class)->orderBy('created_at');
     }
 
+    public function releaseItems(): HasMany
+    {
+        return $this->hasMany(ContentReleaseItem::class)->orderBy('created_at');
+    }
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

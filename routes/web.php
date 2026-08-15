@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ContentStudio\ContentController;
+use App\Http\Controllers\ContentStudio\ContentReleaseController;
+use App\Http\Controllers\ContentStudio\ContentReleaseItemController;
+use App\Http\Controllers\ContentStudio\ContentReleasePublicationController;
 use App\Http\Controllers\ContentStudio\ContentReviewController;
 use App\Http\Controllers\ContentStudio\DashboardController;
 use App\Http\Controllers\ContentStudio\ReviewQueueController;
@@ -28,6 +31,26 @@ Route::prefix('content-studio')
         Route::post('/reviews/{contentNode}/decision', [ContentReviewController::class, 'decide'])
             ->whereNumber('contentNode')
             ->name('reviews.decide');
+
+        Route::get('/releases', [ContentReleaseController::class, 'index'])->name('releases.index');
+        Route::get('/releases/create', [ContentReleaseController::class, 'create'])->name('releases.create');
+        Route::post('/releases', [ContentReleaseController::class, 'store'])->name('releases.store');
+        Route::get('/releases/{contentRelease}', [ContentReleaseController::class, 'show'])
+            ->whereNumber('contentRelease')
+            ->name('releases.show');
+        Route::post('/releases/{contentRelease}/items', [ContentReleaseItemController::class, 'store'])
+            ->whereNumber('contentRelease')
+            ->name('releases.items.store');
+        Route::delete('/releases/{contentRelease}/items/{contentReleaseItem}', [ContentReleaseItemController::class, 'destroy'])
+            ->whereNumber('contentRelease')
+            ->whereNumber('contentReleaseItem')
+            ->name('releases.items.destroy');
+        Route::post('/releases/{contentRelease}/publish', [ContentReleasePublicationController::class, 'publish'])
+            ->whereNumber('contentRelease')
+            ->name('releases.publish');
+        Route::post('/releases/{contentRelease}/cancel', [ContentReleasePublicationController::class, 'cancel'])
+            ->whereNumber('contentRelease')
+            ->name('releases.cancel');
 
         Route::get('/content', [ContentController::class, 'index'])->name('content.index');
         Route::get('/content/create', [ContentController::class, 'create'])->name('content.create');

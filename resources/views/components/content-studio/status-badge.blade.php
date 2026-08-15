@@ -11,7 +11,7 @@
         'approved' => ['border-emerald-200 bg-emerald-50 text-emerald-700', 'bg-emerald-500'],
         'scheduled' => ['border-violet-200 bg-violet-50 text-violet-700', 'bg-violet-500'],
         'published' => ['border-teal-200 bg-teal-50 text-teal-700', 'bg-teal-500'],
-        'withdrawn', 'archived' => ['border-red-200 bg-red-50 text-red-700', 'bg-red-500'],
+        'withdrawn', 'archived', 'cancelled' => ['border-red-200 bg-red-50 text-red-700', 'bg-red-500'],
         default => ['border-slate-200 bg-white text-slate-700', 'bg-slate-400'],
     };
 @endphp
