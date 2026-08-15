@@ -128,6 +128,63 @@ CREATE TABLE content_revisions (
     CONSTRAINT fk_content_revisions_reviewed_by FOREIGN KEY (reviewed_by) REFERENCES users (id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE content_reviews (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    content_node_id BIGINT UNSIGNED NOT NULL,
+    content_revision_id BIGINT UNSIGNED NOT NULL,
+    version INT UNSIGNED NOT NULL,
+    action VARCHAR(32) NOT NULL,
+    from_status VARCHAR(32) NOT NULL,
+    to_status VARCHAR(32) NOT NULL,
+    note TEXT NULL,
+    actor_user_id BIGINT UNSIGNED NULL,
+    actor_role VARCHAR(32) NULL,
+    created_at DATETIME(6) NOT NULL,
+    KEY idx_content_reviews_version_history (content_node_id, version, created_at),
+    KEY idx_content_reviews_action_queue (action, created_at),
+    CONSTRAINT fk_content_reviews_node FOREIGN KEY (content_node_id) REFERENCES content_nodes (id) ON DELETE CASCADE,
+    CONSTRAINT fk_content_reviews_revision FOREIGN KEY (content_revision_id) REFERENCES content_revisions (id) ON DELETE CASCADE,
+    CONSTRAINT fk_content_reviews_actor FOREIGN KEY (actor_user_id) REFERENCES users (id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE content_releases (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(180) NOT NULL,
+    description TEXT NULL,
+    target_channel VARCHAR(24) NOT NULL DEFAULT 'preview',
+    desired_publish_at DATETIME(6) NULL,
+    status VARCHAR(24) NOT NULL DEFAULT 'draft',
+    owner_user_id BIGINT UNSIGNED NULL,
+    published_by BIGINT UNSIGNED NULL,
+    published_at DATETIME(6) NULL,
+    cancelled_by BIGINT UNSIGNED NULL,
+    cancelled_at DATETIME(6) NULL,
+    cancellation_reason TEXT NULL,
+    created_at DATETIME(6) NOT NULL,
+    updated_at DATETIME(6) NOT NULL,
+    KEY idx_content_releases_planning (status, desired_publish_at),
+    KEY idx_content_releases_channel (target_channel, published_at),
+    CONSTRAINT fk_content_releases_owner FOREIGN KEY (owner_user_id) REFERENCES users (id) ON DELETE SET NULL,
+    CONSTRAINT fk_content_releases_publisher FOREIGN KEY (published_by) REFERENCES users (id) ON DELETE SET NULL,
+    CONSTRAINT fk_content_releases_canceller FOREIGN KEY (cancelled_by) REFERENCES users (id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE content_release_items (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    content_release_id BIGINT UNSIGNED NOT NULL,
+    content_node_id BIGINT UNSIGNED NOT NULL,
+    content_revision_id BIGINT UNSIGNED NOT NULL,
+    version INT UNSIGNED NOT NULL,
+    created_by BIGINT UNSIGNED NULL,
+    created_at DATETIME(6) NOT NULL,
+    UNIQUE KEY uq_content_release_items_node (content_release_id, content_node_id),
+    KEY idx_content_release_items_version (content_node_id, version),
+    CONSTRAINT fk_content_release_items_release FOREIGN KEY (content_release_id) REFERENCES content_releases (id) ON DELETE CASCADE,
+    CONSTRAINT fk_content_release_items_node FOREIGN KEY (content_node_id) REFERENCES content_nodes (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_content_release_items_revision FOREIGN KEY (content_revision_id) REFERENCES content_revisions (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_content_release_items_creator FOREIGN KEY (created_by) REFERENCES users (id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 CREATE TABLE content_sources (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(160) NOT NULL,

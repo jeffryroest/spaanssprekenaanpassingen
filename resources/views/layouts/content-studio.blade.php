@@ -62,9 +62,15 @@
                     </span>
                 @endcan
 
+                <a href="{{ route('content-studio.releases.index') }}"
+                   @if (request()->routeIs('content-studio.releases.*')) aria-current="page" @endif
+                   class="cs-nav-link {{ request()->routeIs('content-studio.releases.*') ? 'cs-nav-link-active' : '' }}">
+                    <x-content-studio.icon name="release" />
+                    Releases
+                </a>
+
                 @foreach ([
                     ['import', 'Importcentrum'],
-                    ['release', 'Releases'],
                     ['audit', 'Auditlog'],
                     ['settings', 'Instellingen'],
                 ] as [$icon, $label])
@@ -107,6 +113,12 @@
                                 <li class="truncate font-semibold text-slate-800" aria-current="page">
                                     @if (request()->routeIs('content-studio.reviews.*'))
                                         Reviewwachtrij
+                                    @elseif (request()->routeIs('content-studio.releases.create'))
+                                        Nieuwe release
+                                    @elseif (request()->routeIs('content-studio.releases.show'))
+                                        Releasedetail
+                                    @elseif (request()->routeIs('content-studio.releases.*'))
+                                        Releases
                                     @elseif (request()->routeIs('content-studio.content.index'))
                                         Contentcatalogus
                                     @elseif (request()->routeIs('content-studio.content.create'))

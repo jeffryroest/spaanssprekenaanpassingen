@@ -50,7 +50,7 @@ Een latere bewerking na `Wijzigingen gevraagd` maakt een nieuwe revisie en zet h
 
 - nog geen veldniveau-opmerkingen of checklists per contenttype;
 - nog geen afhankelijkheidsvalidatie of interactieve preview;
-- nog geen releasebeheer, planning of productiepublicatie;
+- releasebeheer, planning en productiepublicatie blijven gescheiden van reviewbeslissingen en zijn uitgewerkt in [content-studio-release-workflow.md](content-studio-release-workflow.md);
 - nog geen e-mail- of notificatiecentrum;
 - goedgekeurde content blijft buiten publieke routes.
 

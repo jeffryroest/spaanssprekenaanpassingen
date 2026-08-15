@@ -3,6 +3,8 @@
 namespace Tests\Unit;
 
 use App\Enums\ContentReviewAction;
+use App\Enums\ContentReleaseChannel;
+use App\Enums\ContentReleaseStatus;
 use App\Enums\ContentStatus;
 use App\Enums\ContentType;
 use App\Enums\RevisionStatus;
@@ -50,5 +52,17 @@ class ContentWorkflowEnumsTest extends TestCase
 
         $this->assertSame(['submitted', 'approved', 'changes_requested'], $values);
         $this->assertNotContains('published', $values);
+    }
+
+    public function test_release_channels_and_terminal_states_are_explicit(): void
+    {
+        $this->assertSame(
+            ['preview', 'staging', 'production'],
+            array_column(ContentReleaseChannel::cases(), 'value'),
+        );
+        $this->assertSame(
+            ['draft', 'published', 'cancelled'],
+            array_column(ContentReleaseStatus::cases(), 'value'),
+        );
     }
 }

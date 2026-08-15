@@ -62,4 +62,29 @@ class AuditLog extends Model
             'created_at' => now(),
         ]);
     }
+
+    /**
+     * @param array<string, mixed>|null $before
+     * @param array<string, mixed> $after
+     */
+    public static function recordReleaseChange(
+        User $actor,
+        string $action,
+        ContentRelease $release,
+        ?array $before,
+        array $after,
+    ): self {
+        $context = ['actor_role' => $actor->content_role?->value];
+
+        return self::query()->create([
+            'actor_user_id' => $actor->getKey(),
+            'action' => $action,
+            'subject_type' => ContentRelease::class,
+            'subject_id' => $release->getKey(),
+            'before_state' => $before === null ? null : $context + ['release' => $before],
+            'after_state' => $context + ['release' => $after],
+            'request_id' => Str::uuid()->toString(),
+            'created_at' => now(),
+        ]);
+    }
 }

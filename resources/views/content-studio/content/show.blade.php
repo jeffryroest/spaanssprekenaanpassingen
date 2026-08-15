@@ -202,6 +202,30 @@
         </section>
     @endif
 
+    @if ($contentNode->releaseItems->isNotEmpty())
+        <section class="cs-panel mt-6 overflow-hidden" aria-labelledby="release-history-title">
+            <div class="cs-panel-header">
+                <h2 id="release-history-title" class="font-bold text-slate-900">Releasehistorie</h2>
+                <p class="mt-1 text-sm text-slate-500">Releases waarin een exacte revisie van deze content is vastgelegd.</p>
+            </div>
+            <div class="divide-y divide-slate-100">
+                @foreach ($contentNode->releaseItems->reverse() as $item)
+                    <a href="{{ route('content-studio.releases.show', $item->release) }}" class="group flex items-center gap-4 p-5 transition hover:bg-violet-50/40 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500 sm:p-6">
+                        <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-700"><x-content-studio.icon name="release" /></span>
+                        <span class="min-w-0 flex-1">
+                            <span class="flex flex-wrap items-center gap-2">
+                                <span class="font-bold text-slate-900">{{ $item->release->name }}</span>
+                                <x-content-studio.status-badge :status="$item->release->status" />
+                            </span>
+                            <span class="mt-1 block text-sm text-slate-500">{{ $item->release->target_channel->label() }} · revisie {{ $item->version }}</span>
+                        </span>
+                        <x-content-studio.icon name="arrow-right" class="size-5 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-violet-600" />
+                    </a>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
     @can('update', $contentNode)
         @if ($contentNode->status === App\Enums\ContentStatus::Draft)
             <section class="mt-6 overflow-hidden rounded-2xl border border-blue-200 bg-blue-50/60" aria-labelledby="submit-review-title">
