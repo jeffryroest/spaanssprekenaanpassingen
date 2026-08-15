@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaansspreken.nl/contracts/public-content-api-v1.schema.json",
+  "title": "Spaansspreken publieke content-API v1",
+  "description": "Versieerbaar contract voor publieke, productiegepubliceerde wereld-, locatie-, missie- en gesprekscontent.",
+  "oneOf": [
+    { "$ref": "#/$defs/detailResponse" },
+    { "$ref": "#/$defs/collectionResponse" },
+    { "$ref": "#/$defs/errorResponse" }
+  ],
+  "$defs": {
+    "resourceType": {
+      "type": "string",
+      "enum": ["region", "location", "mission", "conversation_scenario"]
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["release_id", "published_at"],
+      "properties": {
+        "release_id": { "type": "integer", "minimum": 1 },
+        "published_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "selfLinks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["self"],
+      "properties": {
+        "self": { "type": "string", "format": "uri" }
+      }
+    },
+    "identityProperties": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "slug",
+        "version",
+        "content_schema_version",
+        "requested_locale",
+        "locale",
+        "available_locales",
+        "published_at",
+        "publication",
+        "links"
+      ],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "type": { "$ref": "#/$defs/resourceType" },
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "version": { "type": "integer", "minimum": 1 },
+        "content_schema_version": { "type": "integer", "minimum": 1 },
+        "requested_locale": {
+          "oneOf": [
+            { "$ref": "#/$defs/locale" },
+            { "type": "null" }
+          ]
+        },
+        "locale": { "$ref": "#/$defs/locale" },
+        "available_locales": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/locale" },
+          "uniqueItems": true
+        },
+        "published_at": { "type": "string", "format": "date-time" },
+        "publication": { "$ref": "#/$defs/publication" },
+        "links": { "$ref": "#/$defs/selfLinks" }
+      }
+    },
+    "summary": {
+      "unevaluatedProperties": false,
+      "allOf": [
+        { "$ref": "#/$defs/identityProperties" },
+        {
+          "type": "object",
+          "required": ["title", "summary"],
+          "properties": {
+            "title": { "type": ["string", "null"] },
+            "summary": { "type": ["string", "null"] }
+          }
+        }
+      ]
+    },
+    "detail": {
+      "unevaluatedProperties": false,
+      "allOf": [
+        { "$ref": "#/$defs/identityProperties" },
+        {
+          "type": "object",
+          "required": ["content"],
+          "properties": {
+            "content": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["title", "summary", "body", "metadata", "domain_data"],
+              "properties": {
+                "title": { "type": ["string", "null"] },
+                "summary": { "type": ["string", "null"] },
+                "body": { "type": ["string", "null"] },
+                "metadata": { "type": "object", "additionalProperties": true },
+                "domain_data": { "type": "object", "additionalProperties": true }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "detailResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "data"],
+      "properties": {
+        "schema_version": { "const": "1.0.0" },
+        "data": { "$ref": "#/$defs/detail" }
+      }
+    },
+    "pagination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["current_page", "per_page", "total", "last_page"],
+      "properties": {
+        "current_page": { "type": "integer", "minimum": 1 },
+        "per_page": { "type": "integer", "enum": [10, 20, 50] },
+        "total": { "type": "integer", "minimum": 0 },
+        "last_page": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "collectionResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "data", "meta", "links"],
+      "properties": {
+        "schema_version": { "const": "1.0.0" },
+        "data": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/summary" }
+        },
+        "meta": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["resource", "requested_locale", "pagination"],
+          "properties": {
+            "resource": {
+              "type": "string",
+              "enum": ["worlds", "locations", "missions", "conversations"]
+            },
+            "requested_locale": {
+              "oneOf": [
+                { "$ref": "#/$defs/locale" },
+                { "type": "null" }
+              ]
+            },
+            "pagination": { "$ref": "#/$defs/pagination" }
+          }
+        },
+        "links": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["first", "last", "previous", "next"],
+          "properties": {
+            "first": { "type": "string", "format": "uri" },
+            "last": { "type": "string", "format": "uri" },
+            "previous": { "type": ["string", "null"], "format": "uri" },
+            "next": { "type": ["string", "null"], "format": "uri" }
+          }
+        }
+      }
+    },
+    "errorResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "error"],
+      "properties": {
+        "schema_version": { "const": "1.0.0" },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code", "message"],
+          "properties": {
+            "code": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+            "message": { "type": "string", "minLength": 1 },
+            "details": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
