@@ -52,6 +52,7 @@ for (const command of [
   'composer validate --strict',
   'vendor/bin/pint --test',
   'composer audit --locked',
+  'npm install --package-lock-only --ignore-scripts',
   'npm ci --ignore-scripts',
   'npm run validate',
   'npm run build',

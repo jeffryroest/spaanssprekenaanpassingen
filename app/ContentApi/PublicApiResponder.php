@@ -12,8 +12,8 @@ final class PublicApiResponder
     public const API_VERSION = '1.0.0';
 
     /**
-     * @param array<string, mixed> $payload
-     * @param array<string, string|list<string>> $additionalHeaders
+     * @param  array<string, mixed>                $payload
+     * @param  array<string, string|list<string>>  $additionalHeaders
      */
     public function respond(
         Request $request,
