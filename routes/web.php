@@ -11,6 +11,7 @@ use App\Http\Controllers\ContentStudio\ReviewQueueController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
+Route::view('/spelen/madrid', 'game.madrid')->name('game.madrid');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');

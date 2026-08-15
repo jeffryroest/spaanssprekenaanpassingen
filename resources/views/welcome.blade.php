@@ -41,8 +41,15 @@
                         Leer Spaans door het echt te <span class="text-orange-400">spreken.</span>
                     </h1>
                     <p class="mt-6 max-w-2xl text-lg leading-8 text-stone-300">
-                        We bouwen een interactieve Spaanse wereld waarin je missies uitvoert, gesprekken voert en vertrouwen opbouwt. De technische basis voor de eerste reis naar Madrid staat klaar.
+                        Stap een levendige Madrileense buurt in, ontdek je eerste woorden en vind de bakkerij waar jouw eerste spreekmissie begint.
                     </p>
+
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <a href="{{ route('game.madrid') }}" class="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-orange-500 px-5 py-3 font-semibold text-white shadow-lg shadow-orange-950/30 transition hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-stone-950">
+                            Start in Madrid
+                            <span aria-hidden="true">→</span>
+                        </a>
+                    </div>
 
                     <div class="mt-9 flex flex-wrap gap-3" aria-label="Technische basis">
                         <span class="status-chip">Laravel 13</span>
@@ -53,17 +60,17 @@
                 </div>
 
                 <aside class="rounded-3xl border border-white/10 bg-white/[0.06] p-7 shadow-2xl shadow-black/30 backdrop-blur sm:p-9" aria-labelledby="status-title">
-                    <p class="text-sm font-medium text-orange-300">Fase 1</p>
-                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Applicatieskelet gereed</h2>
+                    <p class="text-sm font-medium text-orange-300">Fase 2A</p>
+                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Madrid opent haar deuren</h2>
                     <ul class="mt-6 space-y-4 text-sm leading-6 text-stone-300">
-                        <li class="status-item">Laravel-applicatiestructuur en configuratie</li>
-                        <li class="status-item">MySQL-, sessie-, queue- en cachebasis</li>
-                        <li class="status-item">Vite- en Tailwind-buildstraat</li>
-                        <li class="status-item">Gezondheidscontrole via <code class="text-orange-200">/up</code></li>
+                        <li class="status-item">Vier herkenbare plekken op een interactieve kaart</li>
+                        <li class="status-item">Drie details om zonder tijdsdruk te ontdekken</li>
+                        <li class="status-item">Spaanse woorden met Nederlandse ondersteuning</li>
+                        <li class="status-item">Toegankelijke kaart- en lijstbediening</li>
                     </ul>
                     <div class="mt-8 border-t border-white/10 pt-6">
                         <p class="text-sm text-stone-400">Volgende mijlpaal</p>
-                        <p class="mt-1 font-medium text-white">Authenticatie, rollen en Content Studio</p>
+                        <p class="mt-1 font-medium text-white">Betreed Panadería La Espiga</p>
                     </div>
                 </aside>
             </section>

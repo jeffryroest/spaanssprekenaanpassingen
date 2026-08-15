@@ -25,7 +25,7 @@
 
 ## Fase 2 — speelbare Madrid-slice
 
-- Visuele Madrid-hub.
+- **2A — Visuele Madrid-hub:** productie-API-gedreven buurtkaart, vier hotspots, drie onderzoekspunten en toegankelijke lijstweergave.
 - La panadería als betreedbare locatie.
 - Vertakkende dialoog met tekst- en spreekbeurten.
 - WebM-opname, transcript en gelaagde feedback.

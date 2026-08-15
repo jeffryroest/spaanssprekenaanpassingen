@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0.0",
+  "scene": "madrid_hub",
+  "intro": {
+    "eyebrow": "Madrid · je eerste buurt",
+    "title": "Buenos días, Madrid",
+    "description": "Je komt boven bij Metro Sol. De straat wordt wakker en bij La Espiga ruikt het naar vers brood.",
+    "objective": "Vind Panadería La Espiga en bekijk wat je voor het ontbijt wilt bestellen."
+  },
+  "hotspots": [
+    {
+      "id": "madrid.panaderia",
+      "kind": "bakery",
+      "label": { "es": "Panadería La Espiga", "nl": "Bakkerij La Espiga" },
+      "description": "Open · hier begint je eerste spreekmissie.",
+      "state": "open",
+      "position": { "x": 70, "y": 43 },
+      "action": { "type": "mission_preview", "target": "mission.madrid.panaderia.breakfast" }
+    },
+    {
+      "id": "madrid.metro.sol",
+      "kind": "metro",
+      "label": { "es": "Metro Sol", "nl": "Metro Sol" },
+      "description": "Binnenkort leer je reizen met de metro.",
+      "state": "locked",
+      "position": { "x": 24, "y": 67 },
+      "action": { "type": "preview", "target": "mission.madrid.metro" }
+    },
+    {
+      "id": "madrid.cafe.reloj",
+      "kind": "cafe",
+      "label": { "es": "Café El Reloj", "nl": "Café El Reloj" },
+      "description": "Binnenkort bestel je iets te drinken.",
+      "state": "locked",
+      "position": { "x": 38, "y": 28 },
+      "action": { "type": "preview", "target": "mission.madrid.cafe" }
+    },
+    {
+      "id": "madrid.mercado.plaza",
+      "kind": "market",
+      "label": { "es": "Mercado de la Plaza", "nl": "Markt op het plein" },
+      "description": "Binnenkort oefen je aantallen en boodschappen.",
+      "state": "locked",
+      "position": { "x": 83, "y": 71 },
+      "action": { "type": "preview", "target": "mission.madrid.mercado" }
+    }
+  ],
+  "inspectables": [
+    {
+      "id": "panaderia.chalkboard",
+      "kind": "vocabulary",
+      "title": "Het krijtbord",
+      "body": "Bekijk drie woorden die je straks in de bakkerij kunt gebruiken.",
+      "position": { "x": 61, "y": 58 },
+      "reward": { "curiosidad": 1 },
+      "items": [
+        { "es": "el pan", "nl": "het brood" },
+        { "es": "la napolitana", "nl": "het chocoladebroodje" },
+        { "es": "el croissant", "nl": "de croissant" }
+      ]
+    },
+    {
+      "id": "madrid.street.sign",
+      "kind": "culture",
+      "title": "Een Madrileens straatbord",
+      "body": "De keramische straatnaamborden van Madrid tonen vaak een kleine illustratie die bij de straatnaam past.",
+      "position": { "x": 49, "y": 18 },
+      "reward": { "curiosidad": 1 }
+    },
+    {
+      "id": "madrid.neighbor.greeting",
+      "kind": "listening",
+      "title": "Een buurvrouw groet je",
+      "body": "Een korte begroeting die je de hele ochtend in winkels en op straat hoort.",
+      "position": { "x": 46, "y": 69 },
+      "reward": { "curiosidad": 1 },
+      "language": { "es": "Buenos días", "nl": "Goedemorgen" }
+    }
+  ]
+}

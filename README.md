@@ -55,6 +55,8 @@ Fase 1F: publieke read-only content-API v1 voor uitsluitend actuele, productiege
 
 Fase 1G: GitHub Actions-kwaliteitsstraat met PHP-formattering, dependency-audits, frontendbuild en Laravel-tests op MySQL.
 
+Fase 2A: publieke, data-gedreven Madrid-hub met vier locaties, onderzoekspunten en een toegankelijke kaart-/lijstweergave.
+
 Zie [AGENTS.md](AGENTS.md) voor de samenwerking, [docs/roadmap.md](docs/roadmap.md) voor de ontwikkelvolgorde, [docs/content-studio-access.md](docs/content-studio-access.md) voor de toegangslaag, [docs/content-foundation.md](docs/content-foundation.md) voor het contentfundament, [docs/content-studio-crud.md](docs/content-studio-crud.md) voor de beheerinterface, [docs/content-studio-review-workflow.md](docs/content-studio-review-workflow.md) voor de reviewworkflow, [docs/content-studio-release-workflow.md](docs/content-studio-release-workflow.md) voor releasebeheer, [docs/public-content-api.md](docs/public-content-api.md) voor het runtimecontract en [docs/quality-pipeline.md](docs/quality-pipeline.md) voor de automatische kwaliteitsgrens.
 
 ## Applicatiefundament

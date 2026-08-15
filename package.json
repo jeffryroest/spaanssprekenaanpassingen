@@ -7,11 +7,12 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
-    "validate": "npm run validate:foundation && npm run validate:laravel && npm run validate:api && npm run validate:quality",
+    "validate": "npm run validate:foundation && npm run validate:laravel && npm run validate:api && npm run validate:quality && npm run validate:hub",
     "validate:foundation": "node scripts/validate-foundation.mjs",
     "validate:laravel": "node scripts/validate-laravel-foundation.mjs",
     "validate:api": "node scripts/validate-public-content-api.mjs",
-    "validate:quality": "node scripts/validate-quality-pipeline.mjs"
+    "validate:quality": "node scripts/validate-quality-pipeline.mjs",
+    "validate:hub": "node scripts/validate-madrid-hub.mjs"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",

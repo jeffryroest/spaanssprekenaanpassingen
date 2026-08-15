@@ -6,7 +6,7 @@ use Tests\TestCase;
 
 class HomePageTest extends TestCase
 {
-    public function test_homepage_displays_the_project_foundation(): void
+    public function test_homepage_introduces_the_madrid_hub(): void
     {
         $response = $this->get('/');
 
@@ -14,6 +14,7 @@ class HomePageTest extends TestCase
             ->assertOk()
             ->assertSee('Spaansspreken.nl')
             ->assertSee('Madrid · La panadería')
-            ->assertSee('Laravel 13');
+            ->assertSee('Start in Madrid')
+            ->assertSee('Fase 2A');
     }
 }
