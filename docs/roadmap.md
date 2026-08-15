@@ -18,7 +18,7 @@
 - Gedeeld Content Studio-designsystem en responsieve beheerschil.
 - Versiegebonden reviewworkflow met vier-ogencontrole.
 - Versiegebonden releaseworkflow met kanaalpreflight en expliciete productiebevestiging.
-- Wereld-, missie- en conversatie-API.
+- Versieerbare read-only wereld-, locatie-, missie- en conversatie-API met productiepublicatiegrens.
 - Test- en kwaliteitsstraat.
 
 **Beslispoort:** content kan veilig als concept worden aangemaakt, bekeken en gepubliceerd.

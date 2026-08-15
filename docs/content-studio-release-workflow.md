@@ -54,10 +54,10 @@ De functionaliteit maakt productiepublicatie technisch mogelijk, maar voert zelf
 - nog geen automatische scheduler of wachtrijtaak voor toekomstige publicatiemomenten;
 - nog geen terugtrek- of rollbackrelease voor reeds gepubliceerde content;
 - nog geen veldniveau-validatie voor rechten, media en afhankelijkheidsgrafen;
-- nog geen publieke wereld-, missie- of conversatie-API;
+- de publieke runtime-API staat beschreven in `docs/public-content-api.md`; typed relaties en spelerstatus vallen nog buiten deze releasefase;
 - nog geen previewrenderer; preview legt in deze slice alleen het kanaalresultaat reproduceerbaar vast.
 
-De volgende blauwdrukstap is de versieerbare read-only API die uitsluitend gepubliceerde productiecontent levert.
+De releaseworkflow is nu de enige publicatie-ingang voor de versieerbare read-only API. De volgende blauwdrukstap is de test- en kwaliteitsstraat voor het volledige Fase 1-skelet.
 
 ## Deployment en terugrol
 
