@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaansspreken.nl/contracts/madrid-hub-v1.schema.json",
+  "title": "Madrid hub domain data v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "scene", "intro", "hotspots", "inspectables"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "scene": { "const": "madrid_hub" },
+    "intro": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eyebrow", "title", "description", "objective"],
+      "properties": {
+        "eyebrow": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "objective": { "type": "string", "minLength": 1 }
+      }
+    },
+    "hotspots": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "description", "state", "position", "action"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$" },
+          "kind": { "enum": ["bakery", "metro", "cafe", "market"] },
+          "label": { "$ref": "#/$defs/localizedText" },
+          "description": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["open", "locked", "completed"] },
+          "position": { "$ref": "#/$defs/position" },
+          "action": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "target"],
+            "properties": {
+              "type": { "enum": ["mission_preview", "preview"] },
+              "target": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "inspectables": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "title", "body", "position", "reward"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$" },
+          "kind": { "enum": ["vocabulary", "culture", "listening"] },
+          "title": { "type": "string", "minLength": 1 },
+          "body": { "type": "string", "minLength": 1 },
+          "position": { "$ref": "#/$defs/position" },
+          "reward": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["curiosidad"],
+            "properties": { "curiosidad": { "type": "integer", "minimum": 0, "maximum": 3 } }
+          },
+          "language": { "$ref": "#/$defs/localizedText" },
+          "items": {
+            "type": "array",
+            "maxItems": 6,
+            "items": { "$ref": "#/$defs/localizedText" }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "localizedText": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["es", "nl"],
+      "properties": {
+        "es": { "type": "string", "minLength": 1 },
+        "nl": { "type": "string", "minLength": 1 }
+      }
+    },
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "number", "minimum": 5, "maximum": 95 },
+        "y": { "type": "number", "minimum": 8, "maximum": 88 }
+      }
+    }
+  }
+}

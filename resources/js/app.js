@@ -1,3 +1,5 @@
+import './game/madrid-hub';
+
 const sidebar = document.querySelector('[data-studio-sidebar]');
 const sidebarOverlay = document.querySelector('[data-sidebar-overlay]');
 const sidebarToggles = document.querySelectorAll('[data-sidebar-toggle]');
