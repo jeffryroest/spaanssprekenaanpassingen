@@ -26,8 +26,8 @@
 ## Fase 2 — speelbare Madrid-slice
 
 - **2A — Visuele Madrid-hub:** productie-API-gedreven buurtkaart, vier hotspots, drie onderzoekspunten en toegankelijke lijstweergave.
-- La panadería als betreedbare locatie.
-- Vertakkende dialoog met tekst- en spreekbeurten.
+- **2B — La panadería:** betreedbare locatie, Lucía en een hervatbare, vertakkende tekstdialoog.
+- Vertakkende spreekbeurten met WebM-opname en transcriptie.
 - WebM-opname, transcript en gelaagde feedback.
 - Voortgang, Confianza, Valentía en eerste beloning.
 

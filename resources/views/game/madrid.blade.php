@@ -15,6 +15,7 @@
         data-madrid-hub
         data-source="{{ url('/api/v1/worlds/madrid?locale=nl-NL') }}"
         data-home="{{ route('home') }}"
+        data-panaderia-route="{{ route('game.madrid.panaderia') }}"
     >
         <header class="hub-topbar">
             <a href="{{ route('home') }}" class="hub-brand" aria-label="Spaansspreken.nl startpagina">

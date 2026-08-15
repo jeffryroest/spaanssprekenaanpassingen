@@ -37,5 +37,7 @@ assert(script.includes('credentials: \'same-origin\''), 'De runtimefetch moet de
 assert(script.includes('textContent'), 'Dynamische content moet veilig via textContent worden opgebouwd');
 assert(view.includes('data-hub-list-view'), 'De semantische lijstweergave ontbreekt');
 assert(view.includes('data-hub-sound'), 'De stille-modusbediening ontbreekt');
+assert(view.includes('data-panaderia-route'), 'De hub moet naar de betreedbare bakkerij kunnen navigeren');
+assert(script.includes('window.location.assign'), 'De missieknoop moet La Espiga werkelijk openen');
 
 console.log('Madrid-hub geldig: productie-API, vier hotspots, drie onderzoekspunten en toegankelijke alternatieven zijn aanwezig.');

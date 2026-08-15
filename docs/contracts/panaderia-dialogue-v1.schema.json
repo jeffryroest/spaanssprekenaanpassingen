@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaansspreken.nl/contracts/panaderia-dialogue-v1.schema.json",
+  "title": "Panadería La Espiga text dialogue v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "scene", "npc", "mission", "level_branches", "repair", "steps", "completion"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "scene": { "const": "panaderia_text_dialogue" },
+    "npc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "role", "description"],
+      "properties": {
+        "id": { "const": "npc.lucia.martin" },
+        "name": { "type": "string", "minLength": 1 },
+        "role": { "$ref": "#/$defs/localizedText" },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "mission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "objective", "start_step", "required_text_turns"],
+      "properties": {
+        "id": { "const": "mission.madrid.panaderia.breakfast" },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "objective": { "type": "string", "minLength": 1 },
+        "start_step": { "type": "string", "minLength": 1 },
+        "required_text_turns": { "type": "integer", "minimum": 3, "maximum": 8 }
+      }
+    },
+    "level_branches": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["A0", "A1", "A2"],
+      "properties": {
+        "A0": { "type": "string", "minLength": 1 },
+        "A1": { "type": "string", "minLength": 1 },
+        "A2": { "type": "string", "minLength": 1 }
+      }
+    },
+    "repair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["terms", "npc_response", "feedback"],
+      "properties": {
+        "terms": { "$ref": "#/$defs/terms" },
+        "npc_response": { "$ref": "#/$defs/localizedText" },
+        "feedback": { "$ref": "#/$defs/feedback" }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "turn", "npc_line", "prompt", "placeholder", "hint", "choices", "options", "fallback"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$" },
+          "turn": { "type": "integer", "minimum": 1, "maximum": 8 },
+          "npc_line": { "$ref": "#/$defs/localizedText" },
+          "prompt": { "type": "string", "minLength": 1 },
+          "placeholder": { "type": "string", "minLength": 1 },
+          "hint": { "type": "string", "minLength": 1 },
+          "choices": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "options": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "requirements", "npc_response", "feedback", "states", "next"],
+              "properties": {
+                "id": { "type": "string", "minLength": 1 },
+                "requirements": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "$ref": "#/$defs/terms" }
+                },
+                "npc_response": { "$ref": "#/$defs/localizedText" },
+                "feedback": { "$ref": "#/$defs/feedback" },
+                "states": { "$ref": "#/$defs/terms" },
+                "next": { "type": "string", "minLength": 1 }
+              }
+            }
+          },
+          "fallback": { "$ref": "#/$defs/feedback" }
+        }
+      }
+    },
+    "completion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["polite_farewell", "default_farewell", "rewards"],
+      "properties": {
+        "polite_farewell": { "$ref": "#/$defs/localizedText" },
+        "default_farewell": { "$ref": "#/$defs/localizedText" },
+        "rewards": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["xp", "confianza", "valentia", "stamp", "collectible", "repair_badge"],
+          "properties": {
+            "xp": { "type": "integer", "minimum": 1 },
+            "confianza": { "type": "integer", "minimum": 1 },
+            "valentia": { "type": "integer", "minimum": 1 },
+            "stamp": { "$ref": "#/$defs/localizedText" },
+            "collectible": { "$ref": "#/$defs/localizedText" },
+            "repair_badge": { "$ref": "#/$defs/localizedText" }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "localizedText": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["es", "nl"],
+      "properties": {
+        "es": { "type": "string", "minLength": 1 },
+        "nl": { "type": "string", "minLength": 1 }
+      }
+    },
+    "terms": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "feedback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strength", "focus"],
+      "properties": {
+        "strength": { "type": "string", "minLength": 1 },
+        "focus": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

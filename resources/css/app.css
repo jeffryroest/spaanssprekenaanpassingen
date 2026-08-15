@@ -582,6 +582,432 @@
     50% { box-shadow: 0 6px 18px rgb(66 43 23 / 32%), 0 0 0 9px rgb(242 173 79 / 0%); }
 }
 
+@layer components {
+    .bakery-body {
+        @apply min-h-screen bg-[#f2dfc6] text-[#2d322e] antialiased;
+        background-image:
+            radial-gradient(circle at 85% 4%, rgb(255 245 213 / 90%), transparent 24rem),
+            linear-gradient(150deg, rgb(130 55 35 / 8%), transparent 55%);
+    }
+
+    .bakery-app {
+        @apply mx-auto min-h-screen max-w-[1600px];
+    }
+
+    .bakery-topbar {
+        @apply sticky top-0 z-50 flex min-h-16 items-center justify-between gap-3 border-b border-[#422d22]/10 bg-[#fff9ed]/90 px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-10;
+    }
+
+    .bakery-back-link {
+        @apply inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm font-bold text-[#753a27] transition hover:bg-[#f5e7d2] focus:outline-none focus:ring-2 focus:ring-[#c56538];
+    }
+
+    .bakery-mission-meta {
+        @apply flex items-center justify-end gap-2;
+    }
+
+    .bakery-mission-meta > span,
+    .bakery-mission-meta > button {
+        @apply rounded-full border border-[#422d22]/10 bg-white/65 px-3 py-2 text-xs font-bold text-[#65564d];
+    }
+
+    .bakery-mission-meta > button {
+        @apply transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#c56538];
+    }
+
+    .bakery-mission-meta .bakery-mode-chip {
+        @apply hidden border-[#3c7256]/15 bg-[#e5eee2] text-[#315d47] sm:inline-block;
+    }
+
+    .bakery-mission-meta > span:nth-child(2) {
+        @apply hidden sm:inline-block;
+    }
+
+    .bakery-main {
+        @apply px-4 py-6 sm:px-6 lg:px-10 lg:py-8;
+    }
+
+    .bakery-heading {
+        @apply mx-auto flex max-w-7xl flex-col justify-between gap-5 lg:flex-row lg:items-end;
+    }
+
+    .bakery-eyebrow {
+        @apply text-xs font-black uppercase tracking-[0.17em] text-[#ac4e2c];
+    }
+
+    .bakery-heading h1 {
+        @apply mt-2 font-serif text-4xl font-black leading-tight tracking-tight text-[#2f2520] sm:text-5xl;
+    }
+
+    .bakery-heading > div:first-child > p:last-child {
+        @apply mt-3 max-w-3xl text-base leading-7 text-[#6e625a];
+    }
+
+    .bakery-progress {
+        @apply min-w-full rounded-2xl border border-[#422d22]/10 bg-[#fff9ed]/80 p-4 shadow-sm sm:min-w-72;
+    }
+
+    .bakery-progress > div {
+        @apply flex items-center justify-between gap-5 text-xs font-bold text-[#6c5e55];
+    }
+
+    .bakery-progress strong {
+        @apply text-lg text-[#2f2520];
+    }
+
+    .bakery-progress-track {
+        @apply mt-3 block h-2 overflow-hidden rounded-full bg-[#e5d5c1];
+    }
+
+    .bakery-progress-track > span {
+        @apply block h-full w-0 rounded-full bg-gradient-to-r from-[#c56538] to-[#e6a13e] transition-all duration-500;
+    }
+
+    .bakery-status {
+        @apply mx-auto mt-3 max-w-7xl px-1 text-sm text-[#75685f];
+    }
+
+    .bakery-stage {
+        @apply mx-auto mt-5 grid max-w-7xl overflow-hidden rounded-[2rem] border border-[#422d22]/15 bg-[#fff9ed] shadow-2xl shadow-[#624131]/20 lg:grid-cols-[minmax(20rem,0.78fr)_minmax(0,1.22fr)];
+    }
+
+    .bakery-scene {
+        @apply relative isolate min-h-[28rem] overflow-hidden border-b border-[#422d22]/10 bg-[#eabf7f] lg:min-h-[44rem] lg:border-b-0 lg:border-r;
+        background:
+            linear-gradient(90deg, transparent 49%, rgb(92 56 36 / 8%) 50%, transparent 51%) 0 0 / 70px 70px,
+            linear-gradient(0deg, transparent 49%, rgb(92 56 36 / 8%) 50%, transparent 51%) 0 0 / 70px 70px,
+            #e7bd82;
+    }
+
+    .bakery-awning {
+        @apply absolute inset-x-0 top-0 h-20 shadow-lg;
+        background: repeating-linear-gradient(90deg, #f6e7c9 0 48px, #9e452f 48px 96px);
+        clip-path: polygon(0 0, 100% 0, 100% 72%, 96% 100%, 92% 72%, 88% 100%, 84% 72%, 80% 100%, 76% 72%, 72% 100%, 68% 72%, 64% 100%, 60% 72%, 56% 100%, 52% 72%, 48% 100%, 44% 72%, 40% 100%, 36% 72%, 32% 100%, 28% 72%, 24% 100%, 20% 72%, 16% 100%, 12% 72%, 8% 100%, 4% 72%, 0 100%);
+    }
+
+    .bakery-sign {
+        @apply absolute left-1/2 top-24 z-10 w-64 -translate-x-1/2 rounded-2xl border-4 border-[#f3dfb5] bg-[#253f4a] px-6 py-4 text-center text-[#fff4d9] shadow-xl;
+    }
+
+    .bakery-sign span,
+    .bakery-sign small {
+        @apply block text-[0.65rem] font-bold uppercase tracking-[0.17em] text-[#e9c882];
+    }
+
+    .bakery-sign strong {
+        @apply my-1 block font-serif text-2xl tracking-wide;
+    }
+
+    .bakery-shelves {
+        @apply absolute inset-x-[8%] bottom-[32%] h-[34%] rounded-t-2xl border-[10px] border-[#6c4933] bg-[#f7e5c2] shadow-inner;
+    }
+
+    .bakery-shelf {
+        @apply absolute inset-x-0 h-3 bg-[#765139] shadow-md;
+    }
+
+    .bakery-shelf-one { @apply top-[36%]; }
+    .bakery-shelf-two { @apply top-[70%]; }
+
+    .bakery-loaf,
+    .bakery-pastry {
+        @apply absolute rounded-[55%_55%_40%_40%] border border-[#86572f]/30 bg-[#d38b3f] shadow-[inset_-7px_-5px_0_rgb(149_83_34/0.2),0_4px_5px_rgb(82_49_29/0.18)];
+    }
+
+    .bakery-loaf { @apply h-12 w-20; }
+    .bakery-pastry { @apply size-10 rounded-full bg-[#c97835]; }
+    .bakery-loaf-one { @apply left-[10%] top-[16%] -rotate-6; }
+    .bakery-loaf-two { @apply left-[42%] top-[15%] rotate-3; }
+    .bakery-loaf-three { @apply right-[8%] top-[16%] -rotate-3; }
+    .bakery-pastry-one { @apply left-[21%] top-[51%]; }
+    .bakery-pastry-two { @apply right-[23%] top-[51%]; }
+
+    .bakery-counter {
+        @apply absolute inset-x-[-5%] bottom-0 z-20 h-[31%] border-t-[14px] border-[#7c5338] bg-[#a86e48] shadow-[0_-10px_30px_rgb(74_45_30/0.22)];
+        background-image: linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
+        background-size: 52px 100%;
+    }
+
+    .bakery-lucia {
+        @apply absolute bottom-[18%] left-1/2 z-30 h-72 w-48 -translate-x-1/2;
+        animation: bakery-breathe 3.8s ease-in-out infinite;
+        transform-origin: bottom;
+    }
+
+    .bakery-lucia-head {
+        @apply absolute left-1/2 top-7 z-20 h-24 w-20 -translate-x-1/2 rounded-[46%_46%_44%_44%] bg-[#d99872] shadow-inner;
+    }
+
+    .bakery-lucia-head::before,
+    .bakery-lucia-head::after {
+        content: '';
+        @apply absolute top-10 size-2 rounded-full bg-[#342921];
+    }
+
+    .bakery-lucia-head::before { @apply left-5; }
+    .bakery-lucia-head::after { @apply right-5; }
+
+    .bakery-lucia-hair {
+        @apply absolute left-1/2 top-2 z-10 h-24 w-24 -translate-x-1/2 rounded-[48%_48%_38%_38%] bg-[#3e2c25] shadow-[8px_10px_0_#3e2c25,-8px_10px_0_#3e2c25];
+    }
+
+    .bakery-lucia-neck {
+        @apply absolute left-1/2 top-24 z-10 h-10 w-9 -translate-x-1/2 bg-[#c98563];
+    }
+
+    .bakery-lucia-body {
+        @apply absolute bottom-0 left-1/2 h-44 w-36 -translate-x-1/2 rounded-t-[42%] bg-[#253f4a] shadow-xl;
+    }
+
+    .bakery-lucia-apron {
+        @apply absolute bottom-0 left-1/2 z-10 h-36 w-24 -translate-x-1/2 rounded-t-3xl bg-[#f2e6cf] shadow-inner;
+    }
+
+    .bakery-lucia-apron::before {
+        content: '✦';
+        @apply absolute left-1/2 top-10 -translate-x-1/2 text-2xl text-[#c28c42];
+    }
+
+    .bakery-lucia-badge {
+        @apply absolute right-5 top-36 z-20 rounded bg-white px-2 py-1 text-[0.6rem] font-black text-[#253f4a] shadow;
+    }
+
+    .bakery-npc-card {
+        @apply absolute bottom-4 left-4 z-40 flex items-center gap-3 rounded-2xl border border-white/50 bg-[#fff9ed]/90 p-3 pr-5 shadow-xl backdrop-blur;
+    }
+
+    .bakery-npc-avatar {
+        @apply grid size-10 place-items-center rounded-xl bg-[#253f4a] font-serif text-lg font-black text-[#f2c36e];
+    }
+
+    .bakery-npc-card strong,
+    .bakery-npc-card span {
+        @apply block;
+    }
+
+    .bakery-npc-card strong { @apply text-sm font-black text-[#2f2520]; }
+    .bakery-npc-card div > span { @apply mt-0.5 text-xs font-semibold text-[#75685f]; }
+
+    .bakery-dialogue-column {
+        @apply grid min-w-0 bg-[#fff9ed] lg:grid-rows-[1fr_auto];
+    }
+
+    .bakery-conversation {
+        @apply p-5 sm:p-7 lg:p-9;
+    }
+
+    .bakery-turn-heading {
+        @apply flex items-start justify-between gap-4;
+    }
+
+    .bakery-turn-heading h2 {
+        @apply mt-1 text-2xl font-black tracking-tight text-[#2f2520];
+    }
+
+    .bakery-turn-heading > span {
+        @apply rounded-full bg-[#efe3d2] px-3 py-2 text-xs font-black text-[#7c5f4d];
+    }
+
+    .bakery-npc-bubble {
+        @apply relative mt-6 rounded-3xl rounded-tl-md border border-[#422d22]/10 bg-white px-5 py-5 shadow-sm sm:px-6;
+    }
+
+    .bakery-npc-bubble::before {
+        content: '';
+        @apply absolute -left-2 top-0 size-5 bg-white;
+        clip-path: polygon(100% 0, 100% 100%, 0 0);
+    }
+
+    .bakery-npc-bubble p:first-child {
+        @apply font-serif text-2xl font-black leading-snug text-[#8e3f28] sm:text-3xl;
+    }
+
+    .bakery-npc-bubble p:last-child {
+        @apply mt-3 border-t border-[#422d22]/10 pt-3 text-sm font-semibold text-[#6e625a];
+    }
+
+    .bakery-feedback-card {
+        @apply mt-5 flex items-start gap-3 rounded-2xl border border-[#4c8b65]/20 bg-[#eaf2e7] p-4 text-[#315d47];
+    }
+
+    .bakery-feedback-card[data-result='retry'] {
+        @apply border-[#d29a41]/25 bg-[#fff3cd] text-[#77531d];
+    }
+
+    .bakery-feedback-icon {
+        @apply grid size-9 shrink-0 place-items-center rounded-full bg-[#4c8b65] font-black text-white;
+    }
+
+    .bakery-feedback-card[data-result='retry'] .bakery-feedback-icon {
+        @apply bg-[#c68b32];
+    }
+
+    .bakery-feedback-card strong { @apply text-sm font-black; }
+    .bakery-feedback-card p { @apply mt-1 text-sm leading-5 opacity-80; }
+
+    .bakery-response-form {
+        @apply mt-6;
+    }
+
+    .bakery-response-form > label {
+        @apply block text-sm font-black text-[#46372f];
+    }
+
+    .bakery-input-row {
+        @apply mt-2 flex flex-col gap-2 sm:flex-row;
+    }
+
+    .bakery-input-row input {
+        @apply min-h-12 min-w-0 flex-1 rounded-xl border border-[#7d6a5e]/25 bg-white px-4 text-base text-[#2f2520] shadow-sm outline-none transition placeholder:text-[#9a8e87] hover:border-[#7d6a5e]/40 focus:border-[#c56538] focus:ring-4 focus:ring-[#c56538]/10;
+    }
+
+    .bakery-input-row button,
+    .bakery-continue-button {
+        @apply inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-[#a9472b] px-5 font-bold text-white shadow-lg shadow-[#70301f]/20 transition hover:bg-[#913b25] focus:outline-none focus:ring-2 focus:ring-[#c56538] focus:ring-offset-2;
+    }
+
+    .bakery-assist-row {
+        @apply mt-3;
+    }
+
+    .bakery-assist-row button {
+        @apply text-xs font-bold text-[#8e3f28] underline decoration-[#c56538]/30 underline-offset-4 hover:decoration-[#c56538] focus:outline-none focus:ring-2 focus:ring-[#c56538];
+    }
+
+    .bakery-assist-row p {
+        @apply mt-2 rounded-xl bg-[#f3e6d5] px-3 py-2 text-xs font-semibold text-[#6f594a];
+    }
+
+    .bakery-choice-assist {
+        @apply mt-5 border-t border-[#422d22]/10 pt-4;
+    }
+
+    .bakery-choice-assist legend {
+        @apply px-2 text-xs font-black uppercase tracking-[0.11em] text-[#86786f];
+    }
+
+    .bakery-choice-assist > div {
+        @apply mt-2 flex flex-wrap gap-2;
+    }
+
+    .bakery-choice-assist button {
+        @apply rounded-xl border border-[#c56538]/20 bg-[#fff2de] px-3 py-2 text-left text-xs font-bold text-[#874029] transition hover:border-[#c56538]/45 hover:bg-[#ffe9ca] focus:outline-none focus:ring-2 focus:ring-[#c56538];
+    }
+
+    .bakery-continue-button {
+        @apply mt-6 w-full sm:w-auto;
+    }
+
+    .bakery-history {
+        @apply border-t border-[#422d22]/10 bg-[#f5eadb] p-5 sm:p-7;
+    }
+
+    .bakery-history h2 {
+        @apply mt-1 text-base font-black text-[#3b302a];
+    }
+
+    .bakery-history ol {
+        @apply mt-4 grid max-h-48 list-none gap-2 overflow-y-auto p-0;
+    }
+
+    .bakery-history li {
+        @apply rounded-xl border border-[#422d22]/10 bg-white/70 px-3 py-2 text-xs text-[#6e625a];
+    }
+
+    .bakery-history li > span { @apply font-black uppercase tracking-wide text-[#a24a2c]; }
+    .bakery-history li > p { @apply mt-1 font-bold text-[#3f332d]; }
+    .bakery-history li > small { @apply mt-1 block text-[#7d7067]; }
+
+    .bakery-level-select,
+    .bakery-complete,
+    .bakery-error {
+        @apply mx-auto mt-6 max-w-4xl rounded-[2rem] border border-[#422d22]/10 bg-[#fff9ed] p-6 text-center shadow-xl shadow-[#624131]/10 sm:p-10;
+    }
+
+    .bakery-level-select h2,
+    .bakery-complete h2,
+    .bakery-error h2 {
+        @apply mt-2 font-serif text-3xl font-black text-[#2f2520] sm:text-4xl;
+    }
+
+    .bakery-level-select > p:nth-of-type(2),
+    .bakery-error p {
+        @apply mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#75685f];
+    }
+
+    .bakery-level-select > div {
+        @apply mt-7 grid gap-3 md:grid-cols-3;
+    }
+
+    .bakery-level-select button {
+        @apply min-h-32 rounded-2xl border border-[#422d22]/10 bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:border-[#c56538]/35 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#c56538];
+    }
+
+    .bakery-level-select button strong { @apply block text-base font-black text-[#713824]; }
+    .bakery-level-select button span { @apply mt-2 block text-sm leading-5 text-[#75685f]; }
+
+    .bakery-complete:focus { @apply outline-none ring-4 ring-[#e7a53c]/40; }
+
+    .bakery-stamp {
+        @apply mx-auto grid size-16 place-items-center rounded-full border-4 border-[#fff9ed] bg-[#4c8b65] text-2xl font-black text-white shadow-[0_0_0_5px_#4c8b65,0_12px_25px_rgb(48_85_61/0.22)];
+    }
+
+    .bakery-complete > .bakery-eyebrow { @apply mt-7; }
+    .bakery-complete > p[lang='es'] { @apply mt-5 font-serif text-xl font-black text-[#873e28]; }
+    .bakery-complete > p[data-farewell-nl] { @apply mt-2 text-sm text-[#75685f]; }
+
+    .bakery-rewards {
+        @apply mx-auto mt-7 grid max-w-xl grid-cols-3 gap-2;
+    }
+
+    .bakery-rewards > div {
+        @apply rounded-2xl bg-[#f1e4d2] p-3;
+    }
+
+    .bakery-rewards dt { @apply text-[0.65rem] font-black uppercase tracking-wider text-[#837269]; }
+    .bakery-rewards dd { @apply mt-1 text-2xl font-black text-[#2f2520]; }
+
+    .bakery-reward-cards {
+        @apply mt-5 grid gap-3 text-left sm:grid-cols-3;
+    }
+
+    .bakery-reward-cards > div {
+        @apply rounded-2xl border border-[#422d22]/10 bg-white p-4;
+    }
+
+    .bakery-reward-cards span { @apply text-xl text-[#c56538]; }
+    .bakery-reward-cards p { @apply mt-3 text-[0.65rem] font-black uppercase tracking-wide text-[#8a7a70]; }
+    .bakery-reward-cards strong { @apply mt-1 block text-sm font-black text-[#3f332d]; }
+
+    .bakery-complete-actions {
+        @apply mt-7 flex flex-col justify-center gap-2 sm:flex-row;
+    }
+
+    .bakery-complete-actions a,
+    .bakery-complete-actions button,
+    .bakery-error button,
+    .bakery-error a {
+        @apply inline-flex min-h-11 items-center justify-center rounded-xl px-5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#c56538] focus:ring-offset-2;
+    }
+
+    .bakery-complete-actions a,
+    .bakery-error a { @apply border border-[#422d22]/15 bg-white text-[#5c4437]; }
+    .bakery-complete-actions button,
+    .bakery-error button { @apply bg-[#a9472b] text-white; }
+
+    .bakery-error > span {
+        @apply mx-auto grid size-16 place-items-center rounded-full bg-[#ffebc4] text-3xl;
+    }
+
+    .bakery-error button,
+    .bakery-error a { @apply mt-6; }
+}
+
+@keyframes bakery-breathe {
+    0%, 100% { transform: translateX(-50%) scaleY(1); }
+    50% { transform: translateX(-50%) scaleY(1.012); }
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
