@@ -41,6 +41,10 @@ DB_PASSWORD=<sterk-wachtwoord>
 TRANSCRIPTION_DRIVER=openai
 OPENAI_API_KEY=<geheime-OpenAI-projectsleutel>
 OPENAI_TRANSCRIPTION_MODEL=gpt-4o-mini-transcribe
+OPENAI_FEEDBACK_MODEL=gpt-4o-mini
+OPENAI_FEEDBACK_TIMEOUT=15
+FEEDBACK_ASSESSOR_VERSION=turn-rubric-v1
+FEEDBACK_FORMATTER_VERSION=layered-feedback-v1
 ```
 
 Commit `.env` nooit en plaats `OPENAI_API_KEY` uitsluitend in de Ploi-omgeving. Genereer bij de eerste installatie de applicatiesleutel met `php artisan key:generate`.

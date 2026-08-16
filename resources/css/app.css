@@ -830,6 +830,10 @@
         @apply mt-5 flex items-start gap-3 rounded-2xl border border-[#4c8b65]/20 bg-[#eaf2e7] p-4 text-[#315d47];
     }
 
+    .bakery-feedback-card[data-result='loading'] {
+        @apply border-[#315d47]/15 bg-[#f0f5eb];
+    }
+
     .bakery-feedback-card[data-result='retry'] {
         @apply border-[#d29a41]/25 bg-[#fff3cd] text-[#77531d];
     }
@@ -842,8 +846,43 @@
         @apply bg-[#c68b32];
     }
 
+    .bakery-feedback-card[data-result='loading'] .bakery-feedback-icon {
+        @apply bg-[#658371];
+        animation: bakery-recording-pulse 1.35s ease-in-out infinite;
+    }
+
+    .bakery-feedback-content { @apply min-w-0 flex-1; }
     .bakery-feedback-card strong { @apply text-sm font-black; }
     .bakery-feedback-card p { @apply mt-1 text-sm leading-5 opacity-80; }
+
+    .bakery-feedback-card .bakery-feedback-example {
+        @apply mt-3 rounded-xl bg-white/65 px-3 py-2 font-serif font-bold text-[#315d47] opacity-100;
+    }
+
+    .bakery-feedback-card .bakery-feedback-note {
+        @apply mt-3 border-t border-current/10 pt-3 text-xs;
+    }
+
+    .bakery-feedback-details {
+        @apply mt-4 rounded-xl border border-current/15 bg-white/55 p-3;
+    }
+
+    .bakery-feedback-details summary {
+        @apply cursor-pointer text-xs font-black uppercase tracking-[0.08em] focus:outline-none focus:ring-2 focus:ring-[#4c8b65];
+    }
+
+    .bakery-feedback-overall {
+        @apply mt-3 flex items-center justify-between gap-3 border-b border-current/10 pb-2 text-xs;
+    }
+
+    .bakery-feedback-details ul { @apply mt-2 grid gap-1; }
+    .bakery-feedback-details li { @apply grid grid-cols-[1fr_auto] gap-x-3 py-1 text-xs; }
+    .bakery-feedback-details li > strong { @apply text-xs; }
+    .bakery-feedback-details li > small { @apply col-span-2 mt-1 leading-5 opacity-75; }
+
+    .bakery-feedback-retry {
+        @apply mt-4 inline-flex min-h-11 items-center justify-center rounded-xl border border-[#315d47]/25 bg-white/70 px-4 text-sm font-black text-[#315d47] transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#4c8b65] focus:ring-offset-2;
+    }
 
     .bakery-response-form {
         @apply mt-6;

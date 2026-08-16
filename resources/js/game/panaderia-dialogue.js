@@ -10,7 +10,10 @@ if (dialogueRoot) {
         status: dialogueRoot.querySelector('[data-dialogue-status]'),
         form: dialogueRoot.querySelector('[data-dialogue-form]'),
         response: dialogueRoot.querySelector('[data-player-response]'),
+        submitButton: dialogueRoot.querySelector('[data-dialogue-form] button[type="submit"]'),
         feedback: dialogueRoot.querySelector('[data-feedback]'),
+        feedbackDetails: dialogueRoot.querySelector('[data-feedback-details]'),
+        feedbackRetry: dialogueRoot.querySelector('[data-feedback-retry]'),
         continueButton: dialogueRoot.querySelector('[data-dialogue-continue]'),
         history: dialogueRoot.querySelector('[data-dialogue-history]'),
     };
@@ -21,6 +24,8 @@ if (dialogueRoot) {
     let speechConfidenceStatus = null;
     let originalSpeechTranscript = null;
     let translationVisible = false;
+    let pendingStateBeforeTurn = null;
+    let isEvaluating = false;
     const persist = () => persistState(storageKey, state);
 
     const setText = (selector, value) => {
@@ -81,10 +86,14 @@ if (dialogueRoot) {
         if (!step) throw new Error('De opgeslagen dialoogstap bestaat niet meer.');
 
         pendingNext = null;
+        pendingStateBeforeTurn = null;
         stepAssisted = false;
         speechConfidenceStatus = null;
         originalSpeechTranscript = null;
         elements.feedback.hidden = true;
+        elements.feedback.removeAttribute('aria-busy');
+        elements.feedbackDetails.hidden = true;
+        elements.feedbackRetry.hidden = true;
         elements.continueButton.hidden = true;
         elements.form.hidden = false;
         elements.response.disabled = false;
@@ -122,8 +131,10 @@ if (dialogueRoot) {
         }));
     };
 
-    const submitResponse = (event) => {
+    const submitResponse = async (event) => {
         event.preventDefault();
+        if (isEvaluating) return;
+
         const step = findStep(state.currentStep);
         const answer = elements.response.value.trim();
         const normalized = normalize(answer);
@@ -131,6 +142,7 @@ if (dialogueRoot) {
         if (!normalized) return;
 
         if (content.repair.terms.some((term) => normalized.includes(normalize(term)))) {
+            pendingStateBeforeTurn = cloneState(state);
             state.states = unique([...state.states, 'used_repair_strategy']);
             state.history.push({
                 turn: step.turn,
@@ -141,9 +153,14 @@ if (dialogueRoot) {
                 confidenceStatus: responseSource === 'speech' ? speechConfidenceStatus : null,
                 transcriptCorrected: responseSource === 'speech' && answer !== originalSpeechTranscript,
             });
-            showSuccessfulResponse(content.repair.npc_response, content.repair.feedback, state.currentStep);
-            persist();
-            elements.status.textContent = 'Herstelstrategie herkend. Dat is taalvaardigheid, geen fout.';
+            await showSuccessfulResponse(
+                content.repair.npc_response,
+                content.repair.feedback,
+                state.currentStep,
+                step,
+                answer,
+                responseSource,
+            );
             return;
         }
 
@@ -156,6 +173,7 @@ if (dialogueRoot) {
             return;
         }
 
+        pendingStateBeforeTurn = cloneState(state);
         const politeness = ['por favor', 'gracias'].some((term) => normalized.includes(term));
         state.states = unique([...state.states, ...option.states, ...(politeness ? ['used_politeness'] : [])]);
         state.history.push({
@@ -170,20 +188,55 @@ if (dialogueRoot) {
         state.completedTurns += 1;
         if (responseSource === 'speech') state.spokenTurns += 1;
         if (stepAssisted) state.assistCount += 1;
-        showSuccessfulResponse(option.npc_response, option.feedback, resolveNext(option.next));
-        persist();
-        elements.status.textContent = `Beurt ${step.turn} voltooid. Lees wat goed ging en ga verder.`;
+        await showSuccessfulResponse(
+            option.npc_response,
+            option.feedback,
+            resolveNext(option.next),
+            step,
+            answer,
+            responseSource,
+        );
     };
 
-    const showSuccessfulResponse = (npcResponse, feedback, next) => {
+    const showSuccessfulResponse = async (npcResponse, authoredFeedback, next, step, answer, responseSource) => {
         pendingNext = next;
         setNpcLine(npcResponse);
-        showFeedback(feedback, true);
         elements.form.hidden = true;
-        elements.continueButton.hidden = false;
-        elements.continueButton.focus({ preventScroll: true });
+        showFeedbackLoading();
         updateProgress();
         renderHistory();
+
+        isEvaluating = true;
+        elements.submitButton.disabled = true;
+        let personalized = false;
+
+        try {
+            const feedback = await requestLayeredFeedback(step, answer, responseSource);
+            showLayeredFeedback(feedback);
+            const historyEntry = state.history.at(-1);
+            if (historyEntry) {
+                historyEntry.feedback = {
+                    assessorVersion: feedback.assessor_version,
+                    feedbackVersion: feedback.feedback_version,
+                    overall: feedback.overall,
+                };
+            }
+            personalized = true;
+        } catch {
+            showFeedback(authoredFeedback, true);
+            setText('[data-feedback-note]', 'Persoonlijke feedback was niet beschikbaar. Je voortgang blijft veilig en de inhoudelijke feedback uit de Content Studio wordt getoond.');
+        } finally {
+            isEvaluating = false;
+            elements.submitButton.disabled = false;
+            elements.feedback.removeAttribute('aria-busy');
+            elements.feedbackRetry.hidden = false;
+            elements.continueButton.hidden = false;
+            elements.continueButton.focus({ preventScroll: true });
+        }
+
+        elements.status.textContent = next === state.currentStep
+            ? 'Herstelstrategie herkend. Dat is taalvaardigheid, geen fout. Je kunt doorgaan of dezelfde beurt opnieuw proberen.'
+            : `Beurt ${step.turn} voltooid. ${personalized ? 'Bekijk je persoonlijke feedback' : 'Bekijk de veilige terugvalfeedback'} en ga verder of probeer opnieuw.`;
     };
 
     const showFeedback = (feedback, success) => {
@@ -192,9 +245,103 @@ if (dialogueRoot) {
         elements.feedback.querySelector('.bakery-feedback-icon').textContent = success ? '✓' : '↻';
         setText('[data-feedback-strength]', feedback.strength);
         setText('[data-feedback-focus]', feedback.focus);
+        setText('[data-feedback-example]', '');
+        setText('[data-feedback-note]', '');
+        elements.feedbackDetails.hidden = true;
+        elements.feedbackRetry.hidden = true;
+    };
+
+    const showFeedbackLoading = () => {
+        elements.feedback.hidden = false;
+        elements.feedback.dataset.result = 'loading';
+        elements.feedback.setAttribute('aria-busy', 'true');
+        elements.feedback.querySelector('.bakery-feedback-icon').textContent = '…';
+        setText('[data-feedback-strength]', 'Je antwoord wordt bekeken…');
+        setText('[data-feedback-focus]', 'Eerst kijken we of je bedoeling duidelijk was; daarna volgt maximaal één concrete volgende stap.');
+        setText('[data-feedback-example]', '');
+        setText('[data-feedback-note]', 'Uitspraak wordt niet beoordeeld, omdat alleen je transcript naar deze feedbacklaag gaat.');
+        elements.feedbackDetails.hidden = true;
+        elements.feedbackRetry.hidden = true;
+        elements.continueButton.hidden = true;
+    };
+
+    const showLayeredFeedback = (feedback) => {
+        elements.feedback.hidden = false;
+        elements.feedback.dataset.result = 'success';
+        elements.feedback.querySelector('.bakery-feedback-icon').textContent = '✓';
+        setText('[data-feedback-strength]', feedback.summary.strength);
+        setText('[data-feedback-focus]', feedback.summary.focus.message);
+        setText('[data-feedback-example]', feedback.summary.focus.example_es
+            ? `Probeer bijvoorbeeld: ${feedback.summary.focus.example_es}`
+            : 'Probeer dezelfde bedoeling nog één keer in je eigen woorden.');
+        setText('[data-feedback-note]', feedback.summary.retry_recommended
+            ? 'Een herkansing is aanbevolen, maar je voortgang gaat nooit verloren.'
+            : 'Je mag deze beurt vrijwillig opnieuw proberen; je voortgang gaat nooit verloren.');
+
+        const labels = {
+            task_execution: 'Taakuitvoering',
+            comprehensibility: 'Begrijpelijkheid',
+            vocabulary: 'Woordkeuze',
+            grammar: 'Grammatica',
+            pronunciation: 'Uitspraak',
+            conversation_strategy: 'Gespreksstrategie',
+        };
+        const list = dialogueRoot.querySelector('[data-feedback-rubric]');
+        const rows = Object.entries(labels).map(([dimension, label]) => {
+            const item = document.createElement('li');
+            const name = document.createElement('span');
+            const score = document.createElement('strong');
+            const result = feedback.rubric[dimension];
+            name.textContent = label;
+            score.textContent = result.status === 'not_assessed' ? 'Niet beoordeeld' : `${result.score}/4`;
+            item.append(name, score);
+            if (result.reason) {
+                const reason = document.createElement('small');
+                reason.textContent = result.reason;
+                item.append(reason);
+            }
+            return item;
+        });
+        list.replaceChildren(...rows);
+        setText('[data-feedback-overall]', `${feedback.overall.score}/4 · uitspraak niet meegerekend`);
+        elements.feedbackDetails.hidden = false;
+    };
+
+    const requestLayeredFeedback = async (step, answer, responseSource) => {
+        const response = await fetch(dialogueRoot.dataset.assessmentUrl, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '',
+            },
+            body: JSON.stringify({
+                step_id: step.id,
+                answer,
+                level: state.level,
+                source: responseSource,
+                transcript_confidence_status: responseSource === 'speech' ? speechConfidenceStatus : null,
+                transcript_corrected: responseSource === 'speech' && answer !== originalSpeechTranscript,
+            }),
+        });
+
+        if (!response.ok) throw new Error(`Feedback niet beschikbaar (${response.status}).`);
+
+        const payload = await response.json();
+        if (payload?.schema_version !== '1.0.0'
+            || payload?.meta?.progress_affecting !== false
+            || payload?.meta?.audio_assessed !== false
+            || payload?.data?.rubric?.pronunciation?.status !== 'not_assessed'
+            || !payload?.data?.summary?.focus?.dimension) {
+            throw new Error('Het feedbackcontract is niet veilig te verwerken.');
+        }
+
+        return payload.data;
     };
 
     const continueDialogue = () => {
+        pendingStateBeforeTurn = null;
         if (pendingNext === '@complete') {
             finishDialogue();
             return;
@@ -203,6 +350,17 @@ if (dialogueRoot) {
         state.currentStep = pendingNext;
         persist();
         renderStep();
+    };
+
+    const retrySuccessfulTurn = () => {
+        if (!pendingStateBeforeTurn || isEvaluating) return;
+
+        state = cloneState(pendingStateBeforeTurn);
+        pendingStateBeforeTurn = null;
+        pendingNext = null;
+        persist();
+        renderStep();
+        elements.status.textContent = 'Je voortgang is veilig teruggezet naar het begin van deze beurt. Probeer het in je eigen woorden.';
     };
 
     const finishDialogue = () => {
@@ -328,6 +486,7 @@ if (dialogueRoot) {
 
     elements.form.addEventListener('submit', submitResponse);
     elements.continueButton.addEventListener('click', continueDialogue);
+    elements.feedbackRetry.addEventListener('click', retrySuccessfulTurn);
     dialogueRoot.querySelectorAll('[data-level]').forEach((button) => button.addEventListener('click', () => startLevel(button.dataset.level)));
     dialogueRoot.querySelector('[data-dialogue-retry]')?.addEventListener('click', loadDialogue);
     dialogueRoot.querySelector('[data-hint-toggle]')?.addEventListener('click', (event) => {
@@ -357,6 +516,7 @@ if (dialogueRoot) {
         }
         state = emptyState();
         pendingNext = null;
+        pendingStateBeforeTurn = null;
         document.dispatchEvent(new CustomEvent('panaderia:turn-changed'));
         elements.stage.hidden = true;
         elements.complete.hidden = true;
@@ -397,6 +557,10 @@ function normalize(value) {
 
 function unique(values) {
     return [...new Set(values)];
+}
+
+function cloneState(state) {
+    return JSON.parse(JSON.stringify(state));
 }
 
 function readState(key) {

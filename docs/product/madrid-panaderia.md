@@ -195,7 +195,7 @@ Elke opname heeft deze flow:
 1. zichtbare microfoonstatus met tekstlabel;
 2. maximaal 12 seconden opname in WebM/Opus;
 3. lokale mogelijkheid om terug te luisteren;
-4. verzenden naar transcriptie en beoordeling;
+4. verzenden naar transcriptie en daarna transcriptbeoordeling;
 5. transcript dat de speler kan corrigeren wanneer de spraakherkenning aantoonbaar fout zat;
 6. NPC-reactie op betekenis;
 7. compacte feedback na de beurt; uitgebreide feedback pas na de missie.
@@ -219,9 +219,10 @@ Regels:
 
 - taakuitvoering en begrijpelijkheid wegen elk 25%; de overige vier dimensies elk 12,5%;
 - een grammaticale fout blokkeert het gesprek niet als de betekenis duidelijk is;
-- uitspraakfeedback benoemt maximaal één verbeterpunt per beurt;
+- feedback benoemt maximaal één verbeterpunt per beurt;
 - feedback gebruikt waar mogelijk de eigen woorden van de speler;
 - een transcriptie-onzekerheid onder de ingestelde grens mag geen negatieve uitspraakscore opleveren;
+- zolang de beoordelingslaag alleen tekst ontvangt, blijft uitspraak `niet beoordeeld` en telt die dimensie niet mee in het gewogen resultaat;
 - de speler krijgt altijd eerst wat goed ging, daarna één concrete volgende stap en een herkansknop.
 
 Voorbeeld:

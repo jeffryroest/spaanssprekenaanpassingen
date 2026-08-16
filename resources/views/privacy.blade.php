@@ -22,6 +22,8 @@
                 <li>De browser maakt lokaal een WebM/Opus-opname van maximaal 12 seconden en laat je die eerst terugluisteren.</li>
                 <li>Pas na <strong class="text-white">Transcript maken</strong> wordt de opname beveiligd naar de server verzonden en doorgestuurd naar de ingestelde transcriptiedienst. In deze fase is dat OpenAI.</li>
                 <li>De applicatie schrijft de ruwe opname niet naar de database, bestandsopslag of productanalytics.</li>
+                <li>Na een geslaagde beurt wordt alleen je gecontroleerde transcript, met de gepubliceerde oefencontext en technische bronmetadata, naar OpenAI gestuurd om persoonlijke feedback te maken. De opname wordt niet opnieuw meegestuurd.</li>
+                <li>De feedbackservice bewaart het antwoord of de feedback niet in de applicatiedatabase en gebruikt die gegevens niet voor voortgang, beloningen of productanalytics.</li>
                 <li>Wanneer je het transcript als antwoord gebruikt, bewaart je browser dat antwoord tijdelijk in de sessie zodat je de missie in hetzelfde tabblad kunt hervatten.</li>
             </ul>
         </section>
