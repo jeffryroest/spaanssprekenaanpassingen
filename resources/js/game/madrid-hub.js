@@ -17,7 +17,9 @@ if (hub) {
     const explored = new Set(readExplored());
     let accountProgress = null;
     let accountProgressUnavailable = false;
+    let trialWeekDays = [];
     let currentHubData = null;
+    let currentMissionKind = null;
     let ambience = null;
 
     const setText = (selector, value) => {
@@ -121,13 +123,15 @@ if (hub) {
 
     const openHotspot = (hotspot) => {
         const isOpen = ['open', 'completed'].includes(hotspot.state);
+        currentMissionKind = isOpen && ['bakery', 'cafe'].includes(hotspot.kind) ? hotspot.kind : null;
+        setText('[data-hub-mission-label]', currentMissionKind === 'cafe' ? 'Ga Café El Reloj binnen' : 'Bereid je bakkerijmissie voor');
 
         showPanel({
             kind: hotspot.state === 'completed' ? 'Missie voltooid' : isOpen ? 'Open locatie' : 'Vooruitblik',
             title: hotspot.label.es,
             body: hotspot.description,
             language: hotspot.label,
-            mission: isOpen && hotspot.kind === 'bakery',
+            mission: currentMissionKind !== null,
             reward: false,
         });
         elements.status.textContent = isOpen
@@ -268,6 +272,17 @@ if (hub) {
             };
         }
 
+        const restaurantDay = trialWeekDays.find(({ day }) => day === 3);
+        if (hotspot.id === 'madrid.cafe.reloj' && restaurantDay?.action_url) {
+            return {
+                ...hotspot,
+                state: restaurantDay.access_state === 'completed' ? 'completed' : 'open',
+                description: restaurantDay.access_state === 'completed'
+                    ? 'Je diner met Carmen is voltooid. De tafel blijft beschikbaar om opnieuw te oefenen.'
+                    : 'Open · vraag Carmen om een tafel en bestel je diner in het Spaans.',
+            };
+        }
+
         if (hotspot.id === 'madrid.cafe.reloj' && (mission?.states?.includes('madrid.cafe.preview_unlocked') || locallyCompleted)) {
             return {
                 ...hotspot,
@@ -277,6 +292,25 @@ if (hub) {
         }
 
         return hotspot;
+    };
+
+    const loadTrialWeekStatus = async () => {
+        if (hub.dataset.authenticated !== 'true') return;
+
+        try {
+            const response = await fetch(hub.dataset.trialWeekUrl, {
+                headers: { Accept: 'application/json' },
+                credentials: 'same-origin',
+            });
+            if (!response.ok) return;
+
+            const payload = await response.json();
+            if (payload?.schema_version === '1.0.0' && Array.isArray(payload?.data?.days)) {
+                trialWeekDays = payload.data.days;
+            }
+        } catch {
+            // De openbare Madrid-wereld blijft bruikbaar zonder proefweekstatus.
+        }
     };
 
     const loadAccountProgress = async () => {
@@ -319,6 +353,7 @@ if (hub) {
                     credentials: 'same-origin',
                 }),
                 loadAccountProgress(),
+                loadTrialWeekStatus(),
             ]);
 
             if (!response.ok) {
@@ -340,6 +375,12 @@ if (hub) {
     });
 
     hub.querySelector('[data-hub-mission-button]')?.addEventListener('click', () => {
+        if (currentMissionKind === 'cafe') {
+            elements.status.textContent = 'Je tafel in Café El Reloj wordt klaargemaakt.';
+            window.location.assign(hub.dataset.restaurantRoute);
+            return;
+        }
+
         elements.status.textContent = 'Je maakt eerst je boodschappenkaart klaar.';
         openPreparation();
     });

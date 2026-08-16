@@ -14,11 +14,11 @@ Deze tussenfase maakt de bestaande technische vertical slice herkenbaar speelbaa
 5. gesprek met Lucía via spreken of tekst;
 6. beloning en zichtbare ontgrendeling in de hub.
 
-De taxi blijft de afgeschermde tweede proefweekmissie. Restaurant, gezondheid en station volgen pas na deze ervaringslaag.
+De taxi blijft de afgeschermde tweede proefweekmissie. Fase 3B2 voegt daarna het restaurant toe; gezondheid en station blijven volgende uitbreidingen.
 
 ## Content Studio
 
-De contenteditor bevat nu een versiegebonden veld `domain_data`. Ingevoerde JSON wordt altijd syntactisch gecontroleerd. De bekende contracten `madrid_hub`, `panaderia_text_dialogue` en `taxi_text_dialogue` krijgen extra structuurvalidatie.
+De contenteditor bevat nu een versiegebonden veld `domain_data`. Ingevoerde JSON wordt altijd syntactisch gecontroleerd. De bekende contracten `madrid_hub`, `panaderia_text_dialogue`, `taxi_text_dialogue` en `restaurant_text_dialogue` krijgen extra structuurvalidatie.
 
 Drie startertemplates vullen een nieuw concept in:
 
@@ -27,6 +27,7 @@ Drie startertemplates vullen een nieuw concept in:
 | Madrid-wereld | Regio | `madrid` | publiek |
 | La Espiga-gesprek | Gespreksscenario | `la-espiga-lucia` | publiek |
 | Taxigesprek | Gespreksscenario | `taxi-diego` | recht `trial_week` |
+| Restaurantgesprek | Gespreksscenario | `restaurant-el-reloj` | recht `trial_week` |
 
 Een starter schrijft niets naar de database totdat een editor het formulier opslaat. Opslaan maakt alleen een conceptrevisie. De bestaande vier-ogenreview, releasepreflight en expliciete productiebevestiging blijven ongewijzigd.
 
@@ -51,6 +52,7 @@ Het dashboard toont per vereist runtimecontract of het ontbreekt, in concept/rev
 
 - Een gast kan vanaf `/` via Madrid de volledige La Espiga-dialoog bereiken en afronden.
 - Een gebruiker met `trial_week`-recht kan de taximissie blijven spelen.
+- Een gebruiker met `trial_week`-recht kan dag 3 starten zodra `restaurant-el-reloj` is gereviewd en in productie gepubliceerd.
 - Ontbrekende productiecontent toont een herstelbare fout en nooit een eindeloze laadstatus.
 - De publieke pagina’s bevatten geen frameworks of fasenummers.
 - Interactie is toetsenbordbedienbaar, heeft tekstalternatieven en respecteert reduced motion.

@@ -22,6 +22,7 @@ final class RuntimeReadiness
             $this->item('Madrid-wereld', ContentType::Region, 'madrid', 'madrid_hub', 'Openbare startwereld', true),
             $this->item('La Espiga met Lucía', ContentType::ConversationScenario, 'la-espiga-lucia', 'panaderia_text_dialogue', 'Openbare eerste missie', true),
             $this->item('Taxi met Diego', ContentType::ConversationScenario, 'taxi-diego', 'taxi_text_dialogue', 'Proefweek · recht vereist', false),
+            $this->item('Café El Reloj met Carmen', ContentType::ConversationScenario, 'restaurant-el-reloj', 'restaurant_text_dialogue', 'Proefweek · recht vereist', false),
         ];
     }
 
@@ -58,6 +59,7 @@ final class RuntimeReadiness
                 'madrid' => 'madrid-hub',
                 'la-espiga-lucia' => 'panaderia',
                 'taxi-diego' => 'taxi',
+                'restaurant-el-reloj' => 'restaurant',
             },
         ];
     }

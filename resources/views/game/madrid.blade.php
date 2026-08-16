@@ -17,8 +17,10 @@
         data-source="{{ url('/api/v1/worlds/madrid?locale=nl-NL') }}"
         data-home="{{ route('home') }}"
         data-panaderia-route="{{ route('game.madrid.panaderia') }}"
+        data-restaurant-route="{{ route('game.madrid.restaurant') }}"
         data-authenticated="{{ auth()->check() ? 'true' : 'false' }}"
         data-progress-url="{{ route('game.progress') }}"
+        data-trial-week-url="{{ route('game.trial-week.status') }}"
     >
         <header class="hub-topbar">
             <a href="{{ route('home') }}" class="hub-brand" aria-label="Spaansspreken.nl startpagina">
@@ -135,7 +137,7 @@
                         <span>+1 Curiosidad</span>
                     </div>
                     <button type="button" class="hub-mission-button" data-hub-mission-button hidden>
-                        Bekijk je eerste missie
+                        <span data-hub-mission-label>Open deze missie</span>
                         <span aria-hidden="true">→</span>
                     </button>
                 </aside>
