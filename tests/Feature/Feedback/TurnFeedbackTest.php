@@ -15,10 +15,10 @@ class TurnFeedbackTest extends TestCase
 
         $this->app->instance(TurnContextResolver::class, new class implements TurnContextResolver
         {
-            public function resolve(string $stepId): TurnContext
+            public function resolve(string $scenarioSlug, string $stepId): TurnContext
             {
                 return new TurnContext(
-                    scenario: 'la-espiga-lucia',
+                    scenario: $scenarioSlug,
                     contentVersion: 3,
                     stepId: $stepId,
                     turn: 2,
@@ -48,6 +48,7 @@ class TurnFeedbackTest extends TestCase
         ]);
 
         $response = $this->postJson(route('game.madrid.panaderia.feedback'), [
+            'scenario_slug' => 'la-espiga-lucia',
             'step_id' => 'order-products',
             'answer' => 'Quiero una pan y una napolitana, por favor.',
             'level' => 'A1',
@@ -101,6 +102,7 @@ class TurnFeedbackTest extends TestCase
 
         $answer = 'Dit mag niet in de foutrespons verschijnen.';
         $response = $this->postJson(route('game.madrid.panaderia.feedback'), [
+            'scenario_slug' => 'la-espiga-lucia',
             'step_id' => 'order-products',
             'answer' => $answer,
             'level' => 'A1',
@@ -123,6 +125,7 @@ class TurnFeedbackTest extends TestCase
         Http::fake();
 
         $valid = [
+            'scenario_slug' => 'la-espiga-lucia',
             'step_id' => 'order-products',
             'answer' => 'Quiero pan.',
             'level' => 'A0',

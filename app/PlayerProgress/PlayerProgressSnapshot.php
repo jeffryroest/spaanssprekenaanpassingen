@@ -12,19 +12,26 @@ final class PlayerProgressSnapshot
 {
     public const MISSION_KEY = 'mission.madrid.panaderia.breakfast';
 
+    public const TAXI_MISSION_KEY = 'mission.madrid.taxi.ride';
+
     /**
      * @return array<string, mixed>
      */
-    public function forUser(User $user, ?MissionAttempt $attempt = null, bool $duplicate = false): array
-    {
+    public function forUser(
+        User $user,
+        ?MissionAttempt $attempt = null,
+        bool $duplicate = false,
+        string $missionKey = self::MISSION_KEY,
+        int $spokenGoalTarget = PanaderiaMissionDefinition::SPOKEN_GOAL,
+    ): array {
         $state = UserGameState::query()->find($user->getKey());
         $mission = UserMissionProgress::query()
             ->where('user_id', $user->getKey())
-            ->where('mission_key', self::MISSION_KEY)
+            ->where('mission_key', $missionKey)
             ->first();
         $rewards = UserReward::query()
             ->where('user_id', $user->getKey())
-            ->where('mission_key', self::MISSION_KEY)
+            ->where('mission_key', $missionKey)
             ->orderBy('id')
             ->get();
         $performance = $attempt?->evidence['performance'] ?? null;
@@ -37,12 +44,12 @@ final class PlayerProgressSnapshot
                 'state_version' => (int) ($state?->state_version ?? 1),
             ],
             'mission' => [
-                'key' => self::MISSION_KEY,
+                'key' => $missionKey,
                 'status' => $mission?->status ?? 'not_started',
                 'completion_count' => (int) ($mission?->completion_count ?? 0),
                 'best_xp' => (int) ($mission?->best_xp ?? 0),
                 'best_spoken_turns' => (int) ($mission?->best_spoken_turns ?? 0),
-                'spoken_goal_target' => PanaderiaMissionDefinition::SPOKEN_GOAL,
+                'spoken_goal_target' => $spokenGoalTarget,
                 'spoken_goal_completed' => (bool) ($mission?->spoken_goal_completed ?? false),
                 'first_completed_at' => $mission?->first_completed_at?->toAtomString(),
                 'last_completed_at' => $mission?->last_completed_at?->toAtomString(),
@@ -64,7 +71,7 @@ final class PlayerProgressSnapshot
                 'target_confianza' => (int) ($performance['target_confianza'] ?? 0),
                 'target_valentia' => (int) ($performance['target_valentia'] ?? 0),
                 'spoken_turns' => $attempt->spoken_turns,
-                'spoken_goal_completed' => $attempt->spoken_turns >= PanaderiaMissionDefinition::SPOKEN_GOAL,
+                'spoken_goal_completed' => $attempt->spoken_turns >= $spokenGoalTarget,
                 'awarded_now' => [
                     'xp' => $duplicate ? 0 : $attempt->earned_xp,
                     'confianza' => $duplicate ? 0 : $attempt->earned_confianza,

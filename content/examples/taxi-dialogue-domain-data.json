@@ -1,0 +1,197 @@
+{
+  "schema_version": "1.0.0",
+  "scene": "taxi_text_dialogue",
+  "runtime_access": {
+    "visibility": "entitled",
+    "entitlement": "trial_week"
+  },
+  "npc": {
+    "id": "npc.diego.ruiz",
+    "name": "Diego Ruiz",
+    "role": { "es": "taxista", "nl": "taxichauffeur" },
+    "description": "Rustig, professioneel en behulpzaam. Diego reageert als Madrileense taxichauffeur, niet als docent."
+  },
+  "mission": {
+    "id": "mission.madrid.taxi.ride",
+    "title": { "es": "Mi primer trayecto", "nl": "Mijn eerste taxirit" },
+    "objective": "Vertel waar je heen wilt, reageer op een routevraag, vraag naar de prijs en rond de rit af.",
+    "start_step": "turn.greet_destination",
+    "required_text_turns": 5
+  },
+  "level_branches": {
+    "A0": "branch.confirm_destination",
+    "A1": "branch.traffic_alternative",
+    "A2": "branch.route_preference"
+  },
+  "repair": {
+    "terms": ["puede repetir", "repita por favor", "mas despacio", "no entiendo", "quiero decir"],
+    "npc_response": {
+      "es": "Claro. Se lo repito más despacio.",
+      "nl": "Natuurlijk. Ik herhaal het wat langzamer."
+    },
+    "feedback": {
+      "strength": "Sterk: je houdt de rit zelf op koers.",
+      "focus": "Om herhaling vragen is echte gespreksvaardigheid."
+    }
+  },
+  "steps": [
+    {
+      "id": "turn.greet_destination",
+      "turn": 1,
+      "npc_line": { "es": "Buenas tardes. ¿Adónde va?", "nl": "Goedemiddag. Waar wilt u heen?" },
+      "prompt": "Begroet Diego en noem je bestemming.",
+      "placeholder": "Bijvoorbeeld: Buenas tardes. Al Museo del Prado, por favor.",
+      "hint": "Gebruik al voor a + el: al Museo del Prado.",
+      "choices": ["Buenas tardes. Al Museo del Prado, por favor.", "Hola. Quiero ir al Museo del Prado."],
+      "options": [
+        {
+          "id": "destination",
+          "requirements": [["buenas tardes", "hola", "buenos dias"], ["museo del prado", "prado"]],
+          "npc_response": { "es": "Perfecto. Suba, por favor.", "nl": "Prima. Stapt u maar in." },
+          "feedback": { "strength": "Je begroeting en bestemming waren meteen duidelijk.", "focus": "Met al combineer je a en el op een natuurlijke manier." },
+          "states": ["greeted_diego", "destination_prado_selected"],
+          "next": "turn.passengers"
+        }
+      ],
+      "fallback": { "strength": "Je hebt het gesprek geopend.", "focus": "Noem ook je bestemming: al Museo del Prado." }
+    },
+    {
+      "id": "turn.passengers",
+      "turn": 2,
+      "npc_line": { "es": "¿Viaja solo o con alguien más?", "nl": "Reist u alleen of met iemand anders?" },
+      "prompt": "Vertel met hoeveel personen je reist.",
+      "placeholder": "Viajo solo.",
+      "hint": "Gebruik solo/sola of somos dos.",
+      "choices": ["Viajo solo.", "Somos dos personas."],
+      "options": [
+        {
+          "id": "passengers",
+          "requirements": [["solo", "sola", "somos dos", "dos personas", "con mi pareja"]],
+          "npc_response": { "es": "Muy bien. Nos ponemos en marcha.", "nl": "Prima. We gaan op weg." },
+          "feedback": { "strength": "Diego weet voor hoeveel reizigers hij rijdt.", "focus": "Somos dos is een compacte manier om te zeggen dat je met z’n tweeën bent." },
+          "states": ["passenger_count_shared"],
+          "next": "@complication"
+        }
+      ],
+      "fallback": { "strength": "Je begrijpt dat Diego naar het aantal reizigers vraagt.", "focus": "Antwoord met viajo solo/sola of somos dos." }
+    },
+    {
+      "id": "branch.confirm_destination",
+      "turn": 3,
+      "npc_line": { "es": "Entonces, ¿al Museo del Prado?", "nl": "Dus, naar het Prado-museum?" },
+      "prompt": "Bevestig je bestemming.",
+      "placeholder": "Sí, al Museo del Prado.",
+      "hint": "Bevestig met sí en herhaal Prado.",
+      "choices": ["Sí, al Museo del Prado, por favor.", "Sí, exactamente."],
+      "options": [
+        {
+          "id": "confirm_destination",
+          "requirements": [["si", "exactamente", "correcto", "prado"]],
+          "npc_response": { "es": "Perfecto.", "nl": "Prima." },
+          "feedback": { "strength": "Je bevestigde de bestemming zonder twijfel.", "focus": "Exactamente is handig wanneer iemand je goed heeft begrepen." },
+          "states": ["complication_resolved", "destination_confirmed"],
+          "next": "turn.ask_price"
+        }
+      ],
+      "fallback": { "strength": "Je hoort dat Diego om bevestiging vraagt.", "focus": "Zeg sí, exactamente of herhaal Museo del Prado." }
+    },
+    {
+      "id": "branch.traffic_alternative",
+      "turn": 3,
+      "npc_line": { "es": "Hay bastante tráfico en la Castellana. ¿Le parece bien ir por el Retiro?", "nl": "Er is veel verkeer op de Castellana. Vindt u het goed als we via het Retiro gaan?" },
+      "prompt": "Accepteer de alternatieve route of vraag om de snelste route.",
+      "placeholder": "Sí, me parece bien.",
+      "hint": "Me parece bien betekent dat je akkoord gaat.",
+      "choices": ["Sí, me parece bien.", "Prefiero la ruta más rápida, por favor."],
+      "options": [
+        {
+          "id": "traffic_alternative",
+          "requirements": [["me parece bien", "por el retiro", "ruta mas rapida", "prefiero"]],
+          "npc_response": { "es": "De acuerdo. Evitaremos el tráfico.", "nl": "Akkoord. We vermijden het verkeer." },
+          "feedback": { "strength": "Je reageerde zelfstandig op een verandering onderweg.", "focus": "Me parece bien is een natuurlijke manier om met een voorstel in te stemmen." },
+          "states": ["complication_resolved", "alternative_route_agreed"],
+          "next": "turn.ask_price"
+        }
+      ],
+      "fallback": { "strength": "Je begrijpt dat de route verandert.", "focus": "Gebruik me parece bien of prefiero la ruta más rápida." }
+    },
+    {
+      "id": "branch.route_preference",
+      "turn": 3,
+      "npc_line": { "es": "¿Prefiere la ruta más rápida o la más económica?", "nl": "Geeft u de voorkeur aan de snelste of de voordeligste route?" },
+      "prompt": "Geef aan welke route je voorkeur heeft.",
+      "placeholder": "Prefiero la ruta más rápida.",
+      "hint": "Gebruik prefiero met más rápida of más económica.",
+      "choices": ["Prefiero la ruta más rápida.", "La más económica, por favor."],
+      "options": [
+        {
+          "id": "route_preference",
+          "requirements": [["mas rapida", "mas economica", "prefiero", "economica"]],
+          "npc_response": { "es": "Entendido. Tomaremos esa ruta.", "nl": "Begrepen. We nemen die route." },
+          "feedback": { "strength": "Je maakte een duidelijke afweging tussen tijd en kosten.", "focus": "Met prefiero la ruta… klinkt je voorkeur volledig en natuurlijk." },
+          "states": ["complication_resolved", "route_preference_shared"],
+          "next": "turn.ask_price"
+        }
+      ],
+      "fallback": { "strength": "Je weet dat Diego om een voorkeur vraagt.", "focus": "Kies más rápida of más económica." }
+    },
+    {
+      "id": "turn.ask_price",
+      "turn": 4,
+      "npc_line": { "es": "Tardaremos unos quince minutos.", "nl": "We doen er ongeveer vijftien minuten over." },
+      "prompt": "Vraag wat de rit ongeveer gaat kosten.",
+      "placeholder": "¿Cuánto costará aproximadamente?",
+      "hint": "Cuánto costará betekent: hoeveel zal het kosten.",
+      "choices": ["¿Cuánto costará aproximadamente?", "¿Cuánto cuesta el trayecto?"],
+      "options": [
+        {
+          "id": "ask_price",
+          "requirements": [["cuanto costara", "cuanto cuesta", "precio", "coste"]],
+          "npc_response": { "es": "Unos doce euros, aproximadamente.", "nl": "Ongeveer twaalf euro." },
+          "feedback": { "strength": "Je vroeg vóór aankomst duidelijk naar de verwachte prijs.", "focus": "Aproximadamente maakt duidelijk dat je om een schatting vraagt." },
+          "states": ["estimated_price_requested"],
+          "next": "turn.payment_receipt"
+        }
+      ],
+      "fallback": { "strength": "Je volgt de informatie over de reistijd.", "focus": "Vraag naar de prijs met ¿Cuánto cuesta?" }
+    },
+    {
+      "id": "turn.payment_receipt",
+      "turn": 5,
+      "npc_line": { "es": "Ya hemos llegado. Son doce euros. ¿Cómo quiere pagar?", "nl": "We zijn er. Dat is twaalf euro. Hoe wilt u betalen?" },
+      "prompt": "Kies een betaalwijze en vraag om een bon.",
+      "placeholder": "Con tarjeta, por favor. ¿Me da un recibo?",
+      "hint": "Vraag om een bon met ¿Me da un recibo?",
+      "choices": ["Con tarjeta, por favor. ¿Me da un recibo?", "En efectivo. Y un recibo, por favor."],
+      "options": [
+        {
+          "id": "payment_receipt",
+          "requirements": [["tarjeta", "efectivo", "metalico"], ["recibo", "ticket"]],
+          "npc_response": { "es": "Por supuesto. Aquí tiene su recibo. Que disfrute del museo.", "nl": "Natuurlijk. Hier is uw bon. Veel plezier in het museum." },
+          "feedback": { "strength": "Je rondde de rit compleet af: betalen én om een bon vragen.", "focus": "Aquí tiene is een veelgebruikte reactie wanneer iemand je iets overhandigt." },
+          "states": ["payment_method_selected", "receipt_requested", "conversation_completed"],
+          "next": "@complete"
+        }
+      ],
+      "fallback": { "strength": "Je bent bij de laatste stap van de rit.", "focus": "Noem tarjeta of efectivo en vraag om un recibo." }
+    }
+  ],
+  "completion": {
+    "polite_farewell": {
+      "es": "Muchas gracias. Ha sido un placer. ¡Que tenga un buen día!",
+      "nl": "Hartelijk dank. Het was een plezier. Fijne dag!"
+    },
+    "default_farewell": {
+      "es": "Gracias. Que disfrute de Madrid.",
+      "nl": "Bedankt. Geniet van Madrid."
+    },
+    "rewards": {
+      "xp": 90,
+      "confianza": 1,
+      "valentia": 1,
+      "stamp": { "es": "Mi primer trayecto", "nl": "Mijn eerste taxirit" },
+      "collectible": { "es": "Recibo de taxi madrileño", "nl": "Madrileense taxibon" },
+      "repair_badge": { "es": "Buen viajero", "nl": "Goede reiziger" }
+    }
+  }
+}

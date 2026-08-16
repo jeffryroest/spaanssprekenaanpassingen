@@ -1194,7 +1194,97 @@
     .bakery-error a { @apply mt-6; }
 }
 
-    @keyframes bakery-breathe {
+@layer components {
+    .taxi-body {
+        background: linear-gradient(160deg, #eff6ff 0%, #fff7e8 58%, #f5e7ce 100%);
+    }
+
+    .taxi-scene {
+        @apply min-h-[28rem] bg-[#b9d9ed] lg:min-h-[44rem];
+        background: linear-gradient(#a9d2ea 0 52%, #e4cda3 52% 63%, #454a50 63% 100%);
+    }
+
+    .taxi-sky {
+        @apply absolute inset-x-0 top-0 h-1/2;
+        background: radial-gradient(circle at 78% 24%, #fff6c7 0 7%, transparent 7.5%), linear-gradient(#8cc6e8, #d8ebf3);
+    }
+
+    .taxi-city {
+        @apply absolute inset-x-0 top-[27%] flex h-[36%] items-end justify-around gap-2 px-4;
+    }
+
+    .taxi-city span {
+        @apply block w-1/4 border-t-4 border-[#f4ead5] bg-[#c98b62] shadow-lg;
+        height: 58%;
+        background-image: repeating-linear-gradient(90deg, transparent 0 18px, rgb(68 56 48 / 18%) 18px 22px), repeating-linear-gradient(0deg, transparent 0 22px, rgb(255 244 211 / 45%) 22px 28px);
+    }
+
+    .taxi-city span:nth-child(2) {
+        @apply bg-[#c77a55];
+        height: 86%;
+    }
+
+    .taxi-city span:nth-child(3) {
+        @apply bg-[#d0a06e];
+        height: 68%;
+    }
+
+    .taxi-city span:nth-child(4) {
+        @apply bg-[#b97352];
+        height: 76%;
+    }
+
+    .taxi-road {
+        @apply absolute inset-x-0 bottom-0 h-[37%] bg-[#454a50];
+        background-image: linear-gradient(90deg, transparent 0 10%, #f5e6a7 10% 22%, transparent 22% 42%, #f5e6a7 42% 54%, transparent 54% 74%, #f5e6a7 74% 86%, transparent 86%);
+        background-position: 0 68%;
+        background-repeat: repeat-x;
+        background-size: 230px 8px;
+    }
+
+    .taxi-car {
+        @apply absolute bottom-[18%] left-1/2 z-20 h-32 w-[19rem] -translate-x-1/2 rounded-[4.5rem_6rem_1.4rem_1.4rem] border-4 border-[#25292c] bg-[#f0bd27] shadow-2xl;
+    }
+
+    .taxi-car::before {
+        content: '';
+        @apply absolute -top-12 left-[24%] h-16 w-[53%] rounded-t-[3rem] border-4 border-b-0 border-[#25292c] bg-[#f0bd27];
+    }
+
+    .taxi-sign {
+        @apply absolute -top-[4.8rem] left-1/2 z-20 -translate-x-1/2 rounded-md border-2 border-[#25292c] bg-[#fff6d1] px-3 py-1 text-[0.6rem] font-black tracking-widest text-[#24282c];
+    }
+
+    .taxi-window {
+        @apply absolute -top-9 z-10 h-11 bg-[#315469];
+    }
+
+    .taxi-window-front {
+        @apply left-[26%] w-[23%] rounded-tl-[2rem];
+    }
+
+    .taxi-window-back {
+        @apply right-[25%] w-[23%] rounded-tr-[2rem];
+    }
+
+    .taxi-wheel {
+        @apply absolute -bottom-7 size-16 rounded-full border-[10px] border-[#22272b] bg-[#869099] shadow-lg;
+    }
+
+    .taxi-wheel-front {
+        @apply left-8;
+    }
+
+    .taxi-wheel-back {
+        @apply right-8;
+    }
+
+    .taxi-npc-card {
+        @apply border-[#283f4e]/15 bg-[#fffdf7]/95;
+    }
+}
+
+@keyframes bakery-breathe {
     0%, 100% { transform: translateX(-50%) scaleY(1); }
     50% { transform: translateX(-50%) scaleY(1.012); }
 }

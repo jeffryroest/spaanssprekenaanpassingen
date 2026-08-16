@@ -69,7 +69,7 @@ class PublishedConversationTurnResolverTest extends TestCase
             acknowledgeWarnings: true,
         );
 
-        $context = app(PublishedConversationTurnResolver::class)->resolve('greeting');
+        $context = app(PublishedConversationTurnResolver::class)->resolve('la-espiga-lucia', 'greeting');
 
         $this->assertSame('la-espiga-lucia', $context->scenario);
         $this->assertSame(1, $context->contentVersion);
@@ -82,6 +82,6 @@ class PublishedConversationTurnResolverTest extends TestCase
         $this->expectException(FeedbackAssessmentFailed::class);
         $this->expectExceptionMessage('De gepubliceerde gesprekcontext is tijdelijk niet beschikbaar.');
 
-        app(PublishedConversationTurnResolver::class)->resolve('concept-only-step');
+        app(PublishedConversationTurnResolver::class)->resolve('la-espiga-lucia', 'concept-only-step');
     }
 }

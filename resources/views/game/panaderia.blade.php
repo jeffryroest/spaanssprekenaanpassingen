@@ -13,7 +13,12 @@
 
     <div
         class="bakery-app"
+        data-scenario-dialogue
         data-panaderia-dialogue
+        data-scene="panaderia_text_dialogue"
+        data-scenario-slug="la-espiga-lucia"
+        data-storage-key="panaderia-text-dialogue-v1"
+        data-npc-name="Lucía"
         data-source="{{ url('/api/v1/conversations/la-espiga-lucia?locale=nl-NL') }}"
         data-hub-route="{{ route('game.madrid') }}"
         data-transcription-url="{{ route('game.madrid.panaderia.transcription') }}"

@@ -118,6 +118,30 @@ class PublicContentApiTest extends TestCase
             ->assertJsonPath('error.code', 'published_content_not_found');
     }
 
+    public function test_entitled_content_is_not_exposed_by_the_public_api(): void
+    {
+        $this->publishProduction(
+            ContentType::ConversationScenario,
+            'afgeschermd-gesprek',
+            'Afgeschermd gesprek',
+            domainData: [
+                'runtime_access' => [
+                    'visibility' => 'entitled',
+                    'entitlement' => 'trial_week',
+                ],
+            ],
+        );
+
+        $this->getJson('/api/v1/conversations')
+            ->assertOk()
+            ->assertJsonCount(0, 'data')
+            ->assertJsonPath('meta.pagination.total', 0);
+
+        $this->getJson('/api/v1/conversations/afgeschermd-gesprek')
+            ->assertNotFound()
+            ->assertJsonPath('error.code', 'published_content_not_found');
+    }
+
     public function test_locale_falls_back_to_the_published_default_locale(): void
     {
         $this->publishProduction(ContentType::Location, 'plaza-mayor', 'Plaza Mayor');

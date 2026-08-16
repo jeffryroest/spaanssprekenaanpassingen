@@ -46,7 +46,7 @@
       "additionalProperties": false,
       "required": ["key", "status", "completion_count", "best_xp", "best_spoken_turns", "spoken_goal_target", "spoken_goal_completed", "first_completed_at", "last_completed_at", "states"],
       "properties": {
-        "key": { "const": "mission.madrid.panaderia.breakfast" },
+        "key": { "type": "string", "enum": ["mission.madrid.panaderia.breakfast", "mission.madrid.taxi.ride"] },
         "status": { "type": "string", "enum": ["not_started", "completed"] },
         "completion_count": { "$ref": "#/$defs/nonNegativeInteger" },
         "best_xp": { "$ref": "#/$defs/nonNegativeInteger" },

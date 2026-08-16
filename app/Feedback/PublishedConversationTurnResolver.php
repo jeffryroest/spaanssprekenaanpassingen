@@ -9,13 +9,11 @@ use App\Feedback\Exceptions\FeedbackAssessmentFailed;
 
 final class PublishedConversationTurnResolver implements TurnContextResolver
 {
-    private const SCENARIO_SLUG = 'la-espiga-lucia';
-
     public function __construct(private readonly PublishedContentRepository $repository) {}
 
-    public function resolve(string $stepId): TurnContext
+    public function resolve(string $scenarioSlug, string $stepId): TurnContext
     {
-        $node = $this->repository->find(ContentType::ConversationScenario, self::SCENARIO_SLUG);
+        $node = $this->repository->find(ContentType::ConversationScenario, $scenarioSlug);
         $releaseItem = $node === null ? null : $this->repository->latestProductionItem($node);
         $snapshot = $releaseItem?->contentRevision?->snapshot;
         $domainData = is_array($snapshot) ? ($snapshot['domain_data'] ?? null) : null;
@@ -51,7 +49,7 @@ final class PublishedConversationTurnResolver implements TurnContextResolver
             : [];
 
         return new TurnContext(
-            scenario: self::SCENARIO_SLUG,
+            scenario: $scenarioSlug,
             contentVersion: (int) ($releaseItem->version ?? 0),
             stepId: $stepId,
             turn: (int) ($step['turn'] ?? 0),

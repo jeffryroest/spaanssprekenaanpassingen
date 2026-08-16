@@ -72,7 +72,7 @@ class PublishedContentController extends Controller
         ]);
         $requestedLocale = $validated['locale'] ?? null;
         $paginator = $this->repository
-            ->paginate($contentType, (int) ($validated['per_page'] ?? 20))
+            ->paginatePublic($contentType, (int) ($validated['per_page'] ?? 20))
             ->appends($request->query());
         $data = collect($paginator->items())
             ->map(function ($contentNode) use ($requestedLocale): ?array {
@@ -124,7 +124,7 @@ class PublishedContentController extends Controller
         $validated = $request->validate([
             'locale' => ['nullable', 'string', 'max:10', 'regex:/^[a-z]{2}(?:-[A-Z]{2})?$/'],
         ]);
-        $contentNode = $this->repository->find($contentType, $slug);
+        $contentNode = $this->repository->findPublic($contentType, $slug);
 
         if ($contentNode === null) {
             return $this->responder->respond($request, [

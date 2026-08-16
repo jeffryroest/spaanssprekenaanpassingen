@@ -36,7 +36,8 @@
 ## Fase 3 — proefweek
 
 - **3A — proefweek en toegangsgrenzen (gerealiseerd):** zeven-dagenroute, abonnementsprojectie, centrale rechtenservice, server-side middleware en versieerbaar toegangscontract; geen prijs of betaalactivatie zonder productbesluit.
-- **3B — missiedagen:** taxi, restaurant, gezondheid en station via de Content Studio.
+- **3B1 — taxi (gerealiseerd):** vijf actieve beurten met Diego, drie niveaupaden, spreken/tekst, productiecontent en duurzame accountbeloningen.
+- **3B2–3B4 — volgende missiedagen:** restaurant, gezondheid en station via dezelfde herbruikbare Content Studio- en gespreksmotor.
 - **3C — persoonlijke continuïteit:** gespreide herhaling en minimaal, spelrelevant NPC-geheugen.
 - **3D — conversie:** proefactivatie, paywall, provider-events en abonnement na expliciete besluiten over prijs en voorwaarden.
 

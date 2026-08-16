@@ -21,7 +21,7 @@ class TurnFeedbackController extends Controller
         $validated = $request->validated();
 
         try {
-            $context = $contextResolver->resolve($validated['step_id']);
+            $context = $contextResolver->resolve($validated['scenario_slug'], $validated['step_id']);
             $assessment = $assessor->assess(
                 context: $context,
                 answer: $validated['answer'],

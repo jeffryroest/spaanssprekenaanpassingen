@@ -6,5 +6,5 @@ use App\Feedback\TurnContext;
 
 interface TurnContextResolver
 {
-    public function resolve(string $stepId): TurnContext;
+    public function resolve(string $scenarioSlug, string $stepId): TurnContext;
 }
