@@ -57,6 +57,20 @@ class AuthenticationTest extends TestCase
         ])->assertRedirect(route('game.madrid.panaderia', absolute: false));
     }
 
+    public function test_safe_trial_week_redirect_is_restored_after_login(): void
+    {
+        $user = User::factory()->create();
+
+        $this->get(route('login', [
+            'redirect' => route('trial-week.show', absolute: false),
+        ]))->assertOk();
+
+        $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertRedirect(route('trial-week.show', absolute: false));
+    }
+
     public function test_external_login_redirect_is_ignored(): void
     {
         $user = User::factory()->create();

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
-    "validate": "npm run validate:foundation && npm run validate:laravel && npm run validate:api && npm run validate:quality && npm run validate:hub && npm run validate:panaderia && npm run validate:speech && npm run validate:feedback && npm run validate:progress",
+    "validate": "npm run validate:foundation && npm run validate:laravel && npm run validate:api && npm run validate:quality && npm run validate:hub && npm run validate:panaderia && npm run validate:speech && npm run validate:feedback && npm run validate:progress && npm run validate:access",
     "validate:foundation": "node scripts/validate-foundation.mjs",
     "validate:laravel": "node scripts/validate-laravel-foundation.mjs",
     "validate:api": "node scripts/validate-public-content-api.mjs",
@@ -16,7 +16,8 @@
     "validate:panaderia": "node scripts/validate-panaderia-dialogue.mjs",
     "validate:speech": "node scripts/validate-webm-transcription.mjs",
     "validate:feedback": "node scripts/validate-layered-turn-feedback.mjs",
-    "validate:progress": "node scripts/validate-account-progress.mjs"
+    "validate:progress": "node scripts/validate-account-progress.mjs",
+    "validate:access": "node scripts/validate-trial-week-access.mjs"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",

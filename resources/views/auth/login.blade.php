@@ -25,7 +25,7 @@
                 <p class="mt-6 max-w-xl text-base leading-7 text-slate-300">Bewaar je XP, Confianza, Valentía en missieroutes bij je account. Redactieaccounts openen vanuit dezelfde veilige ingang de Content Studio.</p>
 
                 <ul class="mt-10 grid gap-4 text-sm text-slate-200 sm:grid-cols-2">
-                    @foreach (['Blijvende missievoortgang', 'Spaans paspoort en items', 'Veilige accountopslag', 'Content Studio voor redactie'] as $benefit)
+                    @foreach (['Blijvende missievoortgang', 'Zeven missiedagen', 'Server-side toegangscontrole', 'Content Studio voor redactie'] as $benefit)
                         <li class="flex items-center gap-3">
                             <span class="grid size-6 shrink-0 place-items-center rounded-full bg-emerald-400/15 text-emerald-300" aria-hidden="true">
                                 <svg class="size-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 10 3 3 7-7" /></svg>

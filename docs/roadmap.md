@@ -35,10 +35,10 @@
 
 ## Fase 3 — proefweek
 
-- Zeven missiedagen.
-- Taxi, restaurant, gezondheid en station.
-- Persoonlijke herhaling en NPC-geheugen.
-- Proefperiode, paywall en abonnement.
+- **3A — proefweek en toegangsgrenzen (gerealiseerd):** zeven-dagenroute, abonnementsprojectie, centrale rechtenservice, server-side middleware en versieerbaar toegangscontract; geen prijs of betaalactivatie zonder productbesluit.
+- **3B — missiedagen:** taxi, restaurant, gezondheid en station via de Content Studio.
+- **3C — persoonlijke continuïteit:** gespreide herhaling en minimaal, spelrelevant NPC-geheugen.
+- **3D — conversie:** proefactivatie, paywall, provider-events en abonnement na expliciete besluiten over prijs en voorwaarden.
 
 **Beslispoort:** retentie, spreken en conversie zijn meetbaar.
 

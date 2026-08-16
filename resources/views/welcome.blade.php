@@ -21,6 +21,9 @@
                         Fundament actief
                     </span>
                     @auth
+                        <a href="{{ route('trial-week.show') }}" class="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-stone-200 transition hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-orange-400">
+                            Mijn proefweek
+                        </a>
                         <a href="{{ route('player.progress') }}" class="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-stone-200 transition hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-orange-400">
                             Mijn voortgang
                         </a>
@@ -63,17 +66,17 @@
                 </div>
 
                 <aside class="rounded-3xl border border-white/10 bg-white/[0.06] p-7 shadow-2xl shadow-black/30 backdrop-blur sm:p-9" aria-labelledby="status-title">
-                    <p class="text-sm font-medium text-orange-300">Fase 2E</p>
-                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Je resultaat blijft bij je account</h2>
+                    <p class="text-sm font-medium text-orange-300">Fase 3A</p>
+                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Je proefweek krijgt veilige toegangsgrenzen</h2>
                     <ul class="mt-6 space-y-4 text-sm leading-6 text-stone-300">
-                        <li class="status-item">Verdien server-side berekende XP, Confianza en Valentía</li>
-                        <li class="status-item">Bewaar je eerste stempel en verzamelitem</li>
-                        <li class="status-item">Zie je spreekdoel en ontgrendelingen terug</li>
-                        <li class="status-item">Veilige retries leveren nooit dubbele beloningen op</li>
+                        <li class="status-item">Bekijk de route van zeven missiedagen</li>
+                        <li class="status-item">Toegang wordt uitsluitend server-side berekend</li>
+                        <li class="status-item">La Espiga blijft de openbare voorbeeldmissie</li>
+                        <li class="status-item">Nieuwe missies vereisen veilige productiepublicatie</li>
                     </ul>
                     <div class="mt-8 border-t border-white/10 pt-6">
                         <p class="text-sm text-stone-400">Volgende mijlpaal</p>
-                        <p class="mt-1 font-medium text-white">Fase 3 · proefweek en toegangsgrenzen</p>
+                        <p class="mt-1 font-medium text-white">Fase 3B · taxi, restaurant, gezondheid en station</p>
                     </div>
                 </aside>
             </section>

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaansspreken.nl/contracts/player-access-v1.schema.json",
+  "title": "Player trial-week access response v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "data", "meta"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["access", "days"],
+      "properties": {
+        "access": { "$ref": "#/$defs/access" },
+        "days": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": { "$ref": "#/$defs/day" }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["payment_data_included", "provider_references_included", "content_publication_required"],
+      "properties": {
+        "payment_data_included": { "const": false },
+        "provider_references_included": { "const": false },
+        "content_publication_required": { "const": true }
+      }
+    }
+  },
+  "$defs": {
+    "nullableDateTime": { "type": ["string", "null"], "format": "date-time" },
+    "nullablePositiveInteger": { "type": ["integer", "null"], "minimum": 1 },
+    "nullableNonNegativeInteger": { "type": ["integer", "null"], "minimum": 0 },
+    "plan": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["code", "name"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "name": { "type": ["string", "null"] }
+      }
+    },
+    "access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "access_active", "entitlements", "plan", "valid_until", "trial_day", "trial_days", "can_access_trial_week"],
+      "properties": {
+        "state": { "type": "string", "enum": ["none", "trialing", "active", "past_due", "paused", "cancelled", "expired"] },
+        "access_active": { "type": "boolean" },
+        "entitlements": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "plan": { "$ref": "#/$defs/plan" },
+        "valid_until": { "$ref": "#/$defs/nullableDateTime" },
+        "trial_day": { "$ref": "#/$defs/nullablePositiveInteger" },
+        "trial_days": { "$ref": "#/$defs/nullableNonNegativeInteger" },
+        "can_access_trial_week": { "type": "boolean" }
+      }
+    },
+    "day": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["day", "mission_key", "title_es", "title_nl", "setting", "content_state", "access_state", "action_url"],
+      "properties": {
+        "day": { "type": "integer", "minimum": 1, "maximum": 7 },
+        "mission_key": { "type": "string", "pattern": "^mission\\.madrid\\." },
+        "title_es": { "type": "string", "minLength": 1 },
+        "title_nl": { "type": "string", "minLength": 1 },
+        "setting": { "type": "string", "minLength": 1 },
+        "content_state": { "type": "string", "enum": ["published", "planned"] },
+        "access_state": { "type": "string", "enum": ["completed", "available", "planned", "scheduled", "requires_access"] },
+        "action_url": { "type": ["string", "null"] }
+      }
+    }
+  }
+}
