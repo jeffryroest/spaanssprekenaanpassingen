@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaansspreken.nl/contracts/turn-feedback-v1.schema.json",
+  "title": "Spaansspreken.nl layered turn feedback v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "data", "meta"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assessor_version", "feedback_version", "rubric", "overall", "summary"],
+      "properties": {
+        "assessor_version": { "type": "string", "minLength": 1 },
+        "feedback_version": { "type": "string", "minLength": 1 },
+        "rubric": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["task_execution", "comprehensibility", "vocabulary", "grammar", "pronunciation", "conversation_strategy"],
+          "properties": {
+            "task_execution": { "$ref": "#/$defs/assessed_dimension" },
+            "comprehensibility": { "$ref": "#/$defs/assessed_dimension" },
+            "vocabulary": { "$ref": "#/$defs/assessed_dimension" },
+            "grammar": { "$ref": "#/$defs/assessed_dimension" },
+            "pronunciation": { "$ref": "#/$defs/unassessed_pronunciation" },
+            "conversation_strategy": { "$ref": "#/$defs/assessed_dimension" }
+          }
+        },
+        "overall": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["score", "maximum", "band", "pronunciation_included"],
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 4 },
+            "maximum": { "const": 4 },
+            "band": { "enum": ["needs_support", "developing", "communicative", "confident"] },
+            "pronunciation_included": { "const": false }
+          }
+        },
+        "summary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["strength", "focus", "retry_recommended"],
+          "properties": {
+            "strength": { "type": "string", "minLength": 1, "maxLength": 180 },
+            "focus": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["dimension", "message", "example_es"],
+              "properties": {
+                "dimension": { "enum": ["task_execution", "comprehensibility", "vocabulary", "grammar", "conversation_strategy"] },
+                "message": { "type": "string", "minLength": 1, "maxLength": 220 },
+                "example_es": { "type": ["string", "null"], "maxLength": 120 }
+              }
+            },
+            "retry_recommended": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["progress_affecting", "rewards_affecting", "audio_assessed", "answer_persisted_server_side"],
+      "properties": {
+        "progress_affecting": { "const": false },
+        "rewards_affecting": { "const": false },
+        "audio_assessed": { "const": false },
+        "answer_persisted_server_side": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "assessed_dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score", "maximum", "status"],
+      "properties": {
+        "score": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "maximum": { "const": 4 },
+        "status": { "const": "assessed" }
+      }
+    },
+    "unassessed_pronunciation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score", "maximum", "status", "reason"],
+      "properties": {
+        "score": { "type": "null" },
+        "maximum": { "const": 4 },
+        "status": { "const": "not_assessed" },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

@@ -26,7 +26,9 @@ De webroute gebruikt de Laravel-sessie voor CSRF en een limiet van tien pogingen
 
 Wanneer de provider token-logwaarschijnlijkheden teruggeeft, zet de adapter het meetkundig gemiddelde om naar een begrensde transcript-confidence. Onder de configureerbare grens van standaard `0.65` krijgt het transcript `confidence_status=low`.
 
-Fase 2C gebruikt confidence alleen om de speler extra te laten controleren. Er wordt nog geen uitspraakscore berekend. Een lage of ontbrekende transcript-confidence kan daardoor nooit als uitspraakfout of negatieve voortgang worden verwerkt. Gelaagde rubricfeedback volgt in fase 2D als een afzonderlijke beoordelingsservice.
+Fase 2C gebruikt confidence alleen om de speler extra te laten controleren. Er wordt geen uitspraakscore berekend. Een lage of ontbrekende transcript-confidence kan daardoor nooit als uitspraakfout of negatieve voortgang worden verwerkt.
+
+Na een succesvol antwoord kan de browser het gecontroleerde transcript afzonderlijk naar de feedback-endpoint uit fase 2D sturen. Die laag ontvangt geen audio, kan dus geen uitspraak beoordelen en mag geen voortgang of beloning wijzigen. Zie `docs/layered-turn-feedback.md`.
 
 ## Privacy en logging
 

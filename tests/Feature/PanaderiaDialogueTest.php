@@ -17,6 +17,9 @@ class PanaderiaDialogueTest extends TestCase
             ->assertSee('data-translation-toggle', false)
             ->assertSee('data-speech-recorder', false)
             ->assertSee(route('game.madrid.panaderia.transcription'), false)
+            ->assertSee(route('game.madrid.panaderia.feedback'), false)
+            ->assertSee('data-feedback-details', false)
+            ->assertSee('data-feedback-retry', false)
             ->assertSee('data-dialogue-history', false);
     }
 

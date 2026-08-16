@@ -48,7 +48,7 @@ Bij voltooiing toont de client:
 - Transcriptie vult de bestaande vrije invoer; de speler controleert en corrigeert die vóór de gespreksregie.
 - Tekst en keuzehulp blijven beschikbaar bij geweigerde toestemming of technische uitval.
 - Er wordt geen ffmpeg-conversie geïntroduceerd.
-- Gelaagde rubric- en uitspraakfeedback volgt als afzonderlijke beoordelingsservice in fase 2D.
+- Gelaagde transcriptfeedback draait als afzonderlijke beoordelingsservice in fase 2D; uitspraak blijft zonder audio-evidence expliciet onbeoordeeld.
 - De intentieherkenning is deterministisch en client-side; server-side versieerbare gespreksregie volgt vóór productie-analyse.
 - Beloningen worden getoond en binnen de sessie bewaard, maar nog niet aan een gebruikersaccount geschreven.
 

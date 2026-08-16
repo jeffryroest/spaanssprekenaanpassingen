@@ -60,17 +60,17 @@
                 </div>
 
                 <aside class="rounded-3xl border border-white/10 bg-white/[0.06] p-7 shadow-2xl shadow-black/30 backdrop-blur sm:p-9" aria-labelledby="status-title">
-                    <p class="text-sm font-medium text-orange-300">Fase 2C</p>
-                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Je kunt Lucía nu echt toespreken</h2>
+                    <p class="text-sm font-medium text-orange-300">Fase 2D</p>
+                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Je krijgt feedback zonder je moed te verliezen</h2>
                     <ul class="mt-6 space-y-4 text-sm leading-6 text-stone-300">
-                        <li class="status-item">Neem maximaal 12 seconden WebM/Opus op</li>
-                        <li class="status-item">Luister lokaal terug voordat je verzendt</li>
-                        <li class="status-item">Controleer en corrigeer het Spaanse transcript</li>
-                        <li class="status-item">Gebruik altijd tekst als toegankelijke fallback</li>
+                        <li class="status-item">Zie eerst wat communicatief al goed ging</li>
+                        <li class="status-item">Krijg precies één concrete volgende stap</li>
+                        <li class="status-item">Bekijk vijf tekstbewijs-rubrics wanneer je wilt</li>
+                        <li class="status-item">Probeer een beurt opnieuw zonder dubbele voortgang</li>
                     </ul>
                     <div class="mt-8 border-t border-white/10 pt-6">
                         <p class="text-sm text-stone-400">Volgende mijlpaal</p>
-                        <p class="mt-1 font-medium text-white">Gelaagde feedback met één concrete spreekfocus</p>
+                        <p class="mt-1 font-medium text-white">Duurzame accountvoortgang, Confianza en Valentía</p>
                     </div>
                 </aside>
             </section>

@@ -9,6 +9,7 @@ use App\Http\Controllers\ContentStudio\ContentReviewController;
 use App\Http\Controllers\ContentStudio\DashboardController;
 use App\Http\Controllers\ContentStudio\ReviewQueueController;
 use App\Http\Controllers\Game\SpeechTranscriptionController;
+use App\Http\Controllers\Game\TurnFeedbackController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -18,6 +19,9 @@ Route::view('/spelen/madrid/la-panaderia', 'game.panaderia')->name('game.madrid.
 Route::post('/spelen/madrid/la-panaderia/transcriptie', SpeechTranscriptionController::class)
     ->middleware('throttle:speech-transcriptions')
     ->name('game.madrid.panaderia.transcription');
+Route::post('/spelen/madrid/la-panaderia/feedback', TurnFeedbackController::class)
+    ->middleware('throttle:turn-feedback')
+    ->name('game.madrid.panaderia.feedback');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');

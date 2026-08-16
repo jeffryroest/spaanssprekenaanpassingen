@@ -28,7 +28,7 @@
 - **2A — Visuele Madrid-hub:** productie-API-gedreven buurtkaart, vier hotspots, drie onderzoekspunten en toegankelijke lijstweergave.
 - **2B — La panadería:** betreedbare locatie, Lucía en een hervatbare, vertakkende tekstdialoog.
 - **2C — Spreken en transcriptie:** expliciete microfoontoestemming, WebM/Opus van maximaal 12 seconden, lokaal terugluisteren, veilige Spaanse transcriptie en tekstfallback.
-- **2D — Gelaagde feedback:** afzonderlijke rubricbeoordeling, betekenisfeedback, één uitspraakfocus en veilige herkansing.
+- **2D — Gelaagde feedback:** servergevalideerde rubricfeedback op het transcript, communicatief succes eerst, één concrete taal-/gespreksfocus en veilige herkansing; uitspraak blijft zonder audio-evidence expliciet onbeoordeeld.
 - **2E — Accountvoortgang:** duurzame voortgang, Confianza, Valentía, spreekdoel en eerste beloning.
 
 **Beslispoort:** een nieuwe gebruiker kan de kernlus zonder hulp voltooien.

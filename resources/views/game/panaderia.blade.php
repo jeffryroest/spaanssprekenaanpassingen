@@ -17,6 +17,7 @@
         data-source="{{ url('/api/v1/conversations/la-espiga-lucia?locale=nl-NL') }}"
         data-hub-route="{{ route('game.madrid') }}"
         data-transcription-url="{{ route('game.madrid.panaderia.transcription') }}"
+        data-assessment-url="{{ route('game.madrid.panaderia.feedback') }}"
     >
         <header class="bakery-topbar">
             <a href="{{ route('game.madrid') }}" class="bakery-back-link">
@@ -105,11 +106,26 @@
                             <p data-npc-line-nl hidden></p>
                         </div>
 
-                        <div class="bakery-feedback-card" data-feedback hidden>
+                        <div class="bakery-feedback-card" data-feedback hidden role="status" aria-live="polite">
                             <div class="bakery-feedback-icon" aria-hidden="true">✓</div>
-                            <div>
+                            <div class="bakery-feedback-content">
                                 <strong data-feedback-strength></strong>
                                 <p data-feedback-focus></p>
+                                <p lang="es" class="bakery-feedback-example" data-feedback-example></p>
+                                <p class="bakery-feedback-note" data-feedback-note></p>
+
+                                <details class="bakery-feedback-details" data-feedback-details hidden>
+                                    <summary>Bekijk de rubric</summary>
+                                    <div class="bakery-feedback-overall">
+                                        <span>Gewogen resultaat</span>
+                                        <strong data-feedback-overall></strong>
+                                    </div>
+                                    <ul data-feedback-rubric></ul>
+                                </details>
+
+                                <button type="button" class="bakery-feedback-retry" data-feedback-retry hidden>
+                                    Probeer deze beurt opnieuw
+                                </button>
                             </div>
                         </div>
 
@@ -165,7 +181,7 @@
                             </section>
 
                             <p class="bakery-privacy-note">
-                                Je opname wordt alleen na jouw klik naar de transcriptiedienst (OpenAI) verzonden, niet door ons opgeslagen en nooit naar analytics gestuurd.
+                                Je opname wordt alleen na jouw klik naar de transcriptiedienst (OpenAI) verzonden. Voor persoonlijke feedback gaat daarna alleen je gecontroleerde transcript met oefencontext naar OpenAI. Wij slaan beide niet server-side op en sturen ze nooit naar analytics.
                                 <a href="{{ route('privacy') }}#spraakopnamen">Lees het privacybeleid.</a>
                             </p>
 
