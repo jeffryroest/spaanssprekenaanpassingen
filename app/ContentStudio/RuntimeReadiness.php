@@ -33,8 +33,7 @@ final class RuntimeReadiness
         string $expectedScene,
         string $scope,
         bool $public,
-    ): array
-    {
+    ): array {
         $publishedNode = $public
             ? $this->publishedContent->findPublic($type, $slug)
             : $this->publishedContent->find($type, $slug);
