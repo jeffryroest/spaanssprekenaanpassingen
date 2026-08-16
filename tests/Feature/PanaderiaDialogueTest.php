@@ -24,7 +24,9 @@ class PanaderiaDialogueTest extends TestCase
             ->assertSee('data-account-sync', false)
             ->assertSee('data-feedback-details', false)
             ->assertSee('data-feedback-retry', false)
-            ->assertSee('data-dialogue-history', false);
+            ->assertSee('data-dialogue-history', false)
+            ->assertSee('data-preparation-summary', false)
+            ->assertSee('Ik wil een voorbeeldzin');
     }
 
     public function test_authenticated_dialogue_can_link_account_storage_and_progress(): void

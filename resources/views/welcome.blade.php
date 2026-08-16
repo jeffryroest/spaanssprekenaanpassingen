@@ -3,88 +3,91 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Spaansspreken.nl wordt een interactieve Spaanse wereld waarin je leert spreken door te doen.">
-    <title>Spaansspreken.nl · Interactieve Spaanse webgame</title>
+    <meta name="description" content="Stap Madrid in en leer Spaans spreken door echte missies te spelen.">
+    <title>Spaansspreken.nl · Stap Madrid in</title>
+    <link rel="preload" href="{{ asset('images/game/madrid-morning.webp') }}" as="image" type="image/webp">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-stone-950 text-stone-100 antialiased">
-    <main class="relative isolate min-h-screen overflow-hidden">
-        <div aria-hidden="true" class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(234,88,12,0.34),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(30,64,175,0.28),_transparent_38%)]"></div>
+<body class="world-home-body">
+    <a href="#main-content" class="hub-skip-link">Direct naar de eerste missie</a>
 
-        <div class="relative mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-8 sm:px-10 lg:px-12">
-            <header class="flex items-center justify-between gap-6 border-b border-white/10 pb-6">
-                <a href="{{ route('home') }}" class="text-lg font-semibold tracking-tight text-white">
-                    Spaansspreken<span class="text-orange-400">.nl</span>
-                </a>
-                <div class="flex items-center gap-3">
-                    <span class="hidden rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-medium text-emerald-200 sm:inline-flex">
-                        Fundament actief
-                    </span>
-                    @auth
-                        <a href="{{ route('trial-week.show') }}" class="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-stone-200 transition hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-orange-400">
-                            Mijn proefweek
-                        </a>
-                        <a href="{{ route('player.progress') }}" class="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-stone-200 transition hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-orange-400">
-                            Mijn voortgang
-                        </a>
-                        @can('content-studio.view')
-                            <a href="{{ route('content-studio.dashboard') }}" class="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-stone-200 transition hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-orange-400">
-                                Content Studio
-                            </a>
-                        @endcan
-                    @else
-                        <a href="{{ route('login') }}" class="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-stone-200 transition hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-orange-400">
-                            Inloggen
-                        </a>
-                    @endauth
+    <header class="world-home-nav">
+        <a href="{{ route('home') }}" class="world-brand" aria-label="Spaansspreken.nl startpagina">
+            <span aria-hidden="true">S</span>
+            <strong>Spaansspreken<em>.nl</em></strong>
+        </a>
+        <nav aria-label="Account en voortgang">
+            @auth
+                <a href="{{ route('player.progress') }}">Mijn voortgang</a>
+                <a href="{{ route('trial-week.show') }}">Mijn proefweek</a>
+                @can('content-studio.view')
+                    <a href="{{ route('content-studio.dashboard') }}">Content Studio</a>
+                @endcan
+            @else
+                <a href="{{ route('login') }}">Inloggen</a>
+            @endauth
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <section class="world-hero" aria-labelledby="world-hero-title">
+            <img
+                src="{{ asset('images/game/madrid-morning.webp') }}"
+                alt="Een warme Madrileense ochtendstraat met een metro-ingang, een plein en een buurtbakkerij."
+                width="1672"
+                height="941"
+                fetchpriority="high"
+            >
+            <div class="world-hero-shade" aria-hidden="true"></div>
+            <div class="world-hero-copy">
+                <p class="world-kicker"><span aria-hidden="true"></span> Je eerste ochtend in Madrid</p>
+                <h1 id="world-hero-title">Je leert Spaans zodra je de straat op stapt.</h1>
+                <p>Vind La Espiga, kies je ontbijt en bestel het zelf bij Lucía. Je mag spreken, typen en altijd om hulp vragen.</p>
+                <div class="world-hero-actions">
+                    <a href="{{ route('game.madrid') }}" class="world-primary-cta">
+                        Start je eerste missie
+                        <span aria-hidden="true">→</span>
+                    </a>
+                    <span>Gratis te spelen · ongeveer 12 minuten</span>
                 </div>
-            </header>
+            </div>
+            <aside class="world-mission-card" aria-labelledby="mission-card-title">
+                <span class="world-mission-number" aria-hidden="true">01</span>
+                <p>La panadería</p>
+                <h2 id="mission-card-title">Regel je ontbijt bij Lucía</h2>
+                <ul>
+                    <li><span aria-hidden="true">◎</span> Verken een levendige buurt</li>
+                    <li><span aria-hidden="true">●</span> Spreek zonder tijdsdruk</li>
+                    <li><span aria-hidden="true">✦</span> Verdien je eerste paspoortstempel</li>
+                </ul>
+            </aside>
+        </section>
 
-            <section class="grid flex-1 items-center gap-12 py-16 lg:grid-cols-[1.2fr_0.8fr]">
-                <div>
-                    <p class="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-orange-300">Madrid · La panadería</p>
-                    <h1 class="max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-6xl">
-                        Leer Spaans door het echt te <span class="text-orange-400">spreken.</span>
-                    </h1>
-                    <p class="mt-6 max-w-2xl text-lg leading-8 text-stone-300">
-                        Stap een levendige Madrileense buurt in, ontdek je eerste woorden en vind de bakkerij waar jouw eerste spreekmissie begint.
-                    </p>
+        <section class="world-how" aria-labelledby="world-how-title">
+            <div>
+                <p class="world-kicker">Zo speel je</p>
+                <h2 id="world-how-title">Geen losse woordenlijst. Eén echte situatie.</h2>
+            </div>
+            <ol>
+                <li><span>1</span><div><strong>Kijk rond</strong><p>Ontdek woorden waar je ze echt nodig hebt.</p></div></li>
+                <li><span>2</span><div><strong>Zeg het zelf</strong><p>Formuleer vrij; voorbeeldzinnen zijn alleen hulp.</p></div></li>
+                <li><span>3</span><div><strong>Zie Madrid reageren</strong><p>Je keuzes openen nieuwe plekken en beloningen.</p></div></li>
+            </ol>
+        </section>
 
-                    <div class="mt-8 flex flex-wrap gap-3">
-                        <a href="{{ route('game.madrid') }}" class="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-orange-500 px-5 py-3 font-semibold text-white shadow-lg shadow-orange-950/30 transition hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 focus:ring-offset-stone-950">
-                            Start in Madrid
-                            <span aria-hidden="true">→</span>
-                        </a>
-                    </div>
-
-                    <div class="mt-9 flex flex-wrap gap-3" aria-label="Technische basis">
-                        <span class="status-chip">Laravel 13</span>
-                        <span class="status-chip">PHP 8.4</span>
-                        <span class="status-chip">Tailwind CSS 4</span>
-                        <span class="status-chip">WebM-audio</span>
-                    </div>
-                </div>
-
-                <aside class="rounded-3xl border border-white/10 bg-white/[0.06] p-7 shadow-2xl shadow-black/30 backdrop-blur sm:p-9" aria-labelledby="status-title">
-                    <p class="text-sm font-medium text-orange-300">Fase 3B1</p>
-                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Dag 2 brengt je met Diego door Madrid</h2>
-                    <ul class="mt-6 space-y-4 text-sm leading-6 text-stone-300">
-                        <li class="status-item">Vertel waar je heen wilt en reageer op de route</li>
-                        <li class="status-item">Spreek of formuleer ieder antwoord zelf</li>
-                        <li class="status-item">Gebruik dezelfde veilige transcriptie en feedback</li>
-                        <li class="status-item">Verdien een taxistempel en Madrileense taxibon</li>
-                    </ul>
-                    <div class="mt-8 border-t border-white/10 pt-6">
-                        <p class="text-sm text-stone-400">Volgende mijlpaal</p>
-                        <p class="mt-1 font-medium text-white">Fase 3B2 · restaurantmissie</p>
-                    </div>
-                </aside>
-            </section>
-
-            <footer class="border-t border-white/10 pt-6 text-sm text-stone-500">
-                Eerst één uitzonderlijk goede vertical slice. Daarna gecontroleerd uitbreiden.
-            </footer>
-        </div>
+        <section class="world-promise" aria-labelledby="world-promise-title">
+            <div>
+                <p class="world-kicker">Spreken met vertrouwen</p>
+                <h2 id="world-promise-title">Begrijpelijk Spaans telt. Foutloos hoeft niet.</h2>
+            </div>
+            <p>Lucía blijft in haar rol als bakker. De coachlaag vertelt eerst wat al duidelijk was en geeft daarna maar één concrete volgende stap. Geen levens, geen tijdsdruk.</p>
+            <a href="{{ route('game.madrid') }}">Madrid wacht op je <span aria-hidden="true">→</span></a>
+        </section>
     </main>
+
+    <footer class="world-home-footer">
+        <p>Spaansspreken.nl · leren door te doen</p>
+        <a href="{{ route('privacy') }}">Privacy en spraakopnamen</a>
+    </footer>
 </body>
 </html>

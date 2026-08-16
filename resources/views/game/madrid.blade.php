@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Verken Madrid en start je eerste Spaanse spreekmissie bij Panadería La Espiga.">
     <title>Madrid · Spaansspreken.nl</title>
+    <link rel="preload" href="{{ asset('images/game/madrid-morning.webp') }}" as="image" type="image/webp">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="hub-body">
@@ -155,6 +156,38 @@
                 <p>De kaart kan pas openen nadat de wereld <strong>madrid</strong> via een productierelease is gepubliceerd.</p>
                 <button type="button" data-hub-retry>Probeer opnieuw</button>
             </section>
+
+            <dialog class="hub-arrival-dialog" data-hub-arrival aria-labelledby="hub-arrival-title">
+                <div class="hub-arrival-visual" aria-hidden="true"></div>
+                <div class="hub-dialog-content">
+                    <p class="hub-eyebrow">Aankomst · Metro Sol</p>
+                    <h2 id="hub-arrival-title">Je bent in Madrid</h2>
+                    <p data-hub-arrival-description>De stad wordt wakker. Vanaf hier regel je zelf je eerste ontbijt.</p>
+                    <button type="button" data-hub-arrival-continue>Bekijk de buurt <span aria-hidden="true">→</span></button>
+                </div>
+            </dialog>
+
+            <dialog class="hub-preparation-dialog" data-hub-preparation aria-labelledby="hub-preparation-title">
+                <div class="hub-dialog-content">
+                    <button type="button" class="hub-dialog-close" data-hub-preparation-close aria-label="Voorbereiding sluiten">×</button>
+                    <p class="hub-eyebrow">Voor je naar binnen gaat</p>
+                    <h2 id="hub-preparation-title">Wat wil je meenemen?</h2>
+                    <p data-hub-preparation-objective>Kies iets zoets voor bij je brood. Dit is je boodschappenkaart, geen verplicht script.</p>
+                    <div class="hub-basket-card">
+                        <span aria-hidden="true">🥖</span>
+                        <div><small>Brood</small><strong lang="es" data-hub-bread-choice>el pan</strong></div>
+                    </div>
+                    <fieldset class="hub-sweet-choices">
+                        <legend>Kies iets zoets</legend>
+                        <div data-hub-sweet-choices></div>
+                    </fieldset>
+                    <p class="hub-preparation-note"><span aria-hidden="true">♡</span> Je formuleert je bestelling straks zelf. Fouten houden de rij nooit op.</p>
+                    <button type="button" class="hub-mission-button" data-hub-enter-bakery>
+                        Ga La Espiga binnen
+                        <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+            </dialog>
 
             <noscript>
                 <section class="hub-error">

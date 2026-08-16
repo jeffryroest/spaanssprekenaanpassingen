@@ -51,19 +51,14 @@ Commit `.env` nooit en plaats `OPENAI_API_KEY` uitsluitend in de Ploi-omgeving. 
 
 ## Deploymentscript
 
-Gebruik in Ploi, nadat de repository naar de gewenste branch is uitgecheckt:
+Gebruik in Ploi, nadat de repository naar de gewenste branch is uitgecheckt, het versiegebonden script:
 
 ```bash
 cd /home/ploi/v2.spaansspreken.nl
-
-composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-
-npm install --no-audit --no-fund
-npm run build
-
-php artisan migrate --force
-php artisan optimize
+bash scripts/deploy-production.sh /home/ploi/v2.spaansspreken.nl
 ```
+
+Het script gebruikt `composer.lock` en `package-lock.json`, voert `npm ci` uit, bouwt Vite en controleert daarna of de spelershome, Madrid-voorbereiding en dialoogmotor werkelijk in de gegenereerde bundels staan. Bij een ontbrekende of verouderde bundel stopt de deploy vóór de Laravel-caches opnieuw worden opgebouwd.
 
 Vanaf fase 2E maakt `php artisan migrate --force` ook de accountvoortgangstabellen aan. Maak deze tabellen niet handmatig in MySQL; de migratie bevat zowel de foreign keys als de terugrolvolgorde. De deploy kan zonder verlies opnieuw worden uitgevoerd wanneer de migratie al is toegepast.
 
@@ -83,6 +78,14 @@ php artisan test
 ```
 
 Open vervolgens `https://v2.spaansspreken.nl/up`. Een succesvolle respons bevestigt dat Laravel is opgestart. De startpagina op `/` bevestigt daarnaast dat de Vite-assets zijn gebouwd.
+
+Controleer na iedere frontenddeploy ook de live bundels:
+
+```bash
+node scripts/smoke-live-frontend.mjs https://v2.spaansspreken.nl
+```
+
+Deze rooktest haalt de CSS en JavaScript op waarnaar de live HTML verwijst. Daardoor detecteert hij ook een geslaagde Git-pull met achtergebleven `public/build`-bestanden.
 
 ## Lockbestanden
 

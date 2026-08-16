@@ -67,6 +67,15 @@
                 We controleren of de goedgekeurde dialoog beschikbaar is.
             </div>
 
+            <section class="bakery-preparation-summary" data-preparation-summary hidden aria-labelledby="preparation-summary-title">
+                <span aria-hidden="true">🧺</span>
+                <div>
+                    <p class="bakery-eyebrow">Jouw boodschappenkaart</p>
+                    <h2 id="preparation-summary-title"><span data-preparation-bread></span> + <span data-preparation-sweet></span></h2>
+                    <p>Dit helpt je onthouden wat je wilde. Je mag in het gesprek altijd iets anders kiezen.</p>
+                </div>
+            </section>
+
             <section class="bakery-stage" data-dialogue-stage hidden>
                 <aside class="bakery-scene" aria-label="Interieur van Panadería La Espiga">
                     <div class="bakery-awning" aria-hidden="true"></div>
@@ -193,10 +202,10 @@
                                 <p class="bakery-transcript-note" data-transcript-note hidden></p>
                             </section>
 
-                            <p class="bakery-privacy-note">
-                                Je opname wordt alleen na jouw klik naar de transcriptiedienst (OpenAI) verzonden. Voor persoonlijke feedback gaat daarna alleen je gecontroleerde transcript met oefencontext naar OpenAI. Wij slaan beide niet server-side op en sturen ze nooit naar analytics.
-                                <a href="{{ route('privacy') }}#spraakopnamen">Lees het privacybeleid.</a>
-                            </p>
+                            <details class="bakery-privacy-note">
+                                <summary>Wat gebeurt er met mijn opname?</summary>
+                                <p>Je opname wordt alleen na jouw klik naar de transcriptiedienst (OpenAI) verzonden. Voor persoonlijke feedback gaat daarna alleen je gecontroleerde transcript met oefencontext naar OpenAI. Wij slaan beide niet server-side op en sturen ze nooit naar analytics. <a href="{{ route('privacy') }}#spraakopnamen">Lees het privacybeleid.</a></p>
+                            </details>
 
                             <div class="bakery-input-divider" aria-hidden="true"><span>of typ je antwoord</span></div>
                             <div class="bakery-input-row">
@@ -218,10 +227,10 @@
                                 <p data-step-hint hidden></p>
                             </div>
 
-                            <fieldset class="bakery-choice-assist">
-                                <legend>Of kies een voorbeeldzin</legend>
+                            <details class="bakery-choice-assist">
+                                <summary>Ik wil een voorbeeldzin</summary>
                                 <div data-choice-list></div>
-                            </fieldset>
+                            </details>
                         </form>
 
                         <button type="button" class="bakery-continue-button" data-dialogue-continue hidden>

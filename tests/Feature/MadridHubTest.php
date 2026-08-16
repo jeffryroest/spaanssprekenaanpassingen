@@ -19,7 +19,10 @@ class MadridHubTest extends TestCase
             ->assertSee(route('game.progress'), false)
             ->assertSee('data-account-xp', false)
             ->assertSee('data-hub-list-view', false)
-            ->assertSee('data-hub-sound', false);
+            ->assertSee('data-hub-sound', false)
+            ->assertSee('data-hub-arrival', false)
+            ->assertSee('data-hub-preparation', false)
+            ->assertSee('madrid-morning.webp', false);
     }
 
     public function test_authenticated_hub_exposes_account_progress_contract(): void
@@ -36,6 +39,6 @@ class MadridHubTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee(route('game.madrid'))
-            ->assertSee('Start in Madrid');
+            ->assertSee('Start je eerste missie');
     }
 }

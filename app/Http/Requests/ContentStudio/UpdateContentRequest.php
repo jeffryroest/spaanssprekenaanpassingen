@@ -3,6 +3,7 @@
 namespace App\Http\Requests\ContentStudio;
 
 use App\Models\ContentNode;
+use App\Rules\PlayableDomainData;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -35,6 +36,7 @@ class UpdateContentRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'summary' => ['nullable', 'string'],
             'body' => ['nullable', 'string'],
+            'domain_data' => ['nullable', 'string', new PlayableDomainData($contentNode->content_type)],
         ];
     }
 }

@@ -11,10 +11,14 @@ if (hub) {
         inspectables: hub.querySelector('[data-hub-inspectables]'),
         locationList: hub.querySelector('[data-hub-location-list]'),
         listView: hub.querySelector('[data-hub-list-view]'),
+        arrival: hub.querySelector('[data-hub-arrival]'),
+        preparation: hub.querySelector('[data-hub-preparation]'),
     };
     const explored = new Set(readExplored());
     let accountProgress = null;
     let accountProgressUnavailable = false;
+    let currentHubData = null;
+    let ambience = null;
 
     const setText = (selector, value) => {
         const element = hub.querySelector(selector);
@@ -192,6 +196,7 @@ if (hub) {
     };
 
     const renderHub = (data) => {
+        currentHubData = data;
         setText('[data-hub-eyebrow]', data.intro.eyebrow);
         setText('[data-hub-title]', data.intro.title);
         setText('[data-hub-description]', data.intro.description);
@@ -208,11 +213,54 @@ if (hub) {
             ? 'Madrid is klaar. Je accounttotalen konden tijdelijk niet worden geladen; de kaart blijft volledig werken.'
             : 'Madrid is klaar. Kies een locatie of onderzoek een detail op de kaart.';
         updateCuriosity();
+        showArrival(data);
+    };
+
+    const showArrival = (data) => {
+        if (!elements.arrival || readSessionValue('madrid-hub-arrival-seen') === 'true') return;
+
+        setText('[data-hub-arrival-description]', data.intro.description);
+        openDialog(elements.arrival);
+    };
+
+    const openPreparation = () => {
+        if (!elements.preparation || !currentHubData) return;
+
+        const vocabulary = currentHubData.inspectables.find(({ kind }) => kind === 'vocabulary');
+        const products = Array.isArray(vocabulary?.items) ? vocabulary.items : [];
+        const bread = products.find(({ es }) => /pan|barra/i.test(es)) ?? products[0];
+        const sweets = products.filter((product) => product !== bread);
+        const choiceList = hub.querySelector('[data-hub-sweet-choices]');
+
+        setText('[data-hub-preparation-objective]', currentHubData.intro.objective);
+        setText('[data-hub-bread-choice]', bread?.es ?? 'el pan');
+        choiceList.replaceChildren(...sweets.map((product, index) => {
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            const copy = document.createElement('span');
+            const spanish = document.createElement('strong');
+            const dutch = document.createElement('small');
+
+            input.type = 'radio';
+            input.name = 'sweet-choice';
+            input.value = product.es;
+            input.dataset.translation = product.nl;
+            input.checked = index === 0;
+            spanish.lang = 'es';
+            spanish.textContent = product.es;
+            dutch.textContent = product.nl;
+            copy.append(spanish, dutch);
+            label.append(input, copy);
+
+            return label;
+        }));
+        openDialog(elements.preparation);
     };
 
     const applyAccountState = (hotspot) => {
         const mission = accountProgress?.mission;
-        if (hotspot.id === 'madrid.panaderia' && mission?.status === 'completed') {
+        const locallyCompleted = readDialogueCompletion();
+        if (hotspot.id === 'madrid.panaderia' && (mission?.status === 'completed' || locallyCompleted)) {
             return {
                 ...hotspot,
                 state: 'completed',
@@ -220,7 +268,7 @@ if (hub) {
             };
         }
 
-        if (hotspot.id === 'madrid.cafe.reloj' && mission?.states?.includes('madrid.cafe.preview_unlocked')) {
+        if (hotspot.id === 'madrid.cafe.reloj' && (mission?.states?.includes('madrid.cafe.preview_unlocked') || locallyCompleted)) {
             return {
                 ...hotspot,
                 state: 'preview',
@@ -292,7 +340,28 @@ if (hub) {
     });
 
     hub.querySelector('[data-hub-mission-button]')?.addEventListener('click', () => {
-        elements.status.textContent = 'De deur van La Espiga gaat open.';
+        elements.status.textContent = 'Je maakt eerst je boodschappenkaart klaar.';
+        openPreparation();
+    });
+
+    hub.querySelector('[data-hub-arrival-continue]')?.addEventListener('click', () => {
+        writeSessionValue('madrid-hub-arrival-seen', 'true');
+        elements.arrival?.close();
+        elements.map?.focus({ preventScroll: true });
+    });
+
+    hub.querySelector('[data-hub-preparation-close]')?.addEventListener('click', () => {
+        elements.preparation?.close();
+    });
+
+    hub.querySelector('[data-hub-enter-bakery]')?.addEventListener('click', () => {
+        const sweet = hub.querySelector('[name="sweet-choice"]:checked');
+        writeSessionValue('madrid-mission-preparation', JSON.stringify({
+            bread: hub.querySelector('[data-hub-bread-choice]')?.textContent ?? 'el pan',
+            sweet: sweet?.value ?? '',
+            sweetTranslation: sweet?.dataset.translation ?? '',
+        }));
+        elements.status.textContent = 'Je boodschappenkaart is klaar. De deur van La Espiga gaat open.';
         window.location.assign(hub.dataset.panaderiaRoute);
     });
 
@@ -303,7 +372,14 @@ if (hub) {
         const enabled = button.getAttribute('aria-pressed') !== 'true';
         button.setAttribute('aria-pressed', String(enabled));
         setText('[data-sound-label]', enabled ? 'Geluid aan' : 'Geluid uit');
-        elements.status.textContent = enabled ? 'Geluid staat aan.' : 'Stille modus staat aan.';
+        if (enabled) {
+            ambience = createMadridAmbience();
+            elements.status.textContent = 'Zachte straatambiance staat aan. Er zit geen essentiële informatie in het geluid.';
+        } else {
+            ambience?.stop();
+            ambience = null;
+            elements.status.textContent = 'Stille modus staat aan.';
+        }
     });
 
     hub.querySelector('[data-hub-view]')?.addEventListener('click', (event) => {
@@ -325,6 +401,47 @@ if (hub) {
     });
 
     loadHub();
+}
+
+function openDialog(dialog) {
+    if (dialog.open) return;
+
+    if (typeof dialog.showModal === 'function') {
+        dialog.showModal();
+    } else {
+        dialog.setAttribute('open', '');
+    }
+}
+
+function createMadridAmbience() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return { stop() {} };
+
+    const context = new AudioContext();
+    const output = context.createGain();
+    const filter = context.createBiquadFilter();
+    const buffer = context.createBuffer(1, context.sampleRate * 3, context.sampleRate);
+    const samples = buffer.getChannelData(0);
+
+    for (let index = 0; index < samples.length; index += 1) {
+        samples[index] = (Math.random() * 2 - 1) * 0.22;
+    }
+
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    filter.type = 'lowpass';
+    filter.frequency.value = 750;
+    output.gain.value = 0.035;
+    source.connect(filter).connect(output).connect(context.destination);
+    source.start();
+
+    return {
+        stop() {
+            source.stop();
+            context.close();
+        },
+    };
 }
 
 function hotspotIcon(kind) {
@@ -349,5 +466,31 @@ function writeExplored(ids) {
         window.sessionStorage.setItem('madrid-hub-explored', JSON.stringify(ids));
     } catch {
         // De hub blijft werken wanneer sessieopslag door de browser is uitgeschakeld.
+    }
+}
+
+function readSessionValue(key) {
+    try {
+        return window.sessionStorage.getItem(key);
+    } catch {
+        return null;
+    }
+}
+
+function writeSessionValue(key, value) {
+    try {
+        window.sessionStorage.setItem(key, value);
+    } catch {
+        // Tijdelijke keuzes blijven optioneel wanneer sessieopslag niet beschikbaar is.
+    }
+}
+
+function readDialogueCompletion() {
+    try {
+        const state = JSON.parse(window.sessionStorage.getItem('panaderia-text-dialogue-v1') ?? 'null');
+
+        return state?.completed === true;
+    } catch {
+        return false;
     }
 }

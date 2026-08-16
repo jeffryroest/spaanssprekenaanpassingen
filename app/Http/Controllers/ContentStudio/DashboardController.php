@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ContentStudio;
 
+use App\ContentStudio\RuntimeReadiness;
 use App\Enums\ContentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ContentNode;
@@ -11,7 +12,7 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(RuntimeReadiness $runtimeReadiness): View
     {
         $canReview = Gate::allows('content-studio.review');
         $canPublish = Gate::allows('content-studio.publish');
@@ -28,6 +29,7 @@ class DashboardController extends Controller
             'draftReleaseCount' => ContentRelease::query()
                 ->where('status', 'draft')
                 ->count(),
+            'runtimeReadiness' => $runtimeReadiness->items(),
         ]);
     }
 }
