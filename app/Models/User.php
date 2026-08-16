@@ -8,6 +8,8 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -30,5 +32,25 @@ class User extends Authenticatable
     public function hasContentPermission(ContentPermission $permission): bool
     {
         return $this->content_role?->allows($permission) ?? false;
+    }
+
+    public function gameState(): HasOne
+    {
+        return $this->hasOne(UserGameState::class);
+    }
+
+    public function missionProgress(): HasMany
+    {
+        return $this->hasMany(UserMissionProgress::class);
+    }
+
+    public function missionAttempts(): HasMany
+    {
+        return $this->hasMany(MissionAttempt::class);
+    }
+
+    public function rewards(): HasMany
+    {
+        return $this->hasMany(UserReward::class);
     }
 }

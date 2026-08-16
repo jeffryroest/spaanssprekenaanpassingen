@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Tests\TestCase;
 
 class MadridHubTest extends TestCase
@@ -14,8 +15,20 @@ class MadridHubTest extends TestCase
             ->assertSee('Ga naar de Madrid-kaart')
             ->assertSee('data-madrid-hub', false)
             ->assertSee('/api/v1/worlds/madrid?locale=nl-NL', false)
+            ->assertSee('data-authenticated="false"', false)
+            ->assertSee(route('game.progress'), false)
+            ->assertSee('data-account-xp', false)
             ->assertSee('data-hub-list-view', false)
             ->assertSee('data-hub-sound', false);
+    }
+
+    public function test_authenticated_hub_exposes_account_progress_contract(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get('/spelen/madrid')
+            ->assertOk()
+            ->assertSee('data-authenticated="true"', false)
+            ->assertSee(route('player.progress'), false);
     }
 
     public function test_homepage_links_to_the_madrid_hub(): void

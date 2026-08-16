@@ -21,6 +21,9 @@
                         Fundament actief
                     </span>
                     @auth
+                        <a href="{{ route('player.progress') }}" class="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-stone-200 transition hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-orange-400">
+                            Mijn voortgang
+                        </a>
                         @can('content-studio.view')
                             <a href="{{ route('content-studio.dashboard') }}" class="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-stone-200 transition hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-orange-400">
                                 Content Studio
@@ -60,17 +63,17 @@
                 </div>
 
                 <aside class="rounded-3xl border border-white/10 bg-white/[0.06] p-7 shadow-2xl shadow-black/30 backdrop-blur sm:p-9" aria-labelledby="status-title">
-                    <p class="text-sm font-medium text-orange-300">Fase 2D</p>
-                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Je krijgt feedback zonder je moed te verliezen</h2>
+                    <p class="text-sm font-medium text-orange-300">Fase 2E</p>
+                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Je resultaat blijft bij je account</h2>
                     <ul class="mt-6 space-y-4 text-sm leading-6 text-stone-300">
-                        <li class="status-item">Zie eerst wat communicatief al goed ging</li>
-                        <li class="status-item">Krijg precies één concrete volgende stap</li>
-                        <li class="status-item">Bekijk vijf tekstbewijs-rubrics wanneer je wilt</li>
-                        <li class="status-item">Probeer een beurt opnieuw zonder dubbele voortgang</li>
+                        <li class="status-item">Verdien server-side berekende XP, Confianza en Valentía</li>
+                        <li class="status-item">Bewaar je eerste stempel en verzamelitem</li>
+                        <li class="status-item">Zie je spreekdoel en ontgrendelingen terug</li>
+                        <li class="status-item">Veilige retries leveren nooit dubbele beloningen op</li>
                     </ul>
                     <div class="mt-8 border-t border-white/10 pt-6">
                         <p class="text-sm text-stone-400">Volgende mijlpaal</p>
-                        <p class="mt-1 font-medium text-white">Duurzame accountvoortgang, Confianza en Valentía</p>
+                        <p class="mt-1 font-medium text-white">Fase 3 · proefweek en toegangsgrenzen</p>
                     </div>
                 </aside>
             </section>

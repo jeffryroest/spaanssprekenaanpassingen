@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Log in op de Content Studio van Spaansspreken.nl.">
+    <meta name="description" content="Log in om je Spaanse leerwereld, voortgang en Content Studio te openen.">
     <meta name="theme-color" content="#172033">
-    <title>Inloggen · Content Studio · Spaansspreken.nl</title>
+    <title>Inloggen · Spaansspreken.nl</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-700 antialiased">
@@ -20,12 +20,12 @@
             </a>
 
             <div class="relative max-w-2xl">
-                <p class="text-xs font-bold uppercase tracking-[0.2em] text-brand-300">Content Studio</p>
-                <h1 id="studio-intro-title" class="mt-4 text-4xl font-bold leading-tight tracking-tight xl:text-5xl">Leercontent veilig maken, beoordelen en publiceren.</h1>
-                <p class="mt-6 max-w-xl text-base leading-7 text-slate-300">Eén centrale werkruimte voor de Spaanse leerwereld van Spaansspreken.nl, met versiebeheer en gecontroleerde bevoegdheden.</p>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-brand-300">Jouw Spaanse wereld</p>
+                <h1 id="studio-intro-title" class="mt-4 text-4xl font-bold leading-tight tracking-tight xl:text-5xl">Ga verder waar je gebleven was.</h1>
+                <p class="mt-6 max-w-xl text-base leading-7 text-slate-300">Bewaar je XP, Confianza, Valentía en missieroutes bij je account. Redactieaccounts openen vanuit dezelfde veilige ingang de Content Studio.</p>
 
                 <ul class="mt-10 grid gap-4 text-sm text-slate-200 sm:grid-cols-2">
-                    @foreach (['Canonieke contentbron', 'Onveranderlijke revisies', 'Rollen en bevoegdheden', 'Veilige publicatieroute'] as $benefit)
+                    @foreach (['Blijvende missievoortgang', 'Spaans paspoort en items', 'Veilige accountopslag', 'Content Studio voor redactie'] as $benefit)
                         <li class="flex items-center gap-3">
                             <span class="grid size-6 shrink-0 place-items-center rounded-full bg-emerald-400/15 text-emerald-300" aria-hidden="true">
                                 <svg class="size-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 10 3 3 7-7" /></svg>
@@ -36,7 +36,7 @@
                 </ul>
             </div>
 
-            <p class="relative text-xs text-slate-500">Beveiligde beheeromgeving · Spaansspreken.nl</p>
+            <p class="relative text-xs text-slate-500">Beveiligde leer- en beheeromgeving · Spaansspreken.nl</p>
         </section>
 
         <section class="flex items-center justify-center px-5 py-10 sm:px-8 lg:px-12" aria-labelledby="login-title">
@@ -47,8 +47,8 @@
                 </a>
 
                 <p class="cs-eyebrow">Welkom terug</p>
-                <h2 id="login-title" class="mt-3 text-3xl font-bold tracking-tight text-slate-950">Inloggen op de Content Studio</h2>
-                <p class="mt-3 text-sm leading-6 text-slate-500">Gebruik het account waaraan een redactierol is toegewezen.</p>
+                <h2 id="login-title" class="mt-3 text-3xl font-bold tracking-tight text-slate-950">Inloggen op Spaansspreken.nl</h2>
+                <p class="mt-3 text-sm leading-6 text-slate-500">Open je voortgang of ga met een redactierol verder in de Content Studio.</p>
 
                 @if ($errors->any())
                     <div class="cs-alert-error mt-6" role="alert">

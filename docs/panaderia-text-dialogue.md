@@ -22,7 +22,7 @@ Herstelzinnen zoals `¿Puede repetir?`, `Más despacio, por favor` en `No entien
 
 ## Hervatten en beloningen
 
-De laatste voltooide beurt, het gekozen niveau, states en het zichtbare gespreksverloop worden in deze fase in `sessionStorage` opgeslagen. Herladen hervat daardoor veilig binnen dezelfde browsersessie. Accountgebonden persistentie volgt later in fase 2.
+De laatste voltooide beurt, het gekozen niveau, states en het zichtbare gespreksverloop blijven in `sessionStorage`, zodat herladen veilig binnen dezelfde browsersessie hervat. Vanaf fase 2E schrijft een ingelogde speler na voltooiing daarnaast minimale route-evidence, accountbalansen en unieke beloningen duurzaam naar de server. De server valideert de route opnieuw tegen exact de productiegepubliceerde conversieversie.
 
 Bij voltooiing toont de client:
 
@@ -50,7 +50,8 @@ Bij voltooiing toont de client:
 - Er wordt geen ffmpeg-conversie geïntroduceerd.
 - Gelaagde transcriptfeedback draait als afzonderlijke beoordelingsservice in fase 2D; uitspraak blijft zonder audio-evidence expliciet onbeoordeeld.
 - De intentieherkenning is deterministisch en client-side; server-side versieerbare gespreksregie volgt vóór productie-analyse.
-- Beloningen worden getoond en binnen de sessie bewaard, maar nog niet aan een gebruikersaccount geschreven.
+- Beloningen worden lokaal getoond en voor ingelogde spelers idempotent aan het gebruikersaccount geschreven; antwoorden, audio, transcript en AI-feedback gaan niet mee naar de voortgangsopslag.
+- Gasten kunnen de volledige dialoog afronden en daarna veilig inloggen om dezelfde lokale completion UUID alsnog te synchroniseren.
 
 ## Acceptatiecriteria
 

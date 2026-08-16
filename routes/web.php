@@ -8,8 +8,10 @@ use App\Http\Controllers\ContentStudio\ContentReleasePublicationController;
 use App\Http\Controllers\ContentStudio\ContentReviewController;
 use App\Http\Controllers\ContentStudio\DashboardController;
 use App\Http\Controllers\ContentStudio\ReviewQueueController;
+use App\Http\Controllers\Game\CompletePanaderiaMissionController;
 use App\Http\Controllers\Game\SpeechTranscriptionController;
 use App\Http\Controllers\Game\TurnFeedbackController;
+use App\Http\Controllers\PlayerProgressController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -31,6 +33,16 @@ Route::middleware('guest')->group(function (): void {
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
+
+Route::middleware('auth')->group(function (): void {
+    Route::get('/mijn-voortgang', [PlayerProgressController::class, 'show'])
+        ->name('player.progress');
+    Route::get('/spelen/voortgang', [PlayerProgressController::class, 'json'])
+        ->name('game.progress');
+    Route::post('/spelen/madrid/la-panaderia/voltooien', CompletePanaderiaMissionController::class)
+        ->middleware('throttle:mission-completions')
+        ->name('game.madrid.panaderia.complete');
+});
 
 Route::prefix('content-studio')
     ->name('content-studio.')

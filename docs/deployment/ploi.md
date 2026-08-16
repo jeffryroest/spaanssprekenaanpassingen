@@ -65,6 +65,8 @@ php artisan migrate --force
 php artisan optimize
 ```
 
+Vanaf fase 2E maakt `php artisan migrate --force` ook de accountvoortgangstabellen aan. Maak deze tabellen niet handmatig in MySQL; de migratie bevat zowel de foreign keys als de terugrolvolgorde. De deploy kan zonder verlies opnieuw worden uitgevoerd wanneer de migratie al is toegepast.
+
 Voer bij de eerste deployment vóór `php artisan migrate --force` eenmaal uit:
 
 ```bash

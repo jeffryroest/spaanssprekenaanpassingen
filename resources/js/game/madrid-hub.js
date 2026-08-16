@@ -13,6 +13,8 @@ if (hub) {
         listView: hub.querySelector('[data-hub-list-view]'),
     };
     const explored = new Set(readExplored());
+    let accountProgress = null;
+    let accountProgressUnavailable = false;
 
     const setText = (selector, value) => {
         const element = hub.querySelector(selector);
@@ -81,7 +83,13 @@ if (hub) {
         title.textContent = hotspot.label.es;
         translation.textContent = hotspot.label.nl;
         state.className = `hub-hotspot-state hub-hotspot-state-${hotspot.state}`;
-        state.textContent = hotspot.state === 'open' ? 'Open' : hotspot.state === 'completed' ? 'Voltooid' : 'Binnenkort';
+        state.textContent = hotspot.state === 'open'
+            ? 'Open'
+            : hotspot.state === 'completed'
+                ? 'Voltooid'
+                : hotspot.state === 'preview'
+                    ? 'Vooruitblik'
+                    : 'Binnenkort';
         copy.append(title, translation);
         button.append(icon, copy, state);
         button.addEventListener('click', () => openHotspot(hotspot));
@@ -111,11 +119,11 @@ if (hub) {
         const isOpen = ['open', 'completed'].includes(hotspot.state);
 
         showPanel({
-            kind: isOpen ? 'Open locatie' : 'Vooruitblik',
+            kind: hotspot.state === 'completed' ? 'Missie voltooid' : isOpen ? 'Open locatie' : 'Vooruitblik',
             title: hotspot.label.es,
             body: hotspot.description,
             language: hotspot.label,
-            mission: isOpen,
+            mission: isOpen && hotspot.kind === 'bakery',
             reward: false,
         });
         elements.status.textContent = isOpen
@@ -189,14 +197,66 @@ if (hub) {
         setText('[data-hub-description]', data.intro.description);
         setText('[data-hub-objective]', data.intro.objective);
 
-        elements.hotspots.replaceChildren(...data.hotspots.map((hotspot) => createHotspot(hotspot)));
-        elements.locationList.replaceChildren(...data.hotspots.map((hotspot) => createHotspot(hotspot, true)));
+        const hotspots = data.hotspots.map(applyAccountState);
+        elements.hotspots.replaceChildren(...hotspots.map((hotspot) => createHotspot(hotspot)));
+        elements.locationList.replaceChildren(...hotspots.map((hotspot) => createHotspot(hotspot, true)));
         elements.inspectables.replaceChildren(...data.inspectables.map(createInspectable));
         elements.loading.hidden = true;
         elements.error.hidden = true;
         elements.map.hidden = false;
-        elements.status.textContent = 'Madrid is klaar. Kies een locatie of onderzoek een detail op de kaart.';
+        elements.status.textContent = accountProgressUnavailable
+            ? 'Madrid is klaar. Je accounttotalen konden tijdelijk niet worden geladen; de kaart blijft volledig werken.'
+            : 'Madrid is klaar. Kies een locatie of onderzoek een detail op de kaart.';
         updateCuriosity();
+    };
+
+    const applyAccountState = (hotspot) => {
+        const mission = accountProgress?.mission;
+        if (hotspot.id === 'madrid.panaderia' && mission?.status === 'completed') {
+            return {
+                ...hotspot,
+                state: 'completed',
+                description: `${hotspot.description} Je bestelling is voltooid; vrij oefenen is ontgrendeld.`,
+            };
+        }
+
+        if (hotspot.id === 'madrid.cafe.reloj' && mission?.states?.includes('madrid.cafe.preview_unlocked')) {
+            return {
+                ...hotspot,
+                state: 'preview',
+                description: 'Je hebt een vooruitblik ontgrendeld. In de volgende missie oefen je bestellen en sociale taal in Café El Reloj.',
+            };
+        }
+
+        return hotspot;
+    };
+
+    const loadAccountProgress = async () => {
+        if (hub.dataset.authenticated !== 'true') return;
+
+        try {
+            const response = await fetch(hub.dataset.progressUrl, {
+                headers: { Accept: 'application/json' },
+                credentials: 'same-origin',
+            });
+            if (!response.ok) throw new Error(`Accountvoortgang niet beschikbaar (${response.status}).`);
+
+            const payload = await response.json();
+            if (payload?.schema_version !== '1.0.0'
+                || payload?.meta?.audio_included !== false
+                || payload?.meta?.transcript_included !== false
+                || payload?.meta?.feedback_included !== false
+                || !payload?.data?.balances) {
+                throw new Error('Onveilig accountvoortgangscontract.');
+            }
+
+            accountProgress = payload.data;
+            setText('[data-account-xp]', String(payload.data.balances.xp));
+            setText('[data-account-confianza]', String(payload.data.balances.confianza));
+            setText('[data-account-valentia]', String(payload.data.balances.valentia));
+        } catch {
+            accountProgressUnavailable = true;
+        }
     };
 
     async function loadHub() {
@@ -205,10 +265,13 @@ if (hub) {
         elements.error.hidden = true;
 
         try {
-            const response = await fetch(hub.dataset.source, {
-                headers: { Accept: 'application/json' },
-                credentials: 'same-origin',
-            });
+            const [response] = await Promise.all([
+                fetch(hub.dataset.source, {
+                    headers: { Accept: 'application/json' },
+                    credentials: 'same-origin',
+                }),
+                loadAccountProgress(),
+            ]);
 
             if (!response.ok) {
                 throw new Error(`Madrid kon niet worden geladen (${response.status}).`);

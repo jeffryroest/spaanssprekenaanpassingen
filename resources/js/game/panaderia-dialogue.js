@@ -16,6 +16,10 @@ if (dialogueRoot) {
         feedbackRetry: dialogueRoot.querySelector('[data-feedback-retry]'),
         continueButton: dialogueRoot.querySelector('[data-dialogue-continue]'),
         history: dialogueRoot.querySelector('[data-dialogue-history]'),
+        accountSyncTitle: dialogueRoot.querySelector('[data-account-sync-title]'),
+        accountSyncMessage: dialogueRoot.querySelector('[data-account-sync-message]'),
+        accountBalances: dialogueRoot.querySelector('[data-account-balances]'),
+        accountSyncRetry: dialogueRoot.querySelector('[data-account-sync-retry]'),
     };
     let content;
     let state = emptyState();
@@ -145,11 +149,13 @@ if (dialogueRoot) {
             pendingStateBeforeTurn = cloneState(state);
             state.states = unique([...state.states, 'used_repair_strategy']);
             state.history.push({
+                stepId: step.id,
                 turn: step.turn,
                 player: answer,
                 npc: content.repair.npc_response.es,
                 repair: true,
                 source: responseSource,
+                assisted: stepAssisted || responseSource === 'choice_assist',
                 confidenceStatus: responseSource === 'speech' ? speechConfidenceStatus : null,
                 transcriptCorrected: responseSource === 'speech' && answer !== originalSpeechTranscript,
             });
@@ -177,11 +183,13 @@ if (dialogueRoot) {
         const politeness = ['por favor', 'gracias'].some((term) => normalized.includes(term));
         state.states = unique([...state.states, ...option.states, ...(politeness ? ['used_politeness'] : [])]);
         state.history.push({
+            stepId: step.id,
             turn: step.turn,
             player: answer,
             npc: option.npc_response.es,
             repair: false,
             source: responseSource,
+            assisted: stepAssisted || responseSource === 'choice_assist',
             confidenceStatus: responseSource === 'speech' ? speechConfidenceStatus : null,
             transcriptCorrected: responseSource === 'speech' && answer !== originalSpeechTranscript,
         });
@@ -366,6 +374,7 @@ if (dialogueRoot) {
     const finishDialogue = () => {
         state.completed = true;
         state.currentStep = null;
+        state.completionKey ||= createCompletionKey();
         elements.stage.hidden = true;
         elements.complete.hidden = false;
         document.dispatchEvent(new CustomEvent('panaderia:turn-changed'));
@@ -395,6 +404,115 @@ if (dialogueRoot) {
         persist();
         elements.status.textContent = `Missie voltooid. Je verdient ${xp} XP en je eerste paspoortstempel.`;
         elements.complete.focus?.({ preventScroll: true });
+        syncAccountProgress();
+    };
+
+    const syncAccountProgress = async () => {
+        if (dialogueRoot.dataset.authenticated !== 'true') {
+            elements.accountSyncTitle.textContent = 'Log in om deze beloning te bewaren.';
+            elements.accountSyncMessage.textContent = 'Je resultaat blijft in dit tabblad beschikbaar. Na het inloggen kom je hier terug en schrijven we het veilig naar je account.';
+            elements.accountBalances.hidden = true;
+            elements.accountSyncRetry.hidden = true;
+            return;
+        }
+
+        if (state.accountSynced) {
+            showAccountSynced(state.accountBalances);
+            return;
+        }
+
+        if (state.accountSyncPending) return;
+
+        const turns = completionTurns();
+        if (turns.length !== content.mission.required_text_turns) {
+            showAccountSyncError('De lokale missieroute is verouderd. Speel de vijf beurten opnieuw om dit resultaat aan je account toe te voegen.');
+            return;
+        }
+
+        state.accountSyncPending = true;
+        elements.accountSyncTitle.textContent = 'Je beloning wordt veilig opgeslagen…';
+        elements.accountSyncMessage.textContent = 'De server controleert de gepubliceerde route en berekent je accountbeloning.';
+        elements.accountBalances.hidden = true;
+        elements.accountSyncRetry.hidden = true;
+
+        try {
+            const response = await fetch(dialogueRoot.dataset.completionUrl, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '',
+                },
+                body: JSON.stringify({
+                    completion_key: state.completionKey,
+                    level: state.level,
+                    used_repair_strategy: state.states.includes('used_repair_strategy'),
+                    turns,
+                }),
+            });
+            const payload = await response.json().catch(() => null);
+
+            if (!response.ok) {
+                throw new Error(payload?.error?.message ?? `Opslaan is tijdelijk niet gelukt (${response.status}).`);
+            }
+            if (payload?.schema_version !== '1.0.0'
+                || payload?.meta?.account_persisted !== true
+                || payload?.meta?.audio_persisted !== false
+                || payload?.meta?.transcript_persisted !== false
+                || payload?.meta?.feedback_persisted !== false
+                || !payload?.data?.balances
+                || !payload?.data?.mission) {
+                throw new Error('De server gaf geen veilig voortgangscontract terug.');
+            }
+
+            state.accountSynced = true;
+            state.accountBalances = payload.data.balances;
+            showAccountSynced(payload.data.balances, payload.data.last_attempt);
+            elements.status.textContent = 'Missie voltooid en blijvend opgeslagen bij je account.';
+        } catch (error) {
+            showAccountSyncError(error instanceof Error ? error.message : 'Opslaan is tijdelijk niet gelukt.');
+        } finally {
+            state.accountSyncPending = false;
+            persist();
+        }
+    };
+
+    const completionTurns = () => {
+        const expectedStepIds = [
+            content.mission.start_step,
+            'turn.finish_order',
+            content.level_branches[state.level],
+            'turn.takeaway',
+            'turn.payment',
+        ];
+
+        return state.history
+            .filter((entry) => !entry.repair)
+            .slice(0, content.mission.required_text_turns)
+            .map((entry, index) => ({
+                step_id: entry.stepId ?? expectedStepIds[index],
+                source: ['speech', 'typed_assist', 'choice_assist'].includes(entry.source) ? entry.source : 'typed_assist',
+                assisted: Boolean(entry.assisted ?? entry.source === 'choice_assist'),
+            }));
+    };
+
+    const showAccountSynced = (balances, attempt = null) => {
+        const duplicate = attempt?.duplicate === true;
+        elements.accountSyncTitle.textContent = duplicate ? 'Deze voltooiing stond al veilig in je account.' : 'Opgeslagen bij je account.';
+        elements.accountSyncMessage.textContent = duplicate
+            ? 'De idempotente opslag heeft terecht geen beloning dubbel toegevoegd.'
+            : 'Je voortgang, ontgrendelingen en unieke beloningen blijven beschikbaar na opnieuw inloggen.';
+        elements.accountBalances.textContent = `${balances?.xp ?? 0} XP · ${balances?.confianza ?? 0} Confianza · ${balances?.valentia ?? 0} Valentía in totaal`;
+        elements.accountBalances.hidden = false;
+        elements.accountSyncRetry.hidden = true;
+    };
+
+    const showAccountSyncError = (message) => {
+        elements.accountSyncTitle.textContent = 'Je lokale resultaat is veilig; accountopslag wacht nog.';
+        elements.accountSyncMessage.textContent = message;
+        elements.accountBalances.hidden = true;
+        elements.accountSyncRetry.hidden = false;
     };
 
     const setNpcLine = (line) => {
@@ -502,7 +620,6 @@ if (dialogueRoot) {
         elements.status.textContent = translationVisible ? 'Nederlandse vertaling zichtbaar.' : 'Nederlandse vertaling verborgen.';
     });
     dialogueRoot.addEventListener('panaderia:transcript-ready', (event) => {
-        stepAssisted = false;
         speechConfidenceStatus = event.detail?.confidenceStatus ?? 'unavailable';
         originalSpeechTranscript = event.detail?.transcript ?? null;
         elements.status.textContent = 'Je gesproken antwoord is getranscribeerd. Controleer de tekst en gebruik het antwoord wanneer het klopt.';
@@ -527,6 +644,7 @@ if (dialogueRoot) {
     };
     dialogueRoot.querySelector('[data-restart-dialogue]')?.addEventListener('click', restart);
     dialogueRoot.querySelector('[data-replay-dialogue]')?.addEventListener('click', restart);
+    elements.accountSyncRetry?.addEventListener('click', syncAccountProgress);
 
     loadDialogue();
 }
@@ -542,7 +660,31 @@ function emptyState() {
         states: [],
         history: [],
         completed: false,
+        completionKey: null,
+        accountSynced: false,
+        accountBalances: null,
+        accountSyncPending: false,
     };
+}
+
+function createCompletionKey() {
+    if (typeof window.crypto?.randomUUID === 'function') {
+        return window.crypto.randomUUID();
+    }
+
+    const bytes = new Uint8Array(16);
+    if (typeof window.crypto?.getRandomValues === 'function') {
+        window.crypto.getRandomValues(bytes);
+    } else {
+        bytes.forEach((_, index) => {
+            bytes[index] = Math.floor(Math.random() * 256);
+        });
+    }
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
 function normalize(value) {

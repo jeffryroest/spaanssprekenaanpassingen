@@ -29,7 +29,7 @@
 - **2B — La panadería:** betreedbare locatie, Lucía en een hervatbare, vertakkende tekstdialoog.
 - **2C — Spreken en transcriptie:** expliciete microfoontoestemming, WebM/Opus van maximaal 12 seconden, lokaal terugluisteren, veilige Spaanse transcriptie en tekstfallback.
 - **2D — Gelaagde feedback:** servergevalideerde rubricfeedback op het transcript, communicatief succes eerst, één concrete taal-/gespreksfocus en veilige herkansing; uitspraak blijft zonder audio-evidence expliciet onbeoordeeld.
-- **2E — Accountvoortgang:** duurzame voortgang, Confianza, Valentía, spreekdoel en eerste beloning.
+- **2E — Accountvoortgang (gerealiseerd):** productiegebonden routevalidatie, duurzame voortgang, idempotente XP/Confianza/Valentía, spreekdoel, accountdashboard en eerste unieke beloningen.
 
 **Beslispoort:** een nieuwe gebruiker kan de kernlus zonder hulp voltooien.
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\ContentPermission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
@@ -11,8 +12,18 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    public function create(): View
+    public function create(Request $request): View
     {
+        $redirect = $request->query('redirect');
+        $allowedRedirects = [
+            route('game.madrid.panaderia', absolute: false),
+            route('player.progress', absolute: false),
+        ];
+
+        if (is_string($redirect) && in_array($redirect, $allowedRedirects, true)) {
+            $request->session()->put('url.intended', $redirect);
+        }
+
         return view('auth.login');
     }
 
@@ -21,7 +32,11 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        return redirect()->intended(route('content-studio.dashboard', absolute: false));
+        $fallback = $request->user()->hasContentPermission(ContentPermission::View)
+            ? route('content-studio.dashboard', absolute: false)
+            : route('player.progress', absolute: false);
+
+        return redirect()->intended($fallback);
     }
 
     public function destroy(Request $request): RedirectResponse

@@ -47,6 +47,18 @@ class AppServiceProvider extends ServiceProvider
                 ],
             ], 429)));
 
+        RateLimiter::for('mission-completions', fn (Request $request): Limit => Limit::perMinute(10)
+            ->by($request->user() === null
+                ? implode('|', [$request->ip(), $request->session()->getId()])
+                : 'user:'.$request->user()->getAuthIdentifier())
+            ->response(fn () => response()->json([
+                'schema_version' => '1.0.0',
+                'error' => [
+                    'code' => 'rate_limit_exceeded',
+                    'message' => 'Te veel opslagpogingen. Wacht een minuut; je lokale missieresultaat blijft zichtbaar.',
+                ],
+            ], 429)));
+
         foreach (ContentPermission::cases() as $permission) {
             Gate::define(
                 "content-studio.{$permission->value}",

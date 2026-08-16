@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaansspreken.nl/contracts/panaderia-completion-v1.schema.json",
+  "title": "Panadería mission completion v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["completion_key", "level", "used_repair_strategy", "turns"],
+  "properties": {
+    "completion_key": { "type": "string", "format": "uuid" },
+    "level": { "type": "string", "enum": ["A0", "A1", "A2"] },
+    "used_repair_strategy": { "type": "boolean" },
+    "turns": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["step_id", "source", "assisted"],
+        "properties": {
+          "step_id": {
+            "type": "string",
+            "maxLength": 80,
+            "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          },
+          "source": {
+            "type": "string",
+            "enum": ["speech", "typed_assist", "choice_assist"]
+          },
+          "assisted": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}
