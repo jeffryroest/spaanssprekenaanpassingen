@@ -13,6 +13,10 @@ class PlayerProgressController extends Controller
     {
         return view('player.progress', [
             'progress' => $snapshot->forUser($request->user()),
+            'taxiProgress' => $snapshot->forUser(
+                user: $request->user(),
+                missionKey: PlayerProgressSnapshot::TAXI_MISSION_KEY,
+            ),
         ]);
     }
 

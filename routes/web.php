@@ -9,6 +9,8 @@ use App\Http\Controllers\ContentStudio\ContentReviewController;
 use App\Http\Controllers\ContentStudio\DashboardController;
 use App\Http\Controllers\ContentStudio\ReviewQueueController;
 use App\Http\Controllers\Game\CompletePanaderiaMissionController;
+use App\Http\Controllers\Game\CompleteTaxiMissionController;
+use App\Http\Controllers\Game\EntitledConversationController;
 use App\Http\Controllers\Game\SpeechTranscriptionController;
 use App\Http\Controllers\Game\TurnFeedbackController;
 use App\Http\Controllers\PlayerProgressController;
@@ -47,6 +49,24 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/spelen/madrid/la-panaderia/voltooien', CompletePanaderiaMissionController::class)
         ->middleware('throttle:mission-completions')
         ->name('game.madrid.panaderia.complete');
+
+    Route::view('/spelen/madrid/taxi', 'game.taxi')
+        ->middleware('entitled:trial_week')
+        ->name('game.madrid.taxi');
+    Route::get('/spelen/madrid/taxi/content', EntitledConversationController::class)
+        ->defaults('scenarioSlug', 'taxi-diego')
+        ->defaults('requiredEntitlement', 'trial_week')
+        ->middleware(['entitled:trial_week', 'throttle:120,1'])
+        ->name('game.madrid.taxi.content');
+    Route::post('/spelen/madrid/taxi/transcriptie', SpeechTranscriptionController::class)
+        ->middleware(['entitled:trial_week', 'throttle:speech-transcriptions'])
+        ->name('game.madrid.taxi.transcription');
+    Route::post('/spelen/madrid/taxi/feedback', TurnFeedbackController::class)
+        ->middleware(['entitled:trial_week', 'throttle:turn-feedback'])
+        ->name('game.madrid.taxi.feedback');
+    Route::post('/spelen/madrid/taxi/voltooien', CompleteTaxiMissionController::class)
+        ->middleware(['entitled:trial_week', 'throttle:mission-completions'])
+        ->name('game.madrid.taxi.complete');
 });
 
 Route::prefix('content-studio')

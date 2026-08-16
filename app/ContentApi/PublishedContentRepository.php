@@ -21,9 +21,24 @@ final class PublishedContentRepository
             ->paginate($perPage);
     }
 
+    /** @return LengthAwarePaginator<ContentNode> */
+    public function paginatePublic(ContentType $contentType, int $perPage): LengthAwarePaginator
+    {
+        return $this->query($contentType, publicOnly: true)
+            ->orderBy('slug')
+            ->paginate($perPage);
+    }
+
     public function find(ContentType $contentType, string $slug): ?ContentNode
     {
         return $this->query($contentType)
+            ->where('slug', $slug)
+            ->first();
+    }
+
+    public function findPublic(ContentType $contentType, string $slug): ?ContentNode
+    {
+        return $this->query($contentType, publicOnly: true)
             ->where('slug', $slug)
             ->first();
     }
@@ -44,20 +59,28 @@ final class PublishedContentRepository
     }
 
     /** @return Builder<ContentNode> */
-    private function query(ContentType $contentType): Builder
+    private function query(ContentType $contentType, bool $publicOnly = false): Builder
     {
         return ContentNode::query()
             ->where('content_type', $contentType->value)
             ->where('status', ContentStatus::Published->value)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now())
-            ->whereHas('releaseItems', function (Builder $query): void {
+            ->whereHas('releaseItems', function (Builder $query) use ($publicOnly): void {
                 $query
                     ->whereColumn('content_release_items.version', 'content_nodes.current_version')
-                    ->whereHas('contentRevision', function (Builder $query): void {
+                    ->whereHas('contentRevision', function (Builder $query) use ($publicOnly): void {
                         $query
                             ->whereColumn('content_revisions.version', 'content_release_items.version')
                             ->whereColumn('content_revisions.content_node_id', 'content_release_items.content_node_id');
+
+                        if ($publicOnly) {
+                            $query->where(function (Builder $query): void {
+                                $query
+                                    ->whereNull('snapshot->domain_data->runtime_access->visibility')
+                                    ->orWhere('snapshot->domain_data->runtime_access->visibility', 'public');
+                            });
+                        }
                     })
                     ->whereHas('release', $this->productionReleaseQuery(...));
             })

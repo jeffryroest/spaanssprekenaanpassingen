@@ -96,7 +96,7 @@
                         <div class="mt-auto pt-5">
                             @if ($day['action_url'])
                                 <a href="{{ $day['action_url'] }}" class="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#a9472b] px-4 text-sm font-black text-white hover:bg-[#913b25] focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2">
-                                    {{ $day['access_state'] === 'completed' ? 'Speel opnieuw' : 'Start dag 1' }}
+                                    {{ $day['access_state'] === 'completed' ? 'Speel opnieuw' : 'Start dag '.$day['day'] }}
                                 </a>
                             @else
                                 <span class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#493429]/10 bg-white/60 px-4 text-center text-sm font-bold text-[#887970]" aria-disabled="true">Nog niet te starten</span>

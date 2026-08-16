@@ -23,6 +23,7 @@ Een record komt alleen in de API wanneer al deze voorwaarden tegelijk gelden:
 2. een release-item verwijst naar exact `current_version` van het contentobject;
 3. de gekoppelde release heeft doelkanaal `production`, status `published` en een bereikt publicatietijdstip;
 4. de gekoppelde onveranderlijke revisie hoort bij hetzelfde contentobject en dezelfde versie.
+5. de revisiesnapshot heeft geen afgeschermde `runtime_access.visibility`; content met `entitled` blijft uit publieke collecties en detailroutes.
 
 De payload wordt opgebouwd uit de snapshot van die exacte revisie, niet uit later gewijzigde werkvelden of lokalisatierijen. Alleen een handmatig gewijzigde contentstatus is daardoor nooit voldoende om content publiek te maken. Bij inconsistente publicatiegegevens faalt de API gesloten met een lege collectie of een 404.
 
@@ -99,6 +100,7 @@ Validatiefouten voegen `error.details` toe. Foutresponses krijgen `Cache-Control
 
 - geen mutaties of beheerroutes;
 - geen spelerstatus, voortgang of beloningen;
+- geen accountgebonden proefweekcontent; die gebruikt een ingelogde, rechtgecontroleerde privéroute;
 - nog geen typed relationele runtimegraph tussen wereld, locatie, missie en gesprek;
 - nog geen audio-, transcriptie- of feedback-endpoints;
 - nog geen terugtrek- of rollbackpublicatie.
@@ -127,6 +129,7 @@ Een lege `data`-lijst is correct zolang nog geen content via een productiereleas
 
 - gasten kunnen de vier runtimebronnen als collectie en detail lezen;
 - concept-, review-, goedgekeurde, preview- en stagingcontent blijft onzichtbaar;
+- accountgebonden content blijft ook na productiepublicatie onzichtbaar in de publieke API;
 - alleen de actuele productiegepubliceerde revisiesnapshot wordt geleverd;
 - locale-fallback, paginering, ETag en uniforme fouten zijn getest;
 - het JSON Schema en de runtimeversie lopen gelijk;

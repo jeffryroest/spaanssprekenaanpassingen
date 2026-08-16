@@ -43,6 +43,7 @@ assert(schema.properties?.meta?.properties?.audio_assessed?.const === false, 'He
 assert(composer.includes('pronunciation_included') && composer.includes('/ .875'), 'De totaalscore moet zonder uitspraak worden genormaliseerd');
 assert(controller.includes("'answer_persisted_server_side' => false"), 'Serverretentie moet expliciet uit staan');
 assert(request.includes("'max:300'") && request.includes('typed_assist'), 'Feedbackinvoer moet begrensd en bronbewust zijn');
+assert(request.includes("routeIs('game.madrid.taxi.feedback')") && request.includes("Rule::in([$scenarioSlug])"), 'Elke feedbackroute moet aan zijn eigen scenario vastzitten');
 assert(dialogue.includes('pendingStateBeforeTurn') && dialogue.includes('retrySuccessfulTurn'), 'Veilige rollback-herkansing ontbreekt');
 assert(dialogue.includes("payload?.meta?.progress_affecting !== false") && dialogue.includes("status !== 'not_assessed'"), 'De client moet het veilige responscontract controleren');
 assert(view.includes('data-feedback-details') && view.includes('data-feedback-retry'), 'Compacte en uitgebreide feedbacklagen ontbreken');

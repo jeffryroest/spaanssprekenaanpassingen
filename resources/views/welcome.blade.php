@@ -66,17 +66,17 @@
                 </div>
 
                 <aside class="rounded-3xl border border-white/10 bg-white/[0.06] p-7 shadow-2xl shadow-black/30 backdrop-blur sm:p-9" aria-labelledby="status-title">
-                    <p class="text-sm font-medium text-orange-300">Fase 3A</p>
-                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Je proefweek krijgt veilige toegangsgrenzen</h2>
+                    <p class="text-sm font-medium text-orange-300">Fase 3B1</p>
+                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Dag 2 brengt je met Diego door Madrid</h2>
                     <ul class="mt-6 space-y-4 text-sm leading-6 text-stone-300">
-                        <li class="status-item">Bekijk de route van zeven missiedagen</li>
-                        <li class="status-item">Toegang wordt uitsluitend server-side berekend</li>
-                        <li class="status-item">La Espiga blijft de openbare voorbeeldmissie</li>
-                        <li class="status-item">Nieuwe missies vereisen veilige productiepublicatie</li>
+                        <li class="status-item">Vertel waar je heen wilt en reageer op de route</li>
+                        <li class="status-item">Spreek of formuleer ieder antwoord zelf</li>
+                        <li class="status-item">Gebruik dezelfde veilige transcriptie en feedback</li>
+                        <li class="status-item">Verdien een taxistempel en Madrileense taxibon</li>
                     </ul>
                     <div class="mt-8 border-t border-white/10 pt-6">
                         <p class="text-sm text-stone-400">Volgende mijlpaal</p>
-                        <p class="mt-1 font-medium text-white">Fase 3B · taxi, restaurant, gezondheid en station</p>
+                        <p class="mt-1 font-medium text-white">Fase 3B2 · restaurantmissie</p>
                     </div>
                 </aside>
             </section>

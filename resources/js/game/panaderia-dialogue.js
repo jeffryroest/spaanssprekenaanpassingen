@@ -1,7 +1,10 @@
-const dialogueRoot = document.querySelector('[data-panaderia-dialogue]');
+const dialogueRoot = document.querySelector('[data-scenario-dialogue]');
 
 if (dialogueRoot) {
-    const storageKey = 'panaderia-text-dialogue-v1';
+    const storageKey = dialogueRoot.dataset.storageKey || 'scenario-text-dialogue-v1';
+    const expectedScene = dialogueRoot.dataset.scene;
+    const scenarioSlug = dialogueRoot.dataset.scenarioSlug;
+    const npcName = dialogueRoot.dataset.npcName || 'Je gesprekspartner';
     const elements = {
         stage: dialogueRoot.querySelector('[data-dialogue-stage]'),
         levelSelect: dialogueRoot.querySelector('[data-level-select]'),
@@ -38,8 +41,8 @@ if (dialogueRoot) {
     };
 
     const validateContent = (data) => {
-        if (data?.schema_version !== '1.0.0' || data?.scene !== 'panaderia_text_dialogue') {
-            throw new Error('De conversatie gebruikt niet het La Espiga-contract v1.');
+        if (data?.schema_version !== '1.0.0' || data?.scene !== expectedScene) {
+            throw new Error('De conversatie gebruikt niet het verwachte missiedagcontract v1.');
         }
 
         if (!Array.isArray(data.steps) || data.steps.length < 7) {
@@ -82,7 +85,7 @@ if (dialogueRoot) {
         elements.stage.hidden = false;
         renderStep();
         persist();
-        elements.status.textContent = `Niveau ${level} gekozen. Lucía begroet je; neem rustig de tijd.`;
+        elements.status.textContent = `Niveau ${level} gekozen. ${npcName} begroet je; neem rustig de tijd.`;
     };
 
     const renderStep = () => {
@@ -114,7 +117,7 @@ if (dialogueRoot) {
         renderChoices(step.choices);
         updateProgress();
         renderHistory();
-        document.dispatchEvent(new CustomEvent('panaderia:turn-changed'));
+        document.dispatchEvent(new CustomEvent('scenario:turn-changed'));
     };
 
     const renderChoices = (choices) => {
@@ -175,7 +178,7 @@ if (dialogueRoot) {
 
         if (!option) {
             showFeedback(step.fallback, false);
-            elements.status.textContent = 'Lucía heeft nog niet genoeg informatie. Bekijk de gerichte tip en probeer opnieuw.';
+            elements.status.textContent = `${npcName} heeft nog niet genoeg informatie. Bekijk de gerichte tip en probeer opnieuw.`;
             return;
         }
 
@@ -325,6 +328,7 @@ if (dialogueRoot) {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '',
             },
             body: JSON.stringify({
+                scenario_slug: scenarioSlug,
                 step_id: step.id,
                 answer,
                 level: state.level,
@@ -377,8 +381,8 @@ if (dialogueRoot) {
         state.completionKey ||= createCompletionKey();
         elements.stage.hidden = true;
         elements.complete.hidden = false;
-        document.dispatchEvent(new CustomEvent('panaderia:turn-changed'));
-        const farewell = state.states.includes('greeted_lucia') && state.states.includes('used_politeness')
+        document.dispatchEvent(new CustomEvent('scenario:turn-changed'));
+        const farewell = state.states.includes('used_politeness')
             ? content.completion.polite_farewell
             : content.completion.default_farewell;
         const rewards = content.completion.rewards;
@@ -402,7 +406,7 @@ if (dialogueRoot) {
         applyTranslationVisibility();
         updateProgress();
         persist();
-        elements.status.textContent = `Missie voltooid. Je verdient ${xp} XP en je eerste paspoortstempel.`;
+        elements.status.textContent = `Missie voltooid. Je verdient ${xp} XP en een paspoortstempel.`;
         elements.complete.focus?.({ preventScroll: true });
         syncAccountProgress();
     };
@@ -425,7 +429,7 @@ if (dialogueRoot) {
 
         const turns = completionTurns();
         if (turns.length !== content.mission.required_text_turns) {
-            showAccountSyncError('De lokale missieroute is verouderd. Speel de vijf beurten opnieuw om dit resultaat aan je account toe te voegen.');
+            showAccountSyncError(`De lokale missieroute is verouderd. Speel de ${content.mission.required_text_turns} beurten opnieuw om dit resultaat aan je account toe te voegen.`);
             return;
         }
 
@@ -479,19 +483,11 @@ if (dialogueRoot) {
     };
 
     const completionTurns = () => {
-        const expectedStepIds = [
-            content.mission.start_step,
-            'turn.finish_order',
-            content.level_branches[state.level],
-            'turn.takeaway',
-            'turn.payment',
-        ];
-
         return state.history
             .filter((entry) => !entry.repair)
             .slice(0, content.mission.required_text_turns)
-            .map((entry, index) => ({
-                step_id: entry.stepId ?? expectedStepIds[index],
+            .map((entry) => ({
+                step_id: entry.stepId,
                 source: ['speech', 'typed_assist', 'choice_assist'].includes(entry.source) ? entry.source : 'typed_assist',
                 assisted: Boolean(entry.assisted ?? entry.source === 'choice_assist'),
             }));
@@ -546,7 +542,7 @@ if (dialogueRoot) {
             player.lang = 'es';
             player.textContent = entry.player;
             npc.lang = 'es';
-            npc.textContent = `Lucía: ${entry.npc}`;
+            npc.textContent = `${npcName}: ${entry.npc}`;
             item.append(turn, player, npc);
             return item;
         });
@@ -554,7 +550,7 @@ if (dialogueRoot) {
         elements.history.replaceChildren(...entries);
         if (entries.length === 0) {
             const empty = document.createElement('li');
-            empty.textContent = 'Nog geen antwoorden. Lucía wacht rustig op je.';
+            empty.textContent = `Nog geen antwoorden. ${npcName} wacht rustig op je.`;
             elements.history.append(empty);
         }
     };
@@ -572,7 +568,7 @@ if (dialogueRoot) {
             } else {
                 elements.stage.hidden = false;
                 renderStep();
-                elements.status.textContent = 'Je eerdere bestelling is hervat bij de laatste voltooide stap.';
+                elements.status.textContent = 'Je eerdere missie is hervat bij de laatste voltooide stap.';
             }
             return;
         }
@@ -619,7 +615,7 @@ if (dialogueRoot) {
         applyTranslationVisibility();
         elements.status.textContent = translationVisible ? 'Nederlandse vertaling zichtbaar.' : 'Nederlandse vertaling verborgen.';
     });
-    dialogueRoot.addEventListener('panaderia:transcript-ready', (event) => {
+    dialogueRoot.addEventListener('scenario:transcript-ready', (event) => {
         speechConfidenceStatus = event.detail?.confidenceStatus ?? 'unavailable';
         originalSpeechTranscript = event.detail?.transcript ?? null;
         elements.status.textContent = 'Je gesproken antwoord is getranscribeerd. Controleer de tekst en gebruik het antwoord wanneer het klopt.';
@@ -634,13 +630,13 @@ if (dialogueRoot) {
         state = emptyState();
         pendingNext = null;
         pendingStateBeforeTurn = null;
-        document.dispatchEvent(new CustomEvent('panaderia:turn-changed'));
+        document.dispatchEvent(new CustomEvent('scenario:turn-changed'));
         elements.stage.hidden = true;
         elements.complete.hidden = true;
         elements.levelSelect.hidden = false;
         setText('[data-level-chip]', 'Niveau kiezen');
         updateProgress();
-        elements.status.textContent = 'De bestelling is gewist. Kies opnieuw hoeveel steun je wilt.';
+        elements.status.textContent = 'De missie is gewist. Kies opnieuw hoeveel steun je wilt.';
     };
     dialogueRoot.querySelector('[data-restart-dialogue]')?.addEventListener('click', restart);
     dialogueRoot.querySelector('[data-replay-dialogue]')?.addEventListener('click', restart);

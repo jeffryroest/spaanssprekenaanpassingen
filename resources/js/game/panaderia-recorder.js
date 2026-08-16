@@ -195,7 +195,7 @@ if (recorderRoot) {
             elements.transcriptNote.hidden = false;
             recorderRoot.dataset.state = 'transcribed';
             setStatus('Transcript klaar en hieronder ingevuld. Jij houdt de controle: pas het zo nodig aan.');
-            recorderRoot.dispatchEvent(new CustomEvent('panaderia:transcript-ready', {
+            recorderRoot.dispatchEvent(new CustomEvent('scenario:transcript-ready', {
                 bubbles: true,
                 detail: { confidenceStatus, transcript },
             }));
@@ -218,7 +218,7 @@ if (recorderRoot) {
         elements.start.focus({ preventScroll: true });
     });
     elements.transcribe.addEventListener('click', transcribeRecording);
-    document.addEventListener('panaderia:turn-changed', () => resetRecorder({ announce: false }));
+    document.addEventListener('scenario:turn-changed', () => resetRecorder({ announce: false }));
     window.addEventListener('beforeunload', releaseRecording);
 
     if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder || !supportedMimeType()) {

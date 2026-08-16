@@ -61,7 +61,9 @@ assert(repository.includes('ContentReleaseChannel::Production'), 'De API begrens
 assert(repository.includes('ContentReleaseStatus::Published'), 'De API begrenst niet op uitgevoerde releases');
 assert(repository.includes("whereColumn('content_release_items.version', 'content_nodes.current_version')"), 'De API begrenst niet op de actuele exacte revisie');
 assert(repository.includes("whereColumn('content_revisions.content_node_id', 'content_release_items.content_node_id')"), 'De API controleert niet of de revisie bij hetzelfde contentobject hoort');
+assert(repository.includes('runtime_access->visibility') && repository.includes('paginatePublic'), 'De publieke API moet accountgebonden runtimecontent uitsluiten');
 assert(tests.includes('test_only_exact_current_production_publications_are_listed'), 'De fail-closed publicatiegrens mist een featuretest');
+assert(tests.includes('test_entitled_content_is_not_exposed_by_the_public_api'), 'De publieke API mist een regressietest voor accountgebonden content');
 assert(tests.includes('test_detail_response_supports_conditional_gets'), 'ETag-gedrag mist een featuretest');
 
 console.log('Publieke content-API v1 geldig: routes, contract, publicatiegrens en tests zijn aanwezig.');
