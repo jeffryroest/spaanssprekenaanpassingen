@@ -37,9 +37,13 @@ DB_PORT=3306
 DB_DATABASE=<database>
 DB_USERNAME=<gebruiker>
 DB_PASSWORD=<sterk-wachtwoord>
+
+TRANSCRIPTION_DRIVER=openai
+OPENAI_API_KEY=<geheime-OpenAI-projectsleutel>
+OPENAI_TRANSCRIPTION_MODEL=gpt-4o-mini-transcribe
 ```
 
-Commit `.env` nooit. Genereer bij de eerste installatie de applicatiesleutel met `php artisan key:generate`.
+Commit `.env` nooit en plaats `OPENAI_API_KEY` uitsluitend in de Ploi-omgeving. Genereer bij de eerste installatie de applicatiesleutel met `php artisan key:generate`.
 
 ## Deploymentscript
 

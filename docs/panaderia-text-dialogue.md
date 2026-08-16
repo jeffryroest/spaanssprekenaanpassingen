@@ -42,10 +42,13 @@ Bij voltooiing toont de client:
 - keuzehulp is een alternatief naast vrije tekst en niet de enige invoer;
 - het gesprek gebruikt geen essentiële informatie die uitsluitend visueel of auditief beschikbaar is.
 
-## Bewuste afbakening
+## Uitbreiding in fase 2C
 
-- Fase 2B gebruikt tekst en keuzehulp; microfoon, WebM/Opus, transcriptie en rubricbeoordeling volgen in 2C.
+- Dezelfde vijf beurten ondersteunen nu expliciete WebM/Opus-opname, lokaal terugluisteren en Spaanse transcriptie.
+- Transcriptie vult de bestaande vrije invoer; de speler controleert en corrigeert die vóór de gespreksregie.
+- Tekst en keuzehulp blijven beschikbaar bij geweigerde toestemming of technische uitval.
 - Er wordt geen ffmpeg-conversie geïntroduceerd.
+- Gelaagde rubric- en uitspraakfeedback volgt als afzonderlijke beoordelingsservice in fase 2D.
 - De intentieherkenning is deterministisch en client-side; server-side versieerbare gespreksregie volgt vóór productie-analyse.
 - Beloningen worden getoond en binnen de sessie bewaard, maar nog niet aan een gebruikersaccount geschreven.
 

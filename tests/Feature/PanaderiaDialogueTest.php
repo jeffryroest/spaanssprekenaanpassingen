@@ -15,6 +15,8 @@ class PanaderiaDialogueTest extends TestCase
             ->assertSee('data-panaderia-dialogue', false)
             ->assertSee('/api/v1/conversations/la-espiga-lucia?locale=nl-NL', false)
             ->assertSee('data-translation-toggle', false)
+            ->assertSee('data-speech-recorder', false)
+            ->assertSee(route('game.madrid.panaderia.transcription'), false)
             ->assertSee('data-dialogue-history', false);
     }
 
@@ -24,5 +26,15 @@ class PanaderiaDialogueTest extends TestCase
             ->assertOk()
             ->assertSee(route('game.madrid'))
             ->assertSee('Terug naar Madrid');
+    }
+
+    public function test_panaderia_explains_speech_privacy_and_keeps_text_fallback(): void
+    {
+        $this->get('/spelen/madrid/la-panaderia')
+            ->assertOk()
+            ->assertSee('WebM/Opus · maximaal 12 seconden')
+            ->assertSee('De microfoon start pas wanneer jij op opnemen drukt.')
+            ->assertSee(route('privacy'))
+            ->assertSee('of typ je antwoord');
     }
 }
