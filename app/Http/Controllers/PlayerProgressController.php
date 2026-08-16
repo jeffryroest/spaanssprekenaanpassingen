@@ -17,6 +17,10 @@ class PlayerProgressController extends Controller
                 user: $request->user(),
                 missionKey: PlayerProgressSnapshot::TAXI_MISSION_KEY,
             ),
+            'restaurantProgress' => $snapshot->forUser(
+                user: $request->user(),
+                missionKey: PlayerProgressSnapshot::RESTAURANT_MISSION_KEY,
+            ),
         ]);
     }
 

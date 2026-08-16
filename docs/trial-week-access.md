@@ -39,6 +39,6 @@ De migratie verwijdert eerst `subscriptions` en daarna `subscription_plans`. Er 
 
 ## Vervolg binnen fase 3
 
-1. **3B — missiedagen:** taxi, restaurant, gezondheid en station als gereviewde Content Studio-content.
+1. **3B3–3B4 — volgende missiedagen:** gezondheid en station als gereviewde Content Studio-content; taxi en restaurant zijn gerealiseerd.
 2. **3C — persoonlijke herhaling en NPC-geheugen:** uitsluitend spelrelevante, minimale geheugenfeiten.
 3. **3D — conversie:** proefactivatie, paywall, provider-webhooks en abonnement na expliciete besluiten over prijs en voorwaarden.

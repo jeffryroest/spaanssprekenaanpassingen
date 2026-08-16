@@ -42,6 +42,16 @@ final class PlayableContentTemplates
                 summary: 'Vertakkend gesprek voor een taxirit door Madrid.',
                 exampleFile: 'taxi-dialogue-domain-data.json',
             ),
+            'restaurant' => $this->template(
+                key: 'restaurant',
+                label: 'Restaurantgesprek',
+                description: 'De afgeschermde proefweekmissie met Carmen in Café El Reloj.',
+                contentType: ContentType::ConversationScenario,
+                slug: 'restaurant-el-reloj',
+                title: 'En el restaurante · Carmen',
+                summary: 'Vertakkend gesprek voor een tafel, bestelling en rekening in Madrid.',
+                exampleFile: 'restaurant-dialogue-domain-data.json',
+            ),
         ];
     }
 

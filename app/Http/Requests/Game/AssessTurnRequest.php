@@ -17,9 +17,11 @@ class AssessTurnRequest extends FormRequest
      */
     public function rules(): array
     {
-        $scenarioSlug = $this->routeIs('game.madrid.taxi.feedback')
-            ? 'taxi-diego'
-            : 'la-espiga-lucia';
+        $scenarioSlug = match (true) {
+            $this->routeIs('game.madrid.taxi.feedback') => 'taxi-diego',
+            $this->routeIs('game.madrid.restaurant.feedback') => 'restaurant-el-reloj',
+            default => 'la-espiga-lucia',
+        };
 
         return [
             'scenario_slug' => ['bail', 'required', Rule::in([$scenarioSlug])],

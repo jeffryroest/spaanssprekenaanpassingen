@@ -9,6 +9,7 @@ use App\Http\Controllers\ContentStudio\ContentReviewController;
 use App\Http\Controllers\ContentStudio\DashboardController;
 use App\Http\Controllers\ContentStudio\ReviewQueueController;
 use App\Http\Controllers\Game\CompletePanaderiaMissionController;
+use App\Http\Controllers\Game\CompleteRestaurantMissionController;
 use App\Http\Controllers\Game\CompleteTaxiMissionController;
 use App\Http\Controllers\Game\EntitledConversationController;
 use App\Http\Controllers\Game\SpeechTranscriptionController;
@@ -67,6 +68,24 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/spelen/madrid/taxi/voltooien', CompleteTaxiMissionController::class)
         ->middleware(['entitled:trial_week', 'throttle:mission-completions'])
         ->name('game.madrid.taxi.complete');
+
+    Route::view('/spelen/madrid/restaurant', 'game.restaurant')
+        ->middleware('entitled:trial_week')
+        ->name('game.madrid.restaurant');
+    Route::get('/spelen/madrid/restaurant/content', EntitledConversationController::class)
+        ->defaults('scenarioSlug', 'restaurant-el-reloj')
+        ->defaults('requiredEntitlement', 'trial_week')
+        ->middleware(['entitled:trial_week', 'throttle:120,1'])
+        ->name('game.madrid.restaurant.content');
+    Route::post('/spelen/madrid/restaurant/transcriptie', SpeechTranscriptionController::class)
+        ->middleware(['entitled:trial_week', 'throttle:speech-transcriptions'])
+        ->name('game.madrid.restaurant.transcription');
+    Route::post('/spelen/madrid/restaurant/feedback', TurnFeedbackController::class)
+        ->middleware(['entitled:trial_week', 'throttle:turn-feedback'])
+        ->name('game.madrid.restaurant.feedback');
+    Route::post('/spelen/madrid/restaurant/voltooien', CompleteRestaurantMissionController::class)
+        ->middleware(['entitled:trial_week', 'throttle:mission-completions'])
+        ->name('game.madrid.restaurant.complete');
 });
 
 Route::prefix('content-studio')
