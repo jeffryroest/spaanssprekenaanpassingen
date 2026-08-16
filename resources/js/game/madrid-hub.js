@@ -229,8 +229,8 @@ if (hub) {
     });
 
     hub.querySelector('[data-hub-mission-button]')?.addEventListener('click', () => {
-        elements.status.textContent = 'De ingang van La Espiga opent in fase 2B. De hub en contentverbinding zijn nu gereed.';
-        elements.panel.hidden = true;
+        elements.status.textContent = 'De deur van La Espiga gaat open.';
+        window.location.assign(hub.dataset.panaderiaRoute);
     });
 
     hub.querySelector('[data-hub-retry]')?.addEventListener('click', loadHub);

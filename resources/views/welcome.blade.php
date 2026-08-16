@@ -60,17 +60,17 @@
                 </div>
 
                 <aside class="rounded-3xl border border-white/10 bg-white/[0.06] p-7 shadow-2xl shadow-black/30 backdrop-blur sm:p-9" aria-labelledby="status-title">
-                    <p class="text-sm font-medium text-orange-300">Fase 2A</p>
-                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Madrid opent haar deuren</h2>
+                    <p class="text-sm font-medium text-orange-300">Fase 2B</p>
+                    <h2 id="status-title" class="mt-2 text-2xl font-semibold text-white">Je eerste gesprek is open</h2>
                     <ul class="mt-6 space-y-4 text-sm leading-6 text-stone-300">
-                        <li class="status-item">Vier herkenbare plekken op een interactieve kaart</li>
-                        <li class="status-item">Drie details om zonder tijdsdruk te ontdekken</li>
-                        <li class="status-item">Spaanse woorden met Nederlandse ondersteuning</li>
-                        <li class="status-item">Toegankelijke kaart- en lijstbediening</li>
+                        <li class="status-item">Betreed Panadería La Espiga vanuit de kaart</li>
+                        <li class="status-item">Voer vijf betekenisvolle tekstbeurten</li>
+                        <li class="status-item">Los één van drie onverwachte vragen op</li>
+                        <li class="status-item">Hervat je gesprek zonder voortgangsverlies</li>
                     </ul>
                     <div class="mt-8 border-t border-white/10 pt-6">
                         <p class="text-sm text-stone-400">Volgende mijlpaal</p>
-                        <p class="mt-1 font-medium text-white">Betreed Panadería La Espiga</p>
+                        <p class="mt-1 font-medium text-white">Spreken met WebM/Opus en transcriptie</p>
                     </div>
                 </aside>
             </section>

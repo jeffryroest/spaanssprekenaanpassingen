@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0.0",
+  "scene": "panaderia_text_dialogue",
+  "npc": {
+    "id": "npc.lucia.martin",
+    "name": "Lucía Martín",
+    "role": { "es": "panadera", "nl": "bakker" },
+    "description": "Energiek, geduldig en zakelijk vriendelijk. Lucía reageert als winkelmedewerker, niet als docent."
+  },
+  "mission": {
+    "id": "mission.madrid.panaderia.breakfast",
+    "title": { "es": "El primer desayuno", "nl": "Het eerste ontbijt" },
+    "objective": "Bestel een brood en iets zoets, los een onverwachte vraag op en betaal.",
+    "start_step": "turn.greet_order",
+    "required_text_turns": 5
+  },
+  "level_branches": {
+    "A0": "branch.quantity",
+    "A1": "branch.unavailable",
+    "A2": "branch.bread_type"
+  },
+  "repair": {
+    "terms": ["puede repetir", "repetir por favor", "mas despacio", "no entiendo", "quiero decir"],
+    "npc_response": {
+      "es": "Claro. Te lo digo otra vez, más despacio.",
+      "nl": "Natuurlijk. Ik zeg het nog een keer, wat langzamer."
+    },
+    "feedback": {
+      "strength": "Sterk: je houdt het gesprek zelf gaande.",
+      "focus": "Een herstelzin telt als echte gespreksvaardigheid."
+    }
+  },
+  "steps": [
+    {
+      "id": "turn.greet_order",
+      "turn": 1,
+      "npc_line": { "es": "Hola, buenos días. ¿Qué te pongo?", "nl": "Hallo, goedemorgen. Wat mag het zijn?" },
+      "prompt": "Begroet Lucía en begin je bestelling.",
+      "placeholder": "Bijvoorbeeld: Buenos días. Quiero una barra de pan…",
+      "hint": "Combineer een begroeting met pan of barra de pan.",
+      "choices": ["Buenos días. Quiero una barra de pan, por favor.", "Hola. ¿Me pone una barra de pan?"],
+      "options": [
+        {
+          "id": "greeting_and_bread",
+          "requirements": [["buenos dias", "hola"], ["pan", "barra"]],
+          "npc_response": { "es": "Muy bien. ¿Algo más?", "nl": "Prima. Nog iets anders?" },
+          "feedback": { "strength": "Je begroeting en bestelling waren meteen duidelijk.", "focus": "Voeg por favor toe als je het nog beleefder wilt maken." },
+          "states": ["greeted_lucia", "order_intent_recognized", "ordered_bread"],
+          "next": "turn.finish_order"
+        }
+      ],
+      "fallback": { "strength": "Je bent begonnen; Lucía wacht rustig.", "focus": "Noem een begroeting én pan, bijvoorbeeld: Buenos días, quiero pan." }
+    },
+    {
+      "id": "turn.finish_order",
+      "turn": 2,
+      "npc_line": { "es": "Muy bien. ¿Algo más?", "nl": "Prima. Nog iets anders?" },
+      "prompt": "Bestel nu iets zoets.",
+      "placeholder": "Bijvoorbeeld: Una napolitana, por favor.",
+      "hint": "Kies een napolitana of een croissant.",
+      "choices": ["Una napolitana de chocolate, por favor.", "Quisiera un croissant."],
+      "options": [
+        {
+          "id": "pastry",
+          "requirements": [["napolitana", "croissant", "algo dulce"]],
+          "npc_response": { "es": "Perfecto.", "nl": "Perfect." },
+          "feedback": { "strength": "Lucía begrijpt welk gebak je wilt.", "focus": "Bij napolitana gebruik je una; bij croissant gebruik je un." },
+          "states": ["ordered_pastry"],
+          "next": "@complication"
+        }
+      ],
+      "fallback": { "strength": "Je bestelling is nog niet compleet, maar je kunt rustig doorgaan.", "focus": "Noem napolitana of croissant." }
+    },
+    {
+      "id": "branch.quantity",
+      "turn": 3,
+      "npc_line": { "es": "¿Una napolitana o dos?", "nl": "Eén chocoladebroodje of twee?" },
+      "prompt": "Kies hoeveel je wilt.",
+      "placeholder": "Una, por favor.",
+      "hint": "Una betekent één; dos betekent twee.",
+      "choices": ["Una, por favor.", "Dos, por favor."],
+      "options": [
+        {
+          "id": "quantity",
+          "requirements": [["una", "uno", "dos", "1", "2"]],
+          "npc_response": { "es": "Perfecto. ¿Es para llevar?", "nl": "Perfect. Is het om mee te nemen?" },
+          "feedback": { "strength": "Je beantwoordde de onverwachte vraag direct.", "focus": "Una verwijst hier naar la napolitana." },
+          "states": ["complication_resolved", "complication_quantity"],
+          "next": "turn.takeaway"
+        }
+      ],
+      "fallback": { "strength": "Je hebt de vraag gehoord.", "focus": "Antwoord met una of dos." }
+    },
+    {
+      "id": "branch.unavailable",
+      "turn": 3,
+      "npc_line": { "es": "Lo siento, no quedan napolitanas. ¿Quieres un croissant?", "nl": "Sorry, de chocoladebroodjes zijn op. Wil je een croissant?" },
+      "prompt": "Accepteer het alternatief of vraag om iets anders.",
+      "placeholder": "Sí, un croissant, por favor.",
+      "hint": "Je kunt sí zeggen of vragen: ¿Tiene otra cosa?",
+      "choices": ["Sí, un croissant, por favor.", "No, gracias. ¿Tiene otra cosa?"],
+      "options": [
+        {
+          "id": "alternative",
+          "requirements": [["si", "croissant", "otra cosa", "no gracias"]],
+          "npc_response": { "es": "Claro. ¿Es para llevar?", "nl": "Natuurlijk. Is het om mee te nemen?" },
+          "feedback": { "strength": "Je loste een wijziging in de bestelling zelfstandig op.", "focus": "Gebruik otra cosa wanneer je naar een ander alternatief vraagt." },
+          "states": ["complication_resolved", "complication_unavailable"],
+          "next": "turn.takeaway"
+        }
+      ],
+      "fallback": { "strength": "Je hoeft niet meteen te antwoorden.", "focus": "Zeg sí voor het croissant of vraag ¿Tiene otra cosa?" }
+    },
+    {
+      "id": "branch.bread_type",
+      "turn": 3,
+      "npc_line": { "es": "¿La barra normal o integral?", "nl": "Het gewone of het volkoren stokbrood?" },
+      "prompt": "Kies welk brood je wilt.",
+      "placeholder": "Prefiero la integral.",
+      "hint": "Normal is gewoon; integral is volkoren.",
+      "choices": ["La normal, por favor.", "Prefiero la integral."],
+      "options": [
+        {
+          "id": "bread_type",
+          "requirements": [["normal", "integral"]],
+          "npc_response": { "es": "Buena elección. ¿Es para llevar?", "nl": "Goede keuze. Is het om mee te nemen?" },
+          "feedback": { "strength": "Je gaf duidelijk je voorkeur aan.", "focus": "Met prefiero klinkt je keuze natuurlijk en zelfstandig." },
+          "states": ["complication_resolved", "complication_bread_type"],
+          "next": "turn.takeaway"
+        }
+      ],
+      "fallback": { "strength": "Je begrijpt dat Lucía naar het brood vraagt.", "focus": "Antwoord met normal of integral." }
+    },
+    {
+      "id": "turn.takeaway",
+      "turn": 4,
+      "npc_line": { "es": "¿Es para llevar?", "nl": "Is het om mee te nemen?" },
+      "prompt": "Zeg of je de bestelling wilt meenemen.",
+      "placeholder": "Sí, para llevar, gracias.",
+      "hint": "Para llevar betekent om mee te nemen.",
+      "choices": ["Sí, para llevar, gracias.", "No, es para tomar aquí."],
+      "options": [
+        {
+          "id": "takeaway",
+          "requirements": [["para llevar", "tomar aqui", "aqui"]],
+          "npc_response": { "es": "Muy bien. Son cuatro euros con veinte.", "nl": "Prima. Dat is vier euro twintig." },
+          "feedback": { "strength": "Je maakte je keuze begrijpelijk.", "focus": "Para llevar is de vaste combinatie voor meenemen." },
+          "states": ["takeaway_confirmed"],
+          "next": "turn.payment"
+        }
+      ],
+      "fallback": { "strength": "Lucía geeft je alle tijd.", "focus": "Gebruik para llevar of para tomar aquí." }
+    },
+    {
+      "id": "turn.payment",
+      "turn": 5,
+      "npc_line": { "es": "Son cuatro euros con veinte. ¿En efectivo o con tarjeta?", "nl": "Dat is vier euro twintig. Contant of met kaart?" },
+      "prompt": "Kies hoe je wilt betalen.",
+      "placeholder": "Con tarjeta, por favor.",
+      "hint": "Tarjeta is kaart; efectivo is contant geld.",
+      "choices": ["Con tarjeta, por favor.", "En efectivo."],
+      "options": [
+        {
+          "id": "payment",
+          "requirements": [["tarjeta", "efectivo", "metalico"]],
+          "npc_response": { "es": "Gracias.", "nl": "Bedankt." },
+          "feedback": { "strength": "Je rondde de aankoop zelfstandig af.", "focus": "Con tarjeta en en efectivo zijn allebei vaste betaalzinnen." },
+          "states": ["payment_method_selected", "conversation_completed"],
+          "next": "@complete"
+        }
+      ],
+      "fallback": { "strength": "Je bent bij de laatste stap.", "focus": "Antwoord met tarjeta of efectivo." }
+    }
+  ],
+  "completion": {
+    "polite_farewell": {
+      "es": "¡Muy bien! Da gusto atenderte. Hasta la próxima.",
+      "nl": "Heel goed! Fijn om je te helpen. Tot de volgende keer."
+    },
+    "default_farewell": {
+      "es": "Gracias. Que tengas un buen día.",
+      "nl": "Bedankt. Fijne dag."
+    },
+    "rewards": {
+      "xp": 80,
+      "confianza": 1,
+      "valentia": 1,
+      "stamp": { "es": "Mi primera compra", "nl": "Mijn eerste aankoop" },
+      "collectible": { "es": "Bolsa de pan de La Espiga", "nl": "Broodzak van La Espiga" },
+      "repair_badge": { "es": "Sin miedo", "nl": "Zonder angst" }
+    }
+  }
+}

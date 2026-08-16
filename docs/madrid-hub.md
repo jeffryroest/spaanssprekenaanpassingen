@@ -32,7 +32,7 @@ Laat het object daarna beoordelen en neem exact de goedgekeurde versie op in een
 
 ## Bewuste afbakening
 
-- De knop van La Espiga opent in 2A alleen de missievoorvertoning; de betreedbare bakkerij volgt in fase 2B.
+- De knop van La Espiga opent de betreedbare bakkerijroute uit fase 2B; de hub blijft verantwoordelijk voor ontdekking en navigatie.
 - `Curiosidad` wordt voorlopig alleen in `sessionStorage` bewaard en is nog geen accountvoortgang.
 - Er worden nog geen audiofiles geladen of analyticsgebeurtenissen verstuurd.
 - De overige drie locaties blijven vergrendelde vooruitblikken.

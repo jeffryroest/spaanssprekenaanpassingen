@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 Route::view('/spelen/madrid', 'game.madrid')->name('game.madrid');
+Route::view('/spelen/madrid/la-panaderia', 'game.panaderia')->name('game.madrid.panaderia');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
