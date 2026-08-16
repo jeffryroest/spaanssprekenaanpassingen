@@ -8,9 +8,12 @@ use App\Models\ContentNode;
 
 final class RuntimeReadiness
 {
-    public function __construct(
-        private readonly PublishedContentRepository $publishedContent,
-    ) {}
+    private readonly PublishedContentRepository $publishedContent;
+
+    public function __construct(PublishedContentRepository $publishedContent)
+    {
+        $this->publishedContent = $publishedContent;
+    }
 
     /** @return list<array<string, mixed>> */
     public function items(): array
