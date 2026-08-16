@@ -151,14 +151,14 @@
                                 <p class="bakery-transcript-note" data-transcript-note hidden></p>
                             </section>
 
-                            <p class="bakery-privacy-note">Je opname wordt alleen na jouw klik voor Spaanse transcriptie verzonden. Alleen het gecontroleerde transcript gaat naar de feedbacklaag; audio, transcript en feedback worden niet als voortgang opgeslagen. <a href="{{ route('privacy') }}#spraakopnamen">Lees het privacybeleid.</a></p>
+                            <details class="bakery-privacy-note"><summary>Wat gebeurt er met mijn opname?</summary><p>Je opname wordt alleen na jouw klik voor Spaanse transcriptie verzonden. Alleen het gecontroleerde transcript gaat naar de feedbacklaag; audio, transcript en feedback worden niet als voortgang opgeslagen. <a href="{{ route('privacy') }}#spraakopnamen">Lees het privacybeleid.</a></p></details>
                             <div class="bakery-input-divider" aria-hidden="true"><span>of typ je antwoord</span></div>
                             <div class="bakery-input-row">
                                 <input id="taxi-player-response" name="response" type="text" autocomplete="off" spellcheck="false" lang="es" data-player-response required>
                                 <button type="submit">Gebruik antwoord</button>
                             </div>
                             <div class="bakery-assist-row"><button type="button" data-hint-toggle aria-expanded="false">Toon een hint</button><p data-step-hint hidden></p></div>
-                            <fieldset class="bakery-choice-assist"><legend>Of kies een voorbeeldzin</legend><div data-choice-list></div></fieldset>
+                            <details class="bakery-choice-assist"><summary>Ik wil een voorbeeldzin</summary><div data-choice-list></div></details>
                         </form>
 
                         <button type="button" class="bakery-continue-button" data-dialogue-continue hidden>Verder met de rit <span aria-hidden="true">→</span></button>

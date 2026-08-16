@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
-            <p class="cs-eyebrow">Fase 1E · Releaseworkflow</p>
+            <p class="cs-eyebrow">Speelcontent en releaseworkflow</p>
             <h1 id="dashboard-title" class="cs-page-title">Welkom, {{ auth()->user()->name }}</h1>
             <p class="cs-page-description">Beheer, beoordeel en bundel versiegebonden content. Alleen een geslaagde preflight kan een release gecontroleerd uitvoeren.</p>
         </div>
@@ -38,6 +38,41 @@
                 </div>
             </article>
         @endforeach
+    </section>
+
+    <section class="cs-panel mt-8 overflow-hidden" aria-labelledby="runtime-readiness-title">
+        <div class="cs-panel-header flex flex-wrap items-start justify-between gap-4">
+            <div>
+                <h2 id="runtime-readiness-title" class="font-bold text-slate-900">Speelbaarheid op productie</h2>
+                <p class="mt-1 text-sm text-slate-500">Deze drie gepubliceerde contracten vormen de huidige spelersroute. Een concept is nooit automatisch live.</p>
+            </div>
+            <span class="status-chip">{{ collect($runtimeReadiness)->where('ready', true)->count() }}/{{ count($runtimeReadiness) }} speelbaar</span>
+        </div>
+        <div class="divide-y divide-slate-100">
+            @foreach ($runtimeReadiness as $item)
+                <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                    <div class="flex min-w-0 items-start gap-3">
+                        <span class="mt-0.5 grid size-9 shrink-0 place-items-center rounded-full {{ $item['ready'] ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800' }}" aria-hidden="true">
+                            {{ $item['ready'] ? '✓' : '!' }}
+                        </span>
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h3 class="font-bold text-slate-900">{{ $item['label'] }}</h3>
+                                <span class="rounded-full px-2 py-0.5 text-xs font-bold {{ $item['ready'] ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800' }}">{{ $item['status'] }}</span>
+                            </div>
+                            <p class="mt-1 text-sm text-slate-500">{{ $item['scope'] }} · <code>{{ $item['slug'] }}</code></p>
+                        </div>
+                    </div>
+                    @if ($item['content_node'])
+                        <a href="{{ route('content-studio.content.show', $item['content_node']) }}" class="cs-button-secondary shrink-0">Open content</a>
+                    @else
+                        @can('create', App\Models\ContentNode::class)
+                            <a href="{{ route('content-studio.content.create', ['template' => $item['template']]) }}" class="cs-button-secondary shrink-0">Maak veilig concept</a>
+                        @endcan
+                    @endif
+                </div>
+            @endforeach
+        </div>
     </section>
 
     <div class="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(20rem,1fr)]">

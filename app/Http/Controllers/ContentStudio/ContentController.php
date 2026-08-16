@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ContentStudio;
 use App\Actions\ContentStudio\ArchiveDraftContent;
 use App\Actions\ContentStudio\CreateDraftContent;
 use App\Actions\ContentStudio\UpdateDraftContent;
+use App\ContentStudio\PlayableContentTemplates;
 use App\Enums\ContentStatus;
 use App\Enums\ContentType;
 use App\Http\Controllers\Controller;
@@ -64,12 +65,17 @@ class ContentController extends Controller
         ]);
     }
 
-    public function create(): View
+    public function create(Request $request, PlayableContentTemplates $templates): View
     {
         Gate::authorize('create', ContentNode::class);
+        $validated = $request->validate([
+            'template' => ['nullable', 'string', Rule::in(array_keys($templates->all()))],
+        ]);
 
         return view('content-studio.content.create', [
             'contentTypes' => ContentType::cases(),
+            'playableTemplates' => $templates->all(),
+            'selectedTemplate' => $templates->find($validated['template'] ?? null),
         ]);
     }
 
@@ -84,6 +90,7 @@ class ContentController extends Controller
             title: $validated['title'],
             summary: $validated['summary'] ?? null,
             body: $validated['body'] ?? null,
+            domainData: $this->decodeDomainData($validated['domain_data'] ?? null),
         );
 
         return redirect()
@@ -111,7 +118,11 @@ class ContentController extends Controller
         abort_unless($contentNode->isEditableDraft(), 409, 'Deze status kan niet worden bewerkt.');
         $contentNode->load('localizations');
 
-        return view('content-studio.content.edit', compact('contentNode'));
+        return view('content-studio.content.edit', [
+            'contentNode' => $contentNode,
+            'playableTemplates' => [],
+            'selectedTemplate' => null,
+        ]);
     }
 
     public function update(
@@ -129,6 +140,7 @@ class ContentController extends Controller
             title: $validated['title'],
             summary: $validated['summary'] ?? null,
             body: $validated['body'] ?? null,
+            domainData: $this->decodeDomainData($validated['domain_data'] ?? null),
         );
 
         return redirect()
@@ -152,5 +164,18 @@ class ContentController extends Controller
         return redirect()
             ->route('content-studio.content.show', $contentNode)
             ->with('success', 'De content is gearchiveerd en blijft volledig traceerbaar.');
+    }
+
+    /** @return array<string, mixed> */
+    private function decodeDomainData(?string $source): array
+    {
+        if ($source === null || trim($source) === '') {
+            return [];
+        }
+
+        /** @var array<string, mixed> $decoded */
+        $decoded = json_decode($source, true, flags: JSON_THROW_ON_ERROR);
+
+        return $decoded;
     }
 }

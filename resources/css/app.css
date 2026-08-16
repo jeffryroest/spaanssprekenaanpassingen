@@ -134,6 +134,181 @@
         @apply mt-2 size-2 shrink-0 rounded-full bg-emerald-500;
     }
 
+    .world-home-body {
+        @apply min-h-screen bg-[#f4ead9] text-[#203129] antialiased;
+    }
+
+    .world-home-nav {
+        @apply mx-auto flex min-h-20 max-w-[1500px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-12;
+    }
+
+    .world-home-nav nav {
+        @apply flex items-center gap-1 sm:gap-2;
+    }
+
+    .world-home-nav nav a {
+        @apply inline-flex min-h-11 items-center rounded-xl px-3 text-sm font-bold text-[#334a40] transition hover:bg-white/60 hover:text-[#a94529] focus:outline-none focus:ring-2 focus:ring-[#d57137] sm:px-4;
+    }
+
+    .world-brand {
+        @apply inline-flex items-center gap-3 text-[#172c36] focus:outline-none focus:ring-2 focus:ring-[#d57137] focus:ring-offset-4 focus:ring-offset-[#f4ead9];
+    }
+
+    .world-brand > span {
+        @apply grid size-10 place-items-center rounded-[0.9rem] bg-[#172c36] text-lg font-black text-[#f5b94f] shadow-[0_8px_22px_rgb(23_44_54/0.2)];
+    }
+
+    .world-brand strong {
+        @apply hidden text-base tracking-tight sm:block;
+    }
+
+    .world-brand em {
+        @apply not-italic text-[#c75d31];
+    }
+
+    .world-hero {
+        @apply relative isolate mx-auto min-h-[calc(100svh-5rem)] max-w-[1500px] overflow-hidden bg-[#213b36] sm:min-h-[760px] sm:rounded-[2.2rem];
+    }
+
+    .world-hero > img {
+        @apply absolute inset-0 size-full object-cover;
+        object-position: 58% center;
+    }
+
+    .world-hero-shade {
+        @apply absolute inset-0;
+        background:
+            linear-gradient(90deg, rgb(20 37 35 / 88%) 0%, rgb(27 46 40 / 64%) 38%, rgb(27 38 34 / 8%) 73%),
+            linear-gradient(0deg, rgb(17 33 32 / 42%) 0%, transparent 45%);
+    }
+
+    .world-hero-copy {
+        @apply relative z-10 flex max-w-3xl flex-col items-start px-6 pb-52 pt-20 text-white sm:px-12 sm:pb-40 sm:pt-28 lg:px-20 lg:pt-32;
+    }
+
+    .world-kicker {
+        @apply text-xs font-black uppercase tracking-[0.19em] text-[#b34c2c];
+    }
+
+    .world-hero .world-kicker {
+        @apply inline-flex items-center gap-2 text-[#ffd987];
+    }
+
+    .world-hero .world-kicker > span {
+        @apply size-2 rounded-full bg-[#f4b94f] shadow-[0_0_0_5px_rgb(244_185_79/0.18)];
+    }
+
+    .world-hero-copy h1 {
+        @apply mt-5 max-w-2xl text-4xl font-black leading-[1.04] tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl;
+        text-wrap: balance;
+    }
+
+    .world-hero-copy > p:last-of-type {
+        @apply mt-6 max-w-xl text-base font-medium leading-7 text-[#f9f1df] sm:text-lg sm:leading-8;
+    }
+
+    .world-hero-actions {
+        @apply mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center;
+    }
+
+    .world-hero-actions > span {
+        @apply text-xs font-bold text-[#f6e7c6] sm:text-sm;
+    }
+
+    .world-primary-cta {
+        @apply inline-flex min-h-13 items-center justify-center gap-3 rounded-2xl bg-[#d65f31] px-6 py-3.5 font-black text-white shadow-[0_16px_40px_rgb(78_32_17/0.35)] transition hover:-translate-y-0.5 hover:bg-[#e8733e] focus:outline-none focus:ring-4 focus:ring-[#ffdf8f] focus:ring-offset-2 focus:ring-offset-[#203a35];
+    }
+
+    .world-primary-cta > span {
+        @apply text-xl;
+    }
+
+    .world-mission-card {
+        @apply absolute bottom-5 left-5 right-5 z-20 rounded-3xl border border-white/50 bg-[#fffaf0]/95 p-5 text-[#253a31] shadow-[0_20px_60px_rgb(27_42_33/0.35)] backdrop-blur-md sm:bottom-8 sm:left-auto sm:right-8 sm:w-[23rem] sm:p-7 lg:bottom-12 lg:right-12;
+    }
+
+    .world-mission-number {
+        @apply absolute -top-5 right-5 grid size-12 rotate-6 place-items-center rounded-2xl bg-[#f4b64b] font-black text-[#4b3216] shadow-lg;
+    }
+
+    .world-mission-card > p {
+        @apply text-xs font-black uppercase tracking-[0.18em] text-[#a8432b];
+    }
+
+    .world-mission-card h2 {
+        @apply mt-2 pr-10 text-xl font-black tracking-tight text-[#172c36];
+    }
+
+    .world-mission-card ul {
+        @apply mt-5 grid gap-2.5 text-sm font-semibold text-[#53655c];
+    }
+
+    .world-mission-card li {
+        @apply flex items-center gap-3;
+    }
+
+    .world-mission-card li > span {
+        @apply grid size-7 shrink-0 place-items-center rounded-full bg-[#efe3c8] text-xs text-[#9b4d2c];
+    }
+
+    .world-how {
+        @apply mx-auto grid max-w-7xl gap-10 px-6 py-20 sm:px-10 lg:grid-cols-[0.8fr_1.2fr] lg:px-12 lg:py-28;
+    }
+
+    .world-how h2,
+    .world-promise h2 {
+        @apply mt-3 max-w-xl text-3xl font-black leading-tight tracking-[-0.03em] text-[#172c36] sm:text-4xl;
+        text-wrap: balance;
+    }
+
+    .world-how ol {
+        @apply grid gap-3;
+    }
+
+    .world-how li {
+        @apply flex gap-4 rounded-2xl border border-[#29493a]/10 bg-[#fffaf0] p-5 shadow-sm sm:p-6;
+    }
+
+    .world-how li > span {
+        @apply grid size-10 shrink-0 place-items-center rounded-xl bg-[#17313b] font-black text-[#f7bd58];
+    }
+
+    .world-how strong {
+        @apply text-base font-black text-[#24362f];
+    }
+
+    .world-how li p {
+        @apply mt-1 text-sm leading-6 text-[#64746c];
+    }
+
+    .world-promise {
+        @apply mx-auto mb-16 grid max-w-7xl gap-8 rounded-[2rem] bg-[#17313b] px-7 py-10 text-white sm:px-10 sm:py-12 lg:grid-cols-[1fr_1fr_auto] lg:items-end lg:px-14;
+    }
+
+    .world-promise .world-kicker {
+        @apply text-[#f4b64b];
+    }
+
+    .world-promise h2 {
+        @apply text-white;
+    }
+
+    .world-promise > p {
+        @apply text-sm leading-7 text-[#dbe3df] sm:text-base;
+    }
+
+    .world-promise > a {
+        @apply inline-flex min-h-12 shrink-0 items-center justify-center gap-3 rounded-xl border border-[#f4b64b]/50 px-5 font-black text-[#ffe4a1] transition hover:bg-[#f4b64b] hover:text-[#2b311f] focus:outline-none focus:ring-2 focus:ring-[#f4b64b];
+    }
+
+    .world-home-footer {
+        @apply mx-auto flex max-w-7xl flex-col gap-3 border-t border-[#29493a]/15 px-6 py-8 text-sm font-semibold text-[#65736d] sm:flex-row sm:items-center sm:justify-between sm:px-10 lg:px-12;
+    }
+
+    .world-home-footer a {
+        @apply underline decoration-[#d57137]/50 underline-offset-4 hover:text-[#a8432b];
+    }
+
     .hub-body {
         @apply min-h-screen bg-[#f7efe2] text-[#24322b] antialiased;
         background-image:
@@ -259,11 +434,17 @@
 
     .hub-map {
         @apply relative isolate min-h-[34rem] overflow-hidden sm:min-h-[40rem] lg:min-h-[46rem];
-        background: linear-gradient(180deg, #91c9d6 0%, #bfe0db 43%, #e6cf9e 43%, #d7b77c 100%);
+        background-color: #d8c08d;
+        background-image:
+            linear-gradient(180deg, rgb(19 42 45 / 2%) 45%, rgb(36 30 22 / 18%) 100%),
+            url('/images/game/madrid-morning.webp');
+        background-position: 58% center;
+        background-size: cover;
     }
 
-    .hub-sky {
-        @apply absolute inset-x-0 top-0 h-[44%] overflow-hidden;
+    .hub-sky,
+    .hub-city {
+        @apply hidden;
     }
 
     .hub-sun {
@@ -569,6 +750,98 @@
     .hub-footer a {
         @apply font-bold text-[#9e4422] underline decoration-[#d87335]/30 underline-offset-4 hover:decoration-[#d87335] focus:outline-none focus:ring-2 focus:ring-[#d87335];
     }
+
+    .hub-arrival-dialog,
+    .hub-preparation-dialog {
+        @apply m-auto w-[min(92vw,36rem)] overflow-hidden rounded-[2rem] border-0 bg-[#fffaf0] p-0 text-[#24362f] shadow-[0_30px_100px_rgb(22_37_33/0.45)];
+    }
+
+    .hub-arrival-dialog::backdrop,
+    .hub-preparation-dialog::backdrop {
+        background: rgb(17 32 31 / 68%);
+        backdrop-filter: blur(4px);
+    }
+
+    .hub-arrival-visual {
+        @apply h-48 bg-cover bg-center sm:h-56;
+        background-image: linear-gradient(0deg, rgb(27 49 47 / 24%), transparent), url('/images/game/madrid-morning.webp');
+    }
+
+    .hub-dialog-content {
+        @apply relative p-6 sm:p-8;
+    }
+
+    .hub-dialog-content h2 {
+        @apply mt-2 text-3xl font-black tracking-tight text-[#172c36];
+    }
+
+    .hub-dialog-content > p:not(.hub-eyebrow):not(.hub-preparation-note) {
+        @apply mt-3 text-sm leading-6 text-[#5c6b64] sm:text-base;
+    }
+
+    .hub-arrival-dialog .hub-dialog-content > button,
+    .hub-preparation-dialog > .hub-dialog-content > .hub-mission-button {
+        @apply mt-6 inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-xl border-0 bg-[#c7582f] px-5 font-black text-white shadow-lg shadow-[#8d3a1d]/20 transition hover:bg-[#de6c3c] focus:outline-none focus:ring-4 focus:ring-[#f5bf60]/60;
+    }
+
+    .hub-dialog-close {
+        @apply absolute right-4 top-4 grid size-10 place-items-center rounded-full border border-[#2d453b]/15 bg-white text-xl font-black text-[#53645c] shadow-sm hover:bg-[#f7eee1] focus:outline-none focus:ring-2 focus:ring-[#d87335];
+    }
+
+    .hub-basket-card {
+        @apply mt-6 flex items-center gap-4 rounded-2xl border border-[#d87335]/20 bg-[#fff1d0] p-4;
+    }
+
+    .hub-basket-card > span {
+        @apply grid size-12 place-items-center rounded-xl bg-white text-2xl shadow-sm;
+    }
+
+    .hub-basket-card small,
+    .hub-basket-card strong,
+    .hub-sweet-choices strong,
+    .hub-sweet-choices small {
+        @apply block;
+    }
+
+    .hub-basket-card small {
+        @apply text-xs font-black uppercase tracking-wider text-[#9a5a2e];
+    }
+
+    .hub-basket-card strong {
+        @apply mt-0.5 text-base font-black text-[#2b3d34];
+    }
+
+    .hub-sweet-choices {
+        @apply mt-5;
+    }
+
+    .hub-sweet-choices legend {
+        @apply text-sm font-black text-[#2b3d34];
+    }
+
+    .hub-sweet-choices > div {
+        @apply mt-2 grid gap-2 sm:grid-cols-2;
+    }
+
+    .hub-sweet-choices label {
+        @apply flex min-h-16 cursor-pointer items-center gap-3 rounded-xl border border-[#2d453b]/15 bg-white p-3 transition hover:border-[#d87335]/50 has-[:checked]:border-[#c7582f] has-[:checked]:bg-[#fff1d0] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#d87335];
+    }
+
+    .hub-sweet-choices input {
+        @apply size-5 accent-[#c7582f];
+    }
+
+    .hub-sweet-choices strong {
+        @apply text-sm font-black text-[#2b3d34];
+    }
+
+    .hub-sweet-choices small {
+        @apply mt-0.5 text-xs text-[#6b7771];
+    }
+
+    .hub-preparation-note {
+        @apply mt-5 flex gap-2 rounded-xl bg-[#e6efdf] p-3 text-sm font-semibold leading-5 text-[#41604c];
+    }
 }
 
 @keyframes hub-cloud-drift {
@@ -675,6 +948,22 @@
 
     .bakery-status {
         @apply mx-auto mt-3 max-w-7xl px-1 text-sm text-[#75685f];
+    }
+
+    .bakery-preparation-summary {
+        @apply mx-auto mt-4 flex max-w-7xl items-center gap-4 rounded-2xl border border-[#c56538]/20 bg-[#fff2cf] p-4 shadow-sm;
+    }
+
+    .bakery-preparation-summary > span {
+        @apply grid size-12 shrink-0 place-items-center rounded-xl bg-white text-2xl shadow-sm;
+    }
+
+    .bakery-preparation-summary h2 {
+        @apply mt-1 text-base font-black text-[#40342d];
+    }
+
+    .bakery-preparation-summary div > p:last-child {
+        @apply mt-1 text-xs leading-5 text-[#76675e];
     }
 
     .bakery-stage {
@@ -990,7 +1279,15 @@
     }
 
     .bakery-privacy-note {
-        @apply mt-2 text-xs leading-5 text-[#81736a];
+        @apply mt-3 rounded-xl border border-[#422d22]/10 bg-white/50 px-3 py-2 text-xs leading-5 text-[#81736a];
+    }
+
+    .bakery-privacy-note summary {
+        @apply cursor-pointer font-bold text-[#6d5e55] focus:outline-none focus:ring-2 focus:ring-[#c56538];
+    }
+
+    .bakery-privacy-note p {
+        @apply mt-2;
     }
 
     .bakery-privacy-note a {
@@ -1036,8 +1333,8 @@
         @apply mt-5 border-t border-[#422d22]/10 pt-4;
     }
 
-    .bakery-choice-assist legend {
-        @apply px-2 text-xs font-black uppercase tracking-[0.11em] text-[#86786f];
+    .bakery-choice-assist summary {
+        @apply cursor-pointer text-xs font-black text-[#8e3f28] underline decoration-[#c56538]/30 underline-offset-4 hover:decoration-[#c56538] focus:outline-none focus:ring-2 focus:ring-[#c56538];
     }
 
     .bakery-choice-assist > div {

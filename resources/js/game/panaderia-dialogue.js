@@ -35,10 +35,28 @@ if (dialogueRoot) {
     let isEvaluating = false;
     const persist = () => persistState(storageKey, state);
 
+    const showPreparationSummary = () => {
+        const summary = dialogueRoot.querySelector('[data-preparation-summary]');
+        if (!summary || !dialogueRoot.matches('[data-panaderia-dialogue]')) return;
+
+        try {
+            const preparation = JSON.parse(window.sessionStorage.getItem('madrid-mission-preparation') ?? 'null');
+            if (!preparation?.bread || !preparation?.sweet) return;
+
+            setText('[data-preparation-bread]', preparation.bread);
+            setText('[data-preparation-sweet]', preparation.sweet);
+            summary.hidden = false;
+        } catch {
+            // De dialoog blijft zonder boodschappenkaart volledig speelbaar.
+        }
+    };
+
     const setText = (selector, value) => {
         const element = dialogueRoot.querySelector(selector);
         if (element) element.textContent = value ?? '';
     };
+
+    showPreparationSummary();
 
     const validateContent = (data) => {
         if (data?.schema_version !== '1.0.0' || data?.scene !== expectedScene) {

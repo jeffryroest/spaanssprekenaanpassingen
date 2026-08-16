@@ -7,6 +7,7 @@ use App\Enums\RevisionStatus;
 use App\Models\AuditLog;
 use App\Models\ContentNode;
 use App\Models\User;
+use App\Rules\PlayableDomainData;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
@@ -14,6 +15,7 @@ use Illuminate\Validation\ValidationException;
 
 final class UpdateDraftContent
 {
+    /** @param array<string, mixed> $domainData */
     public function handle(
         User $actor,
         ContentNode $contentNode,
@@ -23,6 +25,7 @@ final class UpdateDraftContent
         string $title,
         ?string $summary = null,
         ?string $body = null,
+        array $domainData = [],
     ): ContentNode {
         Gate::forUser($actor)->authorize('update', $contentNode);
 
@@ -32,12 +35,14 @@ final class UpdateDraftContent
             'title' => $title,
             'summary' => $summary,
             'body' => $body,
+            'domain_data' => $domainData,
         ], [
             'slug' => ['required', 'string', 'max:180', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
             'locale' => ['required', 'string', 'max:10', 'regex:/^[a-z]{2}(?:-[A-Z]{2})?$/'],
             'title' => ['required', 'string', 'max:255'],
             'summary' => ['nullable', 'string'],
             'body' => ['nullable', 'string'],
+            'domain_data' => ['array', new PlayableDomainData($contentNode->content_type)],
         ])->validate();
 
         return DB::transaction(function () use ($actor, $contentNode, $expectedVersion, $validated): ContentNode {
@@ -66,7 +71,6 @@ final class UpdateDraftContent
                 ]);
             }
 
-            $latestRevision = $lockedNode->revisions->last();
             $before = $this->state($lockedNode, $localization->title, $localization->summary, $localization->body);
             $newVersion = $lockedNode->current_version + 1;
 
@@ -96,7 +100,7 @@ final class UpdateDraftContent
                     'body' => $localization->body,
                     'metadata' => $localization->metadata,
                 ]],
-                'domain_data' => data_get($latestRevision?->snapshot, 'domain_data', []),
+                'domain_data' => $validated['domain_data'],
             ];
 
             $lockedNode->revisions()->create([

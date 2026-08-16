@@ -75,6 +75,62 @@ class ContentStudioContentCrudTest extends TestCase
         $this->assertNotNull(AuditLog::query()->sole()->request_id);
     }
 
+    public function test_editor_can_start_from_a_playable_template_without_publishing_it(): void
+    {
+        $editor = $this->editor();
+
+        $this->actingAs($editor)
+            ->get(route('content-studio.content.create', ['template' => 'madrid-hub']))
+            ->assertOk()
+            ->assertSee('Start met speelbare content')
+            ->assertSee('madrid_hub')
+            ->assertSee('value="madrid"', false)
+            ->assertSee('Alleen concept');
+
+        $this->assertDatabaseCount('content_nodes', 0);
+    }
+
+    public function test_playable_domain_data_is_validated_and_saved_in_the_revision(): void
+    {
+        $editor = $this->editor();
+        $domainData = file_get_contents(base_path('content/examples/madrid-hub-domain-data.json'));
+        $this->assertIsString($domainData);
+
+        $this->actingAs($editor)->post(route('content-studio.content.store'), [
+            'content_type' => ContentType::Region->value,
+            'slug' => 'madrid',
+            'locale' => 'es-ES',
+            'title' => 'Madrid',
+            'summary' => 'Speelbare wereld',
+            'body' => null,
+            'domain_data' => $domainData,
+        ])->assertRedirect();
+
+        $revision = ContentNode::query()->with('revisions')->sole()->revisions->sole();
+        $this->assertSame('madrid_hub', $revision->snapshot['domain_data']['scene']);
+        $this->assertCount(4, $revision->snapshot['domain_data']['hotspots']);
+        $this->assertDatabaseHas('content_nodes', [
+            'slug' => 'madrid',
+            'status' => ContentStatus::Draft->value,
+        ]);
+    }
+
+    public function test_invalid_playable_domain_data_writes_nothing(): void
+    {
+        $this->actingAs($this->editor())
+            ->post(route('content-studio.content.store'), [
+                'content_type' => ContentType::Region->value,
+                'slug' => 'madrid',
+                'locale' => 'es-ES',
+                'title' => 'Madrid',
+                'domain_data' => '{"schema_version":"1.0.0","scene":"madrid_hub","hotspots":[]}',
+            ])
+            ->assertSessionHasErrors('domain_data');
+
+        $this->assertDatabaseCount('content_nodes', 0);
+        $this->assertDatabaseCount('content_revisions', 0);
+    }
+
     public function test_invalid_content_form_writes_nothing(): void
     {
         $this->actingAs($this->editor())

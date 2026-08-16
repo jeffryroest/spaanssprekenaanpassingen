@@ -13,8 +13,10 @@ class HomePageTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('Spaansspreken.nl')
-            ->assertSee('Madrid · La panadería')
-            ->assertSee('Start in Madrid')
-            ->assertSee('Fase 3B1');
+            ->assertSee('Je eerste ochtend in Madrid')
+            ->assertSee('Start je eerste missie')
+            ->assertSee('madrid-morning.webp', false)
+            ->assertDontSee('Laravel 13')
+            ->assertDontSee('Fase 3B1');
     }
 }

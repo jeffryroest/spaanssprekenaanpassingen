@@ -7,6 +7,7 @@
         $localization = $contentNode->defaultLocalization();
         $currentRevision = $contentNode->revisions->firstWhere('version', $contentNode->current_version);
         $isOwnCurrentRevision = (int) $currentRevision?->created_by === (int) auth()->id();
+        $domainData = data_get($currentRevision?->snapshot, 'domain_data', []);
     @endphp
 
     @if ($errors->any())
@@ -44,6 +45,32 @@
             @endif
         @endcan
     </div>
+
+    @if ($domainData !== [])
+        <section class="cs-panel mt-6 overflow-hidden" aria-labelledby="play-data-title">
+            <div class="cs-panel-header flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h2 id="play-data-title" class="font-bold text-slate-900">Speeldata</h2>
+                    <p class="mt-1 text-sm text-slate-500">Exact JSON-snapshot van revisie {{ $contentNode->current_version }}</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    @if (data_get($domainData, 'scene'))
+                        <span class="status-chip">{{ data_get($domainData, 'scene') }}</span>
+                    @endif
+                    @if (data_get($domainData, 'schema_version'))
+                        <span class="status-chip">contract {{ data_get($domainData, 'schema_version') }}</span>
+                    @endif
+                </div>
+            </div>
+            <details class="group">
+                <summary class="cursor-pointer list-none px-5 py-4 text-sm font-bold text-brand-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-brand-500 sm:px-6">
+                    <span class="group-open:hidden">JSON bekijken</span>
+                    <span class="hidden group-open:inline">JSON sluiten</span>
+                </summary>
+                <pre class="max-h-[42rem] overflow-auto border-t border-slate-200 bg-slate-950 p-5 text-xs leading-5 text-slate-100 sm:p-6"><code>{{ json_encode($domainData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) }}</code></pre>
+            </details>
+        </section>
+    @endif
 
     <div class="mt-8 grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
         <article class="cs-panel overflow-hidden" aria-labelledby="content-title">

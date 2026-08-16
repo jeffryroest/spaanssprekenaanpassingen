@@ -8,6 +8,7 @@ use App\Enums\RevisionStatus;
 use App\Models\AuditLog;
 use App\Models\ContentNode;
 use App\Models\User;
+use App\Rules\PlayableDomainData;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
@@ -46,7 +47,7 @@ final class CreateDraftContent
             'summary' => ['nullable', 'string'],
             'body' => ['nullable', 'string'],
             'metadata' => ['array'],
-            'domain_data' => ['array'],
+            'domain_data' => ['array', new PlayableDomainData($contentType)],
         ])->validate();
 
         return DB::transaction(function () use ($actor, $contentType, $validated): ContentNode {

@@ -89,7 +89,7 @@ jobs:
         run: npm run validate
 
       - name: Build production assets
-        run: npm run build
+        run: npm run build:verify
 
       - name: Audit frontend dependencies
         run: npm audit --audit-level=high
@@ -143,7 +143,7 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Build production assets
-        run: npm run build
+        run: npm run build:verify
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2

@@ -38,6 +38,6 @@ assert(packageJson.scripts?.build === 'vite build', 'De Vite-build ontbreekt');
 assert(packageJson.devDependencies?.tailwindcss?.startsWith('^4.'), 'Tailwind CSS 4 moet vastgelegd zijn');
 assert(envExample.includes('DB_CONNECTION=mysql'), 'De voorbeeldomgeving moet MySQL gebruiken');
 assert(envExample.includes('APP_LOCALE=nl'), 'De standaardlocale moet Nederlands zijn');
-assert(homepage.includes('Madrid · La panadería'), 'De eerste vertical slice ontbreekt op de startpagina');
+assert(homepage.includes('La panadería') && homepage.includes('Start je eerste missie'), 'De eerste vertical slice ontbreekt op de startpagina');
 
 console.log('Laravel 13-fundament geldig: structuur, runtime en startpagina zijn consistent.');
