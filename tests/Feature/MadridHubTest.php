@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Tests\TestCase;
 
 class MadridHubTest extends TestCase
@@ -23,7 +24,7 @@ class MadridHubTest extends TestCase
 
     public function test_authenticated_hub_exposes_account_progress_contract(): void
     {
-        $this->actingAs(\App\Models\User::factory()->create())
+        $this->actingAs(User::factory()->create())
             ->get('/spelen/madrid')
             ->assertOk()
             ->assertSee('data-authenticated="true"', false)

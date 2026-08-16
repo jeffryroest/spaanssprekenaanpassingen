@@ -16,7 +16,7 @@ class ContentStudioDesignSystemTest extends TestCase
         $this->get(route('login'))
             ->assertOk()
             ->assertSee('data-auth-shell', false)
-            ->assertSee('Inloggen op de Content Studio');
+            ->assertSee('Inloggen op Spaansspreken.nl');
     }
 
     public function test_dashboard_uses_accessible_shared_navigation(): void

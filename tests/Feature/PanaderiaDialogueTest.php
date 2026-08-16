@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Tests\TestCase;
 
 class PanaderiaDialogueTest extends TestCase
@@ -28,7 +29,7 @@ class PanaderiaDialogueTest extends TestCase
 
     public function test_authenticated_dialogue_can_link_account_storage_and_progress(): void
     {
-        $this->actingAs(\App\Models\User::factory()->create())
+        $this->actingAs(User::factory()->create())
             ->get('/spelen/madrid/la-panaderia')
             ->assertOk()
             ->assertSee('data-authenticated="true"', false)
