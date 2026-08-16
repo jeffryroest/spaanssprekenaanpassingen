@@ -18,6 +18,7 @@ class AuthenticatedSessionController extends Controller
         $allowedRedirects = [
             route('game.madrid.panaderia', absolute: false),
             route('player.progress', absolute: false),
+            route('trial-week.show', absolute: false),
         ];
 
         if (is_string($redirect) && in_array($redirect, $allowedRedirects, true)) {

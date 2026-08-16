@@ -12,6 +12,7 @@ use App\Http\Controllers\Game\CompletePanaderiaMissionController;
 use App\Http\Controllers\Game\SpeechTranscriptionController;
 use App\Http\Controllers\Game\TurnFeedbackController;
 use App\Http\Controllers\PlayerProgressController;
+use App\Http\Controllers\TrialWeekController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -35,6 +36,10 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
 Route::middleware('auth')->group(function (): void {
+    Route::get('/proefweek', [TrialWeekController::class, 'show'])
+        ->name('trial-week.show');
+    Route::get('/spelen/proefweek/status', [TrialWeekController::class, 'json'])
+        ->name('game.trial-week.status');
     Route::get('/mijn-voortgang', [PlayerProgressController::class, 'show'])
         ->name('player.progress');
     Route::get('/spelen/voortgang', [PlayerProgressController::class, 'json'])
