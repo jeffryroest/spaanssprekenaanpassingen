@@ -18,9 +18,23 @@ class PanaderiaDialogueTest extends TestCase
             ->assertSee('data-speech-recorder', false)
             ->assertSee(route('game.madrid.panaderia.transcription'), false)
             ->assertSee(route('game.madrid.panaderia.feedback'), false)
+            ->assertSee(route('game.madrid.panaderia.complete'), false)
+            ->assertSee('data-authenticated="false"', false)
+            ->assertSee('data-account-sync', false)
             ->assertSee('data-feedback-details', false)
             ->assertSee('data-feedback-retry', false)
             ->assertSee('data-dialogue-history', false);
+    }
+
+    public function test_authenticated_dialogue_can_link_account_storage_and_progress(): void
+    {
+        $this->actingAs(\App\Models\User::factory()->create())
+            ->get('/spelen/madrid/la-panaderia')
+            ->assertOk()
+            ->assertSee('data-authenticated="true"', false)
+            ->assertSee(route('game.madrid.panaderia.complete'), false)
+            ->assertSee(route('player.progress'), false)
+            ->assertSee('Bekijk mijn voortgang');
     }
 
     public function test_panaderia_links_back_to_the_madrid_hub(): void

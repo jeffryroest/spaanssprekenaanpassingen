@@ -437,6 +437,10 @@
         @apply bg-[#596861] text-white;
     }
 
+    .hub-hotspot-state-preview {
+        @apply bg-[#d4953b] text-white;
+    }
+
     .hub-inspectable {
         @apply absolute left-[var(--hub-x)] top-[var(--hub-y)] grid size-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-white bg-[#f2ad4f] text-base font-black text-[#533312] shadow-[0_6px_18px_rgb(66_43_23/0.32)] transition hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/80;
         animation: hub-pulse 2.6s ease-in-out infinite;
@@ -607,19 +611,25 @@
     }
 
     .bakery-mission-meta > span,
-    .bakery-mission-meta > button {
+    .bakery-mission-meta > button,
+    .bakery-mission-meta > a {
         @apply rounded-full border border-[#422d22]/10 bg-white/65 px-3 py-2 text-xs font-bold text-[#65564d];
     }
 
-    .bakery-mission-meta > button {
+    .bakery-mission-meta > button,
+    .bakery-mission-meta > a {
         @apply transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#c56538];
+    }
+
+    .bakery-mission-meta > a {
+        @apply hidden md:inline-flex;
     }
 
     .bakery-mission-meta .bakery-mode-chip {
         @apply hidden border-[#3c7256]/15 bg-[#e5eee2] text-[#315d47] sm:inline-block;
     }
 
-    .bakery-mission-meta > span:nth-child(2) {
+    .bakery-mission-meta > [data-level-chip] {
         @apply hidden sm:inline-block;
     }
 
@@ -1138,6 +1148,27 @@
     .bakery-reward-cards span { @apply text-xl text-[#c56538]; }
     .bakery-reward-cards p { @apply mt-3 text-[0.65rem] font-black uppercase tracking-wide text-[#8a7a70]; }
     .bakery-reward-cards strong { @apply mt-1 block text-sm font-black text-[#3f332d]; }
+
+    .bakery-account-sync {
+        @apply mx-auto mt-5 max-w-xl rounded-2xl border border-[#315d47]/20 bg-[#edf4e9] p-4 text-left;
+    }
+
+    .bakery-account-sync > div > strong {
+        @apply block text-sm font-black text-[#315d47];
+    }
+
+    .bakery-account-sync > div > p {
+        @apply mt-1 text-xs leading-5 text-[#5d6f61];
+    }
+
+    .bakery-account-sync > div > p[data-account-balances] {
+        @apply mt-3 rounded-xl bg-white/70 px-3 py-2 font-black text-[#315d47];
+    }
+
+    .bakery-account-sync > button,
+    .bakery-account-sync > a {
+        @apply mt-3 inline-flex min-h-11 items-center justify-center rounded-xl border border-[#315d47]/20 bg-white px-4 text-sm font-black text-[#315d47] transition hover:border-[#315d47]/40 focus:outline-none focus:ring-2 focus:ring-[#4c8b65] focus:ring-offset-2;
+    }
 
     .bakery-complete-actions {
         @apply mt-7 flex flex-col justify-center gap-2 sm:flex-row;

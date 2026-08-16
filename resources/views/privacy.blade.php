@@ -33,6 +33,12 @@
             <p class="mt-4 leading-7 text-stone-300">Je kunt een opname opnieuw maken of helemaal niet verzenden. Weiger je microfoontoestemming, dan blijft de volledige dialoog speelbaar met tekst en voorbeeldzinnen. Het intrekken van browsertoestemming regel je via de site-instellingen van je browser.</p>
         </section>
 
+        <section id="accountvoortgang" class="mt-6 rounded-3xl border border-white/10 bg-white/[0.06] p-6 sm:p-8">
+            <h2 class="text-2xl font-bold text-white">Accountvoortgang</h2>
+            <p class="mt-4 leading-7 text-stone-300">Als je bent ingelogd, bewaren we na een voltooide missie de gebruikte gepubliceerde contentversie, stap-id's, invoerbron, hulpgebruik, afgeleide missiestates, XP/Confianza/Valentía en unieke beloningssleutels. Zo blijven je resultaat en ontgrendelingen na opnieuw inloggen beschikbaar.</p>
+            <p class="mt-4 leading-7 text-stone-300">De voortgangsopslag bevat geen ruwe opname, antwoordtekst, transcript, transcript-confidence, spelercorrectie of AI-feedback. Die inhoud wordt ook niet in het accountdashboard teruggegeven.</p>
+        </section>
+
         <p class="mt-8 text-sm leading-6 text-stone-400">Een bredere juridische privacy- en retentiereview staat gepland vóór de gesloten bèta. Deze technische uitleg wordt bijgewerkt wanneer de gegevensverwerking verandert.</p>
     </main>
 </body>

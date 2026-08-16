@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaansspreken.nl/contracts/player-progress-v1.schema.json",
+  "title": "Player progress response v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "data", "meta"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "data": { "$ref": "#/$defs/progress" },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "account_persisted": { "type": "boolean" },
+        "idempotent": { "type": "boolean" },
+        "audio_persisted": { "const": false },
+        "transcript_persisted": { "const": false },
+        "feedback_persisted": { "const": false },
+        "audio_included": { "const": false },
+        "transcript_included": { "const": false },
+        "feedback_included": { "const": false }
+      },
+      "anyOf": [
+        { "required": ["account_persisted", "idempotent", "audio_persisted", "transcript_persisted", "feedback_persisted"] },
+        { "required": ["audio_included", "transcript_included", "feedback_included"] }
+      ]
+    }
+  },
+  "$defs": {
+    "nonNegativeInteger": { "type": "integer", "minimum": 0 },
+    "nullableDateTime": { "type": ["string", "null"], "format": "date-time" },
+    "balances": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["xp", "confianza", "valentia", "state_version"],
+      "properties": {
+        "xp": { "$ref": "#/$defs/nonNegativeInteger" },
+        "confianza": { "$ref": "#/$defs/nonNegativeInteger" },
+        "valentia": { "$ref": "#/$defs/nonNegativeInteger" },
+        "state_version": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "mission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "status", "completion_count", "best_xp", "best_spoken_turns", "spoken_goal_target", "spoken_goal_completed", "first_completed_at", "last_completed_at", "states"],
+      "properties": {
+        "key": { "const": "mission.madrid.panaderia.breakfast" },
+        "status": { "type": "string", "enum": ["not_started", "completed"] },
+        "completion_count": { "$ref": "#/$defs/nonNegativeInteger" },
+        "best_xp": { "$ref": "#/$defs/nonNegativeInteger" },
+        "best_spoken_turns": { "$ref": "#/$defs/nonNegativeInteger" },
+        "spoken_goal_target": { "const": 3 },
+        "spoken_goal_completed": { "type": "boolean" },
+        "first_completed_at": { "$ref": "#/$defs/nullableDateTime" },
+        "last_completed_at": { "$ref": "#/$defs/nullableDateTime" },
+        "states": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "reward": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "type", "title", "first_acquired_at"],
+      "properties": {
+        "key": { "type": "string" },
+        "type": { "type": "string", "enum": ["passport_stamp", "collectible", "unlock", "badge"] },
+        "title": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["es", "nl"],
+          "properties": {
+            "es": { "type": "string" },
+            "nl": { "type": "string" }
+          }
+        },
+        "first_acquired_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "attempt": {
+      "type": ["object", "null"],
+      "required": ["id", "duplicate", "target_xp", "target_confianza", "target_valentia", "spoken_turns", "spoken_goal_completed", "awarded_now"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "duplicate": { "type": "boolean" },
+        "target_xp": { "$ref": "#/$defs/nonNegativeInteger" },
+        "target_confianza": { "$ref": "#/$defs/nonNegativeInteger" },
+        "target_valentia": { "$ref": "#/$defs/nonNegativeInteger" },
+        "spoken_turns": { "$ref": "#/$defs/nonNegativeInteger" },
+        "spoken_goal_completed": { "type": "boolean" },
+        "awarded_now": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["xp", "confianza", "valentia"],
+          "properties": {
+            "xp": { "$ref": "#/$defs/nonNegativeInteger" },
+            "confianza": { "$ref": "#/$defs/nonNegativeInteger" },
+            "valentia": { "$ref": "#/$defs/nonNegativeInteger" }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "progress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["balances", "mission", "rewards", "last_attempt"],
+      "properties": {
+        "balances": { "$ref": "#/$defs/balances" },
+        "mission": { "$ref": "#/$defs/mission" },
+        "rewards": { "type": "array", "items": { "$ref": "#/$defs/reward" } },
+        "last_attempt": { "$ref": "#/$defs/attempt" }
+      }
+    }
+  }
+}

@@ -18,6 +18,9 @@
         data-hub-route="{{ route('game.madrid') }}"
         data-transcription-url="{{ route('game.madrid.panaderia.transcription') }}"
         data-assessment-url="{{ route('game.madrid.panaderia.feedback') }}"
+        data-authenticated="{{ auth()->check() ? 'true' : 'false' }}"
+        data-completion-url="{{ route('game.madrid.panaderia.complete') }}"
+        data-progress-url="{{ route('player.progress') }}"
     >
         <header class="bakery-topbar">
             <a href="{{ route('game.madrid') }}" class="bakery-back-link">
@@ -26,6 +29,11 @@
             </a>
 
             <div class="bakery-mission-meta">
+                @auth
+                    <a href="{{ route('player.progress') }}">Mijn voortgang</a>
+                @else
+                    <a href="{{ route('login', ['redirect' => route('game.madrid.panaderia', absolute: false)]) }}">Inloggen</a>
+                @endauth
                 <span class="bakery-mode-chip">Spreken + tekst</span>
                 <span data-level-chip>Niveau kiezen</span>
                 <button type="button" data-translation-toggle aria-pressed="false">Nederlandse vertaling</button>
@@ -276,8 +284,23 @@
                     <div data-repair-badge hidden><span aria-hidden="true">★</span><p>Bonusbadge</p><strong data-reward-badge></strong></div>
                 </div>
 
+                <div class="bakery-account-sync" data-account-sync>
+                    <div role="status" aria-live="polite">
+                        <strong data-account-sync-title>Je missieresultaat is lokaal klaar.</strong>
+                        <p data-account-sync-message></p>
+                        <p data-account-balances hidden></p>
+                    </div>
+                    <button type="button" data-account-sync-retry hidden>Opnieuw opslaan</button>
+                    @guest
+                        <a data-account-login href="{{ route('login', ['redirect' => route('game.madrid.panaderia', absolute: false)]) }}">Log in en bewaar dit resultaat</a>
+                    @endguest
+                </div>
+
                 <div class="bakery-complete-actions">
                     <a href="{{ route('game.madrid') }}">Terug naar Madrid</a>
+                    @auth
+                        <a href="{{ route('player.progress') }}">Bekijk mijn voortgang</a>
+                    @endauth
                     <button type="button" data-replay-dialogue>Speel opnieuw</button>
                 </div>
             </section>

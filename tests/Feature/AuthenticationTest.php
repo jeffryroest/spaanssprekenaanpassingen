@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ContentRole;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
@@ -16,7 +17,7 @@ class AuthenticationTest extends TestCase
         $this->get(route('login'))->assertOk();
     }
 
-    public function test_user_can_log_in_and_is_redirected_to_content_studio(): void
+    public function test_player_can_log_in_and_is_redirected_to_progress(): void
     {
         $user = User::factory()->create();
 
@@ -26,7 +27,46 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('player.progress', absolute: false));
+    }
+
+    public function test_content_editor_can_log_in_and_is_redirected_to_content_studio(): void
+    {
+        $user = User::factory()->create(['content_role' => ContentRole::Editor]);
+
+        $response = $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
         $response->assertRedirect(route('content-studio.dashboard', absolute: false));
+    }
+
+    public function test_safe_game_redirect_is_restored_after_login(): void
+    {
+        $user = User::factory()->create();
+
+        $this->get(route('login', [
+            'redirect' => route('game.madrid.panaderia', absolute: false),
+        ]))->assertOk();
+
+        $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertRedirect(route('game.madrid.panaderia', absolute: false));
+    }
+
+    public function test_external_login_redirect_is_ignored(): void
+    {
+        $user = User::factory()->create();
+
+        $this->get(route('login', ['redirect' => 'https://example.net/phishing']))->assertOk();
+
+        $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertRedirect(route('player.progress', absolute: false));
     }
 
     public function test_invalid_credentials_are_rejected_without_revealing_account_state(): void

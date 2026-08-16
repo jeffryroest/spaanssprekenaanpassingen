@@ -16,6 +16,8 @@
         data-source="{{ url('/api/v1/worlds/madrid?locale=nl-NL') }}"
         data-home="{{ route('home') }}"
         data-panaderia-route="{{ route('game.madrid.panaderia') }}"
+        data-authenticated="{{ auth()->check() ? 'true' : 'false' }}"
+        data-progress-url="{{ route('game.progress') }}"
     >
         <header class="hub-topbar">
             <a href="{{ route('home') }}" class="hub-brand" aria-label="Spaansspreken.nl startpagina">
@@ -24,6 +26,11 @@
             </a>
 
             <div class="hub-topbar-actions" aria-label="Spelinstellingen">
+                @auth
+                    <a href="{{ route('player.progress') }}" class="hub-icon-button">Mijn voortgang</a>
+                @else
+                    <a href="{{ route('login') }}" class="hub-icon-button">Inloggen</a>
+                @endauth
                 <span class="hub-live-chip"><span aria-hidden="true"></span> Madrid</span>
                 <button type="button" class="hub-icon-button" data-hub-sound aria-pressed="false">
                     <span aria-hidden="true">♪</span>
@@ -47,15 +54,15 @@
                 <dl class="hub-scoreboard" aria-label="Jouw voortgang in Madrid">
                     <div>
                         <dt>XP</dt>
-                        <dd>0</dd>
+                        <dd data-account-xp>0</dd>
                     </div>
                     <div>
                         <dt>Confianza</dt>
-                        <dd>0</dd>
+                        <dd data-account-confianza>0</dd>
                     </div>
                     <div>
                         <dt>Valentía</dt>
-                        <dd>0</dd>
+                        <dd data-account-valentia>0</dd>
                     </div>
                     <div class="hub-score-curiosity">
                         <dt>Curiosidad</dt>
