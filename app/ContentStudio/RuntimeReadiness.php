@@ -3,13 +3,14 @@
 namespace App\ContentStudio;
 
 use App\ContentApi\PublishedContentRepository;
-use App\Enums\ContentStatus;
 use App\Enums\ContentType;
 use App\Models\ContentNode;
 
 final class RuntimeReadiness
 {
-    public function __construct(private readonly PublishedContentRepository $publishedContent) {}
+    public function __construct(private readonly PublishedContentRepository $publishedContent)
+    {
+    }
 
     /** @return list<array<string, mixed>> */
     public function items(): array
@@ -29,7 +30,8 @@ final class RuntimeReadiness
         string $expectedScene,
         string $scope,
         bool $public,
-    ): array {
+    ): array
+    {
         $publishedNode = $public
             ? $this->publishedContent->findPublic($type, $slug)
             : $this->publishedContent->find($type, $slug);
