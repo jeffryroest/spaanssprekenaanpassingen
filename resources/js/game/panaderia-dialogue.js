@@ -18,6 +18,8 @@ if (dialogueRoot) {
     let state = emptyState();
     let pendingNext = null;
     let stepAssisted = false;
+    let speechConfidenceStatus = null;
+    let originalSpeechTranscript = null;
     let translationVisible = false;
     const persist = () => persistState(storageKey, state);
 
@@ -80,11 +82,14 @@ if (dialogueRoot) {
 
         pendingNext = null;
         stepAssisted = false;
+        speechConfidenceStatus = null;
+        originalSpeechTranscript = null;
         elements.feedback.hidden = true;
         elements.continueButton.hidden = true;
         elements.form.hidden = false;
         elements.response.disabled = false;
         elements.response.value = '';
+        elements.response.dataset.responseSource = 'typed_assist';
         elements.response.placeholder = step.placeholder;
         elements.response.focus({ preventScroll: true });
         setText('[data-step-prompt]', step.prompt);
@@ -96,6 +101,7 @@ if (dialogueRoot) {
         renderChoices(step.choices);
         updateProgress();
         renderHistory();
+        document.dispatchEvent(new CustomEvent('panaderia:turn-changed'));
     };
 
     const renderChoices = (choices) => {
@@ -107,6 +113,7 @@ if (dialogueRoot) {
             button.textContent = answer;
             button.addEventListener('click', () => {
                 elements.response.value = answer;
+                elements.response.dataset.responseSource = 'choice_assist';
                 stepAssisted = true;
                 elements.response.focus();
                 elements.status.textContent = 'Voorbeeldzin gekozen. Je mag de zin nog aanpassen.';
@@ -120,11 +127,20 @@ if (dialogueRoot) {
         const step = findStep(state.currentStep);
         const answer = elements.response.value.trim();
         const normalized = normalize(answer);
+        const responseSource = elements.response.dataset.responseSource || 'typed_assist';
         if (!normalized) return;
 
         if (content.repair.terms.some((term) => normalized.includes(normalize(term)))) {
             state.states = unique([...state.states, 'used_repair_strategy']);
-            state.history.push({ turn: step.turn, player: answer, npc: content.repair.npc_response.es, repair: true });
+            state.history.push({
+                turn: step.turn,
+                player: answer,
+                npc: content.repair.npc_response.es,
+                repair: true,
+                source: responseSource,
+                confidenceStatus: responseSource === 'speech' ? speechConfidenceStatus : null,
+                transcriptCorrected: responseSource === 'speech' && answer !== originalSpeechTranscript,
+            });
             showSuccessfulResponse(content.repair.npc_response, content.repair.feedback, state.currentStep);
             persist();
             elements.status.textContent = 'Herstelstrategie herkend. Dat is taalvaardigheid, geen fout.';
@@ -142,8 +158,17 @@ if (dialogueRoot) {
 
         const politeness = ['por favor', 'gracias'].some((term) => normalized.includes(term));
         state.states = unique([...state.states, ...option.states, ...(politeness ? ['used_politeness'] : [])]);
-        state.history.push({ turn: step.turn, player: answer, npc: option.npc_response.es, repair: false });
+        state.history.push({
+            turn: step.turn,
+            player: answer,
+            npc: option.npc_response.es,
+            repair: false,
+            source: responseSource,
+            confidenceStatus: responseSource === 'speech' ? speechConfidenceStatus : null,
+            transcriptCorrected: responseSource === 'speech' && answer !== originalSpeechTranscript,
+        });
         state.completedTurns += 1;
+        if (responseSource === 'speech') state.spokenTurns += 1;
         if (stepAssisted) state.assistCount += 1;
         showSuccessfulResponse(option.npc_response, option.feedback, resolveNext(option.next));
         persist();
@@ -185,13 +210,14 @@ if (dialogueRoot) {
         state.currentStep = null;
         elements.stage.hidden = true;
         elements.complete.hidden = false;
+        document.dispatchEvent(new CustomEvent('panaderia:turn-changed'));
         const farewell = state.states.includes('greeted_lucia') && state.states.includes('used_politeness')
             ? content.completion.polite_farewell
             : content.completion.default_farewell;
         const rewards = content.completion.rewards;
         const independentTurns = Math.max(0, content.mission.required_text_turns - state.assistCount);
         const xp = rewards.xp + Math.min(40, independentTurns * 8);
-        const confidence = state.assistCount === 0 ? 3 : state.assistCount <= 2 ? 2 : rewards.confianza;
+        const confidence = Math.min(3, state.spokenTurns);
 
         setText('[data-farewell-es]', farewell.es);
         setText('[data-farewell-nl]', farewell.nl);
@@ -201,6 +227,10 @@ if (dialogueRoot) {
         setText('[data-reward-stamp]', rewards.stamp.nl);
         setText('[data-reward-item]', rewards.collectible.nl);
         setText('[data-reward-badge]', rewards.repair_badge.nl);
+        setText('[data-spoken-turns]', String(state.spokenTurns));
+        setText('[data-spoken-goal-message]', state.spokenTurns >= 3
+            ? 'Spreekdoel behaald: je hebt minimaal drie antwoorden hardop gegeven.'
+            : `Nog ${3 - state.spokenTurns} spreekbeurt${state.spokenTurns === 2 ? '' : 'en'} nodig. Tekst voltooit de dialoog, maar niet het spreekdoel.`);
         dialogueRoot.querySelector('[data-repair-badge]').hidden = !state.states.includes('used_repair_strategy');
         applyTranslationVisibility();
         updateProgress();
@@ -235,7 +265,8 @@ if (dialogueRoot) {
             const turn = document.createElement('span');
             const player = document.createElement('p');
             const npc = document.createElement('small');
-            turn.textContent = entry.repair ? 'Herstelzin' : `Beurt ${entry.turn}`;
+            const sourceLabel = entry.source === 'speech' ? 'gesproken' : entry.source === 'choice_assist' ? 'voorbeeldzin' : 'tekst';
+            turn.textContent = `${entry.repair ? 'Herstelzin' : `Beurt ${entry.turn}`} · ${sourceLabel}`;
             player.lang = 'es';
             player.textContent = entry.player;
             npc.lang = 'es';
@@ -311,6 +342,12 @@ if (dialogueRoot) {
         applyTranslationVisibility();
         elements.status.textContent = translationVisible ? 'Nederlandse vertaling zichtbaar.' : 'Nederlandse vertaling verborgen.';
     });
+    dialogueRoot.addEventListener('panaderia:transcript-ready', (event) => {
+        stepAssisted = false;
+        speechConfidenceStatus = event.detail?.confidenceStatus ?? 'unavailable';
+        originalSpeechTranscript = event.detail?.transcript ?? null;
+        elements.status.textContent = 'Je gesproken antwoord is getranscribeerd. Controleer de tekst en gebruik het antwoord wanneer het klopt.';
+    });
 
     const restart = () => {
         try {
@@ -320,6 +357,7 @@ if (dialogueRoot) {
         }
         state = emptyState();
         pendingNext = null;
+        document.dispatchEvent(new CustomEvent('panaderia:turn-changed'));
         elements.stage.hidden = true;
         elements.complete.hidden = true;
         elements.levelSelect.hidden = false;
@@ -339,6 +377,7 @@ function emptyState() {
         level: null,
         currentStep: null,
         completedTurns: 0,
+        spokenTurns: 0,
         assistCount: 0,
         states: [],
         history: [],

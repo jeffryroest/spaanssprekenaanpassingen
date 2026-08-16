@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaansspreken.nl/contracts/speech-transcription-v1.schema.json",
+  "title": "Speech transcription response v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transcript", "language", "confidence", "confidence_status", "provider", "model"],
+      "properties": {
+        "transcript": { "type": "string", "minLength": 1 },
+        "language": { "const": "es" },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "confidence_status": { "enum": ["ok", "low", "unavailable"] },
+        "provider": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["audio_persisted", "maximum_duration_seconds"],
+      "properties": {
+        "audio_persisted": { "const": false },
+        "maximum_duration_seconds": { "const": 12 }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "oneOf": [
+    { "required": ["data", "meta"], "not": { "required": ["error"] } },
+    { "required": ["error"], "not": { "required": ["data"] } }
+  ]
+}

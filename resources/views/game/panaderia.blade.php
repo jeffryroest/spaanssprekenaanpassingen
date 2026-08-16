@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Voer je eerste Spaanse gesprek met Lucía in Panadería La Espiga.">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>La Espiga · Spaansspreken.nl</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -15,6 +16,7 @@
         data-panaderia-dialogue
         data-source="{{ url('/api/v1/conversations/la-espiga-lucia?locale=nl-NL') }}"
         data-hub-route="{{ route('game.madrid') }}"
+        data-transcription-url="{{ route('game.madrid.panaderia.transcription') }}"
     >
         <header class="bakery-topbar">
             <a href="{{ route('game.madrid') }}" class="bakery-back-link">
@@ -23,7 +25,7 @@
             </a>
 
             <div class="bakery-mission-meta">
-                <span class="bakery-mode-chip">Tekstmodus</span>
+                <span class="bakery-mode-chip">Spreken + tekst</span>
                 <span data-level-chip>Niveau kiezen</span>
                 <button type="button" data-translation-toggle aria-pressed="false">Nederlandse vertaling</button>
                 <button type="button" data-restart-dialogue>Opnieuw beginnen</button>
@@ -113,6 +115,61 @@
 
                         <form data-dialogue-form class="bakery-response-form">
                             <label for="player-response" data-step-prompt>Wat wil je zeggen?</label>
+
+                            <section
+                                class="bakery-recorder"
+                                data-speech-recorder
+                                data-transcription-url="{{ route('game.madrid.panaderia.transcription') }}"
+                                data-maximum-seconds="12"
+                                aria-labelledby="recorder-title"
+                            >
+                                <div class="bakery-recorder-heading">
+                                    <div>
+                                        <span class="bakery-recorder-icon" aria-hidden="true">●</span>
+                                        <div>
+                                            <h3 id="recorder-title">Spreek je antwoord</h3>
+                                            <p>WebM/Opus · maximaal 12 seconden</p>
+                                        </div>
+                                    </div>
+                                    <strong data-recording-timer>0:00 / 0:12</strong>
+                                </div>
+
+                                <p class="bakery-recorder-status" data-recorder-status role="status" aria-live="polite">
+                                    De microfoon start pas wanneer jij op opnemen drukt.
+                                </p>
+
+                                <div class="bakery-recorder-controls">
+                                    <button type="button" class="bakery-record-button" data-record-start>
+                                        <span aria-hidden="true">●</span>
+                                        Opnemen
+                                    </button>
+                                    <button type="button" data-record-stop hidden>
+                                        <span aria-hidden="true">■</span>
+                                        Stop opname
+                                    </button>
+                                </div>
+
+                                <div class="bakery-recording-preview" data-recording-preview hidden>
+                                    <label for="speech-playback">Luister terug voordat je verzendt</label>
+                                    <audio id="speech-playback" controls preload="metadata" data-recording-playback></audio>
+                                    <div>
+                                        <button type="button" data-record-retry>Opnieuw opnemen</button>
+                                        <button type="button" class="bakery-transcribe-button" data-record-transcribe>
+                                            Transcript maken
+                                            <span aria-hidden="true">→</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <p class="bakery-transcript-note" data-transcript-note hidden></p>
+                            </section>
+
+                            <p class="bakery-privacy-note">
+                                Je opname wordt alleen na jouw klik naar de transcriptiedienst (OpenAI) verzonden, niet door ons opgeslagen en nooit naar analytics gestuurd.
+                                <a href="{{ route('privacy') }}#spraakopnamen">Lees het privacybeleid.</a>
+                            </p>
+
+                            <div class="bakery-input-divider" aria-hidden="true"><span>of typ je antwoord</span></div>
                             <div class="bakery-input-row">
                                 <input
                                     id="player-response"
@@ -124,7 +181,7 @@
                                     data-player-response
                                     required
                                 >
-                                <button type="submit">Zeg dit</button>
+                                <button type="submit">Gebruik antwoord</button>
                             </div>
 
                             <div class="bakery-assist-row">
@@ -188,6 +245,14 @@
                     <div><dt>Confianza</dt><dd data-reward-confidence>+1</dd></div>
                     <div><dt>Valentía</dt><dd data-reward-courage>+1</dd></div>
                 </dl>
+
+                <div class="bakery-spoken-goal" data-spoken-goal>
+                    <span aria-hidden="true">●</span>
+                    <div>
+                        <strong>Spreekdoel: <span data-spoken-turns>0</span>/3 beurten</strong>
+                        <p data-spoken-goal-message>Je kunt de missie met tekst afronden en de spreekbeurten later opnieuw doen.</p>
+                    </div>
+                </div>
 
                 <div class="bakery-reward-cards">
                     <div><span aria-hidden="true">▣</span><p>Paspoortstempel</p><strong data-reward-stamp></strong></div>

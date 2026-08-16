@@ -15,6 +15,6 @@ class HomePageTest extends TestCase
             ->assertSee('Spaansspreken.nl')
             ->assertSee('Madrid · La panadería')
             ->assertSee('Start in Madrid')
-            ->assertSee('Fase 2B');
+            ->assertSee('Fase 2C');
     }
 }

@@ -853,6 +853,111 @@
         @apply block text-sm font-black text-[#46372f];
     }
 
+    .bakery-recorder {
+        @apply mt-3 rounded-2xl border border-[#315d47]/20 bg-[#f0f5eb] p-4 shadow-sm sm:p-5;
+    }
+
+    .bakery-recorder[data-state='recording'] {
+        @apply border-[#a9472b]/40 bg-[#fff1e9] ring-4 ring-[#c56538]/10;
+    }
+
+    .bakery-recorder[data-state='uploading'] {
+        @apply border-[#315d47]/35;
+    }
+
+    .bakery-recorder-heading,
+    .bakery-recorder-heading > div:first-child {
+        @apply flex items-center justify-between gap-3;
+    }
+
+    .bakery-recorder-heading > div:first-child {
+        @apply justify-start;
+    }
+
+    .bakery-recorder-icon {
+        @apply grid size-10 shrink-0 place-items-center rounded-full bg-[#315d47] text-xs text-white shadow-sm;
+    }
+
+    .bakery-recorder[data-state='recording'] .bakery-recorder-icon {
+        @apply bg-[#a9472b];
+        animation: bakery-recording-pulse 1.35s ease-in-out infinite;
+    }
+
+    .bakery-recorder-heading h3 {
+        @apply text-sm font-black text-[#2f2520];
+    }
+
+    .bakery-recorder-heading p {
+        @apply mt-0.5 text-xs font-semibold text-[#75685f];
+    }
+
+    .bakery-recorder-heading > strong {
+        @apply shrink-0 rounded-lg bg-white/75 px-2 py-1 font-mono text-xs text-[#65564d];
+    }
+
+    .bakery-recorder-status {
+        @apply mt-4 text-sm leading-5 text-[#65564d];
+    }
+
+    .bakery-recorder-controls {
+        @apply mt-4 flex flex-wrap gap-2;
+    }
+
+    .bakery-recorder-controls button,
+    .bakery-recording-preview button {
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[#315d47]/20 bg-white px-4 text-sm font-black text-[#315d47] transition hover:border-[#315d47]/40 hover:bg-[#f9fcf7] focus:outline-none focus:ring-2 focus:ring-[#4c8b65] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    }
+
+    .bakery-recorder-controls .bakery-record-button {
+        @apply border-[#a9472b] bg-[#a9472b] text-white hover:bg-[#913b25];
+    }
+
+    .bakery-recording-preview {
+        @apply mt-4 border-t border-[#315d47]/15 pt-4;
+    }
+
+    .bakery-recording-preview > label {
+        @apply block text-xs font-black uppercase tracking-[0.1em] text-[#65564d];
+    }
+
+    .bakery-recording-preview audio {
+        @apply mt-2 block h-12 w-full;
+    }
+
+    .bakery-recording-preview > div {
+        @apply mt-3 flex flex-col gap-2 sm:flex-row sm:justify-end;
+    }
+
+    .bakery-recording-preview .bakery-transcribe-button {
+        @apply border-[#315d47] bg-[#315d47] text-white hover:bg-[#254936];
+    }
+
+    .bakery-transcript-note {
+        @apply mt-4 rounded-xl border border-[#d29a41]/25 bg-[#fff8dc] px-3 py-2 text-xs font-semibold leading-5 text-[#77531d];
+    }
+
+    .bakery-transcript-note[data-confidence='ok'] {
+        @apply border-[#4c8b65]/20 bg-white/70 text-[#315d47];
+    }
+
+    .bakery-privacy-note {
+        @apply mt-2 text-xs leading-5 text-[#81736a];
+    }
+
+    .bakery-privacy-note a {
+        @apply font-bold text-[#8e3f28] underline decoration-[#c56538]/30 underline-offset-2 hover:decoration-[#c56538] focus:outline-none focus:ring-2 focus:ring-[#c56538];
+    }
+
+    .bakery-input-divider {
+        @apply my-5 flex items-center gap-3 text-[0.65rem] font-black uppercase tracking-[0.12em] text-[#95877e];
+    }
+
+    .bakery-input-divider::before,
+    .bakery-input-divider::after {
+        content: '';
+        @apply h-px flex-1 bg-[#422d22]/10;
+    }
+
     .bakery-input-row {
         @apply mt-2 flex flex-col gap-2 sm:flex-row;
     }
@@ -967,6 +1072,22 @@
     .bakery-rewards dt { @apply text-[0.65rem] font-black uppercase tracking-wider text-[#837269]; }
     .bakery-rewards dd { @apply mt-1 text-2xl font-black text-[#2f2520]; }
 
+    .bakery-spoken-goal {
+        @apply mx-auto mt-5 flex max-w-xl items-start gap-3 rounded-2xl border border-[#315d47]/20 bg-[#edf4e9] p-4 text-left;
+    }
+
+    .bakery-spoken-goal > span {
+        @apply grid size-9 shrink-0 place-items-center rounded-full bg-[#315d47] text-[0.6rem] text-white;
+    }
+
+    .bakery-spoken-goal strong {
+        @apply text-sm font-black text-[#315d47];
+    }
+
+    .bakery-spoken-goal p {
+        @apply mt-1 text-xs leading-5 text-[#5d6f61];
+    }
+
     .bakery-reward-cards {
         @apply mt-5 grid gap-3 text-left sm:grid-cols-3;
     }
@@ -1003,7 +1124,7 @@
     .bakery-error a { @apply mt-6; }
 }
 
-@keyframes bakery-breathe {
+    @keyframes bakery-breathe {
     0%, 100% { transform: translateX(-50%) scaleY(1); }
     50% { transform: translateX(-50%) scaleY(1.012); }
 }
@@ -1016,5 +1137,10 @@
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
+    }
+
+    @keyframes bakery-recording-pulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgb(169 71 43 / 0.18); }
+        50% { box-shadow: 0 0 0 8px rgb(169 71 43 / 0); }
     }
 }
