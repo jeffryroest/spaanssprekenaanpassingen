@@ -1,0 +1,210 @@
+{
+  "schema_version": "1.0.0",
+  "scene": "health_text_dialogue",
+  "runtime_access": {
+    "visibility": "entitled",
+    "entitlement": "trial_week"
+  },
+  "npc": {
+    "id": "npc.elena.ortiz",
+    "name": "Elena Ortiz",
+    "role": { "es": "doctora", "nl": "arts" },
+    "description": "Rustig, duidelijk en professioneel. Elena reageert binnen een fictief taalrollenspel en stelt geen echte diagnose."
+  },
+  "mission": {
+    "id": "mission.madrid.health.appointment",
+    "title": { "es": "En la consulta", "nl": "In de spreekkamer" },
+    "objective": "Gebruik de fictieve rolkaart, leg twee klachten uit, beantwoord één niveauvraag en vraag om schriftelijke uitleg.",
+    "start_step": "turn.describe_symptoms",
+    "required_text_turns": 5
+  },
+  "roleplay": {
+    "fictional": true,
+    "title": { "es": "Tu tarjeta de situación", "nl": "Jouw fictieve rolkaart" },
+    "description": "Je speelt een reiziger met een eenvoudige, volledig fictieve situatie. Gebruik deze gegevens in plaats van echte gezondheidsinformatie.",
+    "facts": [
+      { "es": "Me duele la garganta.", "nl": "Ik heb keelpijn." },
+      { "es": "Tengo tos seca.", "nl": "Ik heb een droge hoest." },
+      { "es": "Desde ayer.", "nl": "Sinds gisteren." },
+      { "es": "No tengo fiebre y respiro bien.", "nl": "Ik heb geen koorts en adem normaal." }
+    ],
+    "privacy_notice": "Deel geen echte medische gegevens. Antwoorden blijven alleen tijdens deze geopende oefening zichtbaar en worden niet in je account of browseropslag bewaard.",
+    "medical_disclaimer": "Dit is uitsluitend een taaloefening en geen medisch advies."
+  },
+  "level_branches": {
+    "A0": "branch.fever_check",
+    "A1": "branch.cough_detail",
+    "A2": "branch.swallow_or_breathe"
+  },
+  "repair": {
+    "terms": ["puede repetir", "repita por favor", "mas despacio", "no entiendo", "que significa", "quiero decir"],
+    "npc_response": {
+      "es": "Claro. Se lo explico de otra manera y más despacio.",
+      "nl": "Natuurlijk. Ik leg het anders en wat langzamer uit."
+    },
+    "feedback": {
+      "strength": "Sterk: je vraagt zelf om de uitleg die je nodig hebt.",
+      "focus": "Om herhaling vragen is een volwaardige gespreksstrategie."
+    }
+  },
+  "steps": [
+    {
+      "id": "turn.describe_symptoms",
+      "turn": 1,
+      "npc_line": { "es": "Buenos días. Soy la doctora Ortiz. ¿Qué le pasa?", "nl": "Goedemorgen. Ik ben dokter Ortiz. Wat is er aan de hand?" },
+      "prompt": "Gebruik de rolkaart: zeg dat je keelpijn en een droge hoest hebt.",
+      "placeholder": "Me duele la garganta y tengo tos seca.",
+      "hint": "Me duele la garganta betekent: ik heb keelpijn.",
+      "choices": ["Me duele la garganta y tengo tos seca.", "Tengo dolor de garganta y tos seca."],
+      "options": [
+        {
+          "id": "describe_role_card",
+          "requirements": [["garganta", "dolor de garganta"], ["tos", "tos seca"]],
+          "npc_response": { "es": "Entiendo. Voy a hacerle unas preguntas.", "nl": "Ik begrijp het. Ik ga u een paar vragen stellen." },
+          "feedback": { "strength": "Je maakte beide onderdelen van de fictieve situatie meteen duidelijk.", "focus": "Me duele… gebruik je voor pijn aan een lichaamsdeel; tengo… voor een klacht als tos." },
+          "states": ["role_card_described", "conversation_started"],
+          "next": "turn.explain_duration"
+        }
+      ],
+      "fallback": { "strength": "Je hebt Elena verteld dat er iets aan de hand is.", "focus": "Noem uit de rolkaart zowel garganta als tos om de situatie compleet te maken." }
+    },
+    {
+      "id": "turn.explain_duration",
+      "turn": 2,
+      "npc_line": { "es": "¿Desde cuándo tiene estos síntomas?", "nl": "Sinds wanneer heeft u deze klachten?" },
+      "prompt": "Zeg volgens de rolkaart dat dit sinds gisteren zo is.",
+      "placeholder": "Desde ayer.",
+      "hint": "Desde ayer betekent sinds gisteren.",
+      "choices": ["Desde ayer.", "Los tengo desde hace un día."],
+      "options": [
+        {
+          "id": "explain_fictional_duration",
+          "requirements": [["desde ayer", "hace un dia", "desde hace un dia"]],
+          "npc_response": { "es": "De acuerdo, desde ayer.", "nl": "Goed, sinds gisteren." },
+          "feedback": { "strength": "Je gaf de duur kort en precies aan.", "focus": "Na ¿desde cuándo? kun je compact antwoorden met desde + tijdstip." },
+          "states": ["duration_explained"],
+          "next": "@complication"
+        }
+      ],
+      "fallback": { "strength": "Je begrijpt dat Elena naar het beginmoment vraagt.", "focus": "Gebruik desde ayer om volgens de rolkaart ‘sinds gisteren’ te zeggen." }
+    },
+    {
+      "id": "branch.fever_check",
+      "turn": 3,
+      "npc_line": { "es": "¿Tiene fiebre?", "nl": "Heeft u koorts?" },
+      "prompt": "Antwoord volgens de rolkaart dat je geen koorts hebt.",
+      "placeholder": "No, no tengo fiebre.",
+      "hint": "No tengo fiebre betekent: ik heb geen koorts.",
+      "choices": ["No, no tengo fiebre.", "No tengo fiebre."],
+      "options": [
+        {
+          "id": "deny_fictional_fever",
+          "requirements": [["no tengo fiebre", "sin fiebre", "no"]],
+          "npc_response": { "es": "Gracias. Eso está claro.", "nl": "Dank u. Dat is duidelijk." },
+          "feedback": { "strength": "Je beantwoordde een gesloten vraag kort en volledig.", "focus": "No tengo + zelfstandig naamwoord is een bruikbaar basispatroon voor klachten die ontbreken." },
+          "states": ["complication_resolved", "role_card_detail_confirmed"],
+          "next": "turn.request_written_explanation"
+        }
+      ],
+      "fallback": { "strength": "Je hoort dat Elena naar koorts vraagt.", "focus": "Antwoord met no tengo fiebre volgens de fictieve rolkaart." }
+    },
+    {
+      "id": "branch.cough_detail",
+      "turn": 3,
+      "npc_line": { "es": "¿La tos es seca o con mucosidad?", "nl": "Is de hoest droog of met slijm?" },
+      "prompt": "Zeg volgens de rolkaart dat het een droge hoest is.",
+      "placeholder": "Es una tos seca.",
+      "hint": "Tos seca betekent droge hoest.",
+      "choices": ["Es una tos seca.", "Tengo tos seca, sin mucosidad."],
+      "options": [
+        {
+          "id": "describe_fictional_cough",
+          "requirements": [["tos seca", "seca", "sin mucosidad"]],
+          "npc_response": { "es": "Entiendo, es una tos seca.", "nl": "Ik begrijp het, het is een droge hoest." },
+          "feedback": { "strength": "Je koos precies het gevraagde kenmerk uit de rolkaart.", "focus": "Bij twee alternatieven kun je antwoorden met es… of de kernwoorden kort herhalen." },
+          "states": ["complication_resolved", "role_card_detail_confirmed"],
+          "next": "turn.request_written_explanation"
+        }
+      ],
+      "fallback": { "strength": "Je begrijpt dat Elena twee soorten hoest tegenover elkaar zet.", "focus": "Gebruik tos seca voor de fictieve situatie op je rolkaart." }
+    },
+    {
+      "id": "branch.swallow_or_breathe",
+      "turn": 3,
+      "npc_line": { "es": "¿Le duele al tragar o le cuesta respirar?", "nl": "Doet slikken pijn of heeft u moeite met ademen?" },
+      "prompt": "Zeg dat slikken een beetje pijn doet, maar dat je volgens de rolkaart normaal ademt.",
+      "placeholder": "Me duele un poco al tragar, pero respiro bien.",
+      "hint": "Al tragar is bij het slikken; respiro bien is ik adem normaal.",
+      "choices": ["Me duele un poco al tragar, pero respiro bien.", "Me molesta al tragar, pero no me cuesta respirar."],
+      "options": [
+        {
+          "id": "contrast_fictional_details",
+          "requirements": [["duele al tragar", "molesta al tragar", "tragar"], ["respiro bien", "no me cuesta respirar", "puedo respirar"]],
+          "npc_response": { "es": "Perfecto, gracias por explicarlo con claridad.", "nl": "Prima, dank u dat u het duidelijk uitlegt." },
+          "feedback": { "strength": "Je verbond twee relevante details met pero en voorkwam zo onduidelijkheid.", "focus": "Gebruik pero om een probleem en een geruststellend contrast in één antwoord te combineren." },
+          "states": ["complication_resolved", "role_card_detail_confirmed"],
+          "next": "turn.request_written_explanation"
+        }
+      ],
+      "fallback": { "strength": "Je begrijpt dat Elena twee verschillende details controleert.", "focus": "Noem zowel al tragar als respiro bien om de fictieve rolkaart volledig te volgen." }
+    },
+    {
+      "id": "turn.request_written_explanation",
+      "turn": 4,
+      "npc_line": { "es": "Voy a explicarle qué puede hacer hoy.", "nl": "Ik ga uitleggen wat u vandaag kunt doen." },
+      "prompt": "Vraag Elena om de uitleg op te schrijven.",
+      "placeholder": "¿Puede escribirlo, por favor?",
+      "hint": "Por escrito betekent schriftelijk of op papier.",
+      "choices": ["¿Puede escribirlo, por favor?", "¿Me lo puede dar por escrito?"],
+      "options": [
+        {
+          "id": "request_written_language_support",
+          "requirements": [["escribir", "por escrito", "apuntar"]],
+          "npc_response": { "es": "Sí, claro. Se lo escribo en esta hoja.", "nl": "Ja, natuurlijk. Ik schrijf het voor u op dit blad." },
+          "feedback": { "strength": "Je vroeg actief om een vorm van uitleg die je later opnieuw kunt lezen.", "focus": "¿Me lo puede dar por escrito? is een beleefde, breed bruikbare vraag." },
+          "states": ["written_explanation_requested"],
+          "next": "turn.confirm_and_locate_pharmacy"
+        }
+      ],
+      "fallback": { "strength": "Je reageert op Elena's aankondiging dat zij uitleg geeft.", "focus": "Gebruik escribir of por escrito om expliciet om geschreven uitleg te vragen." }
+    },
+    {
+      "id": "turn.confirm_and_locate_pharmacy",
+      "turn": 5,
+      "npc_line": { "es": "Aquí tiene la hoja. ¿Lo ha entendido?", "nl": "Hier is het blad. Heeft u het begrepen?" },
+      "prompt": "Bevestig dat het duidelijk is en vraag waar de apotheek is.",
+      "placeholder": "Sí, lo entiendo. ¿Dónde está la farmacia?",
+      "hint": "¿Dónde está…? betekent: waar is…?",
+      "choices": ["Sí, lo entiendo. ¿Dónde está la farmacia?", "Está claro, gracias. ¿Hay una farmacia cerca?"],
+      "options": [
+        {
+          "id": "confirm_and_find_pharmacy",
+          "requirements": [["entiendo", "esta claro", "de acuerdo", "si"], ["farmacia"]],
+          "npc_response": { "es": "Sí. Hay una farmacia al salir, a la derecha.", "nl": "Ja. Bij de uitgang is rechts een apotheek." },
+          "feedback": { "strength": "Je bevestigde de uitleg en regelde zelfstandig je volgende praktische stap.", "focus": "¿Hay una farmacia cerca? is handig wanneer je niet weet of er een apotheek in de buurt is." },
+          "states": ["understanding_confirmed", "pharmacy_located", "conversation_completed"],
+          "next": "@complete"
+        }
+      ],
+      "fallback": { "strength": "Je bent bij het afronden van het gesprek.", "focus": "Bevestig eerst met lo entiendo en noem daarna farmacia in je vraag." }
+    }
+  ],
+  "completion": {
+    "polite_farewell": {
+      "es": "Muchas gracias por explicarlo con calma. Hasta luego.",
+      "nl": "Hartelijk dank dat u het rustig heeft uitgelegd. Tot ziens."
+    },
+    "default_farewell": {
+      "es": "Gracias. Hasta luego.",
+      "nl": "Bedankt. Tot ziens."
+    },
+    "rewards": {
+      "xp": 110,
+      "confianza": 1,
+      "valentia": 1,
+      "stamp": { "es": "Hablé en la consulta", "nl": "Ik sprak in de spreekkamer" },
+      "collectible": { "es": "Tarjeta de frases de la consulta", "nl": "Zinnenkaart voor de consulta" },
+      "repair_badge": { "es": "Pregunta clara", "nl": "Duidelijk doorvragen" }
+    }
+  }
+}

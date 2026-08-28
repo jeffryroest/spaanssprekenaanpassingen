@@ -36,6 +36,15 @@
       "action": { "type": "preview", "target": "mission.madrid.cafe" }
     },
     {
+      "id": "madrid.consulta.luz",
+      "kind": "clinic",
+      "label": { "es": "Consulta La Luz", "nl": "Spreekkamer La Luz" },
+      "description": "Binnenkort oefen je met een fictieve rolkaart hoe je een eenvoudige klacht uitlegt.",
+      "state": "locked",
+      "position": { "x": 15, "y": 35 },
+      "action": { "type": "preview", "target": "mission.madrid.health.appointment" }
+    },
+    {
       "id": "madrid.mercado.plaza",
       "kind": "market",
       "label": { "es": "Mercado de la Plaza", "nl": "Markt op het plein" },
