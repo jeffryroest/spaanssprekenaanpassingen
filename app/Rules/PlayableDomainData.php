@@ -105,9 +105,8 @@ final class PlayableDomainData implements ValidationRule
         }
 
         if (in_array($scene, ['taxi_text_dialogue', 'restaurant_text_dialogue'], true)
-            && (data_get($data, 'runtime_access.visibility') !== 'entitled'
-                || data_get($data, 'runtime_access.entitlement') !== 'trial_week')) {
-            $fail('Een afgeschermde proefweekmissie moet runtime_access entitled met recht trial_week gebruiken.');
+            && data_get($data, 'runtime_access.visibility') !== 'entitled') {
+            $fail('Een afgeschermde proefweekmissie moet runtime_access.visibility entitled gebruiken.');
         }
     }
 
