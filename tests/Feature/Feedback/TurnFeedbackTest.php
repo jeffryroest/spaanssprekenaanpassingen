@@ -75,11 +75,15 @@ class TurnFeedbackTest extends TestCase
         Http::assertSent(function ($request): bool {
             $schema = $request->data()['response_format']['json_schema'] ?? [];
             $userData = json_decode($request->data()['messages'][1]['content'] ?? '', true);
+            $systemPrompt = $request->data()['messages'][0]['content'] ?? '';
 
             return $request->url() === 'https://api.openai.com/v1/chat/completions'
                 && $request->hasHeader('Authorization', 'Bearer test-key')
                 && ($schema['strict'] ?? false) === true
                 && ! array_key_exists('pronunciation', $schema['schema']['properties']['scores']['properties'] ?? [])
+                && str_contains($systemPrompt, 'dagelijkse gesprekssituatie')
+                && str_contains($systemPrompt, 'geen medische beoordeling, diagnose of advies')
+                && ! str_contains($systemPrompt, 'in een bakkerij')
                 && ($userData['step']['id'] ?? null) === 'order-products'
                 && ($userData['learner']['answer_es'] ?? null) === 'Quiero una pan y una napolitana, por favor.';
         });

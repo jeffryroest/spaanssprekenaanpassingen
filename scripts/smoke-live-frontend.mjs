@@ -26,11 +26,11 @@ const [cssResponse, jsResponse] = await Promise.all([
 ]);
 const [css, js] = await Promise.all([cssResponse.text(), jsResponse.text()]);
 
-if (!cssResponse.ok || !css.includes('.world-home-body') || !css.includes('.hub-preparation-dialog')) {
+if (!cssResponse.ok || !css.includes('.world-home-body') || !css.includes('.hub-preparation-dialog') || !css.includes('.health-role-card')) {
   throw new Error('De live CSS is verouderd of onvolledig.');
 }
 
-if (!jsResponse.ok || !js.includes('madrid-mission-preparation')) {
+if (!jsResponse.ok || !js.includes('madrid-mission-preparation') || !js.includes('Antwoordtekst niet in browseropslag bewaard')) {
   throw new Error('De live JavaScript is verouderd of onvolledig.');
 }
 

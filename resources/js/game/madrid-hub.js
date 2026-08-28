@@ -123,8 +123,15 @@ if (hub) {
 
     const openHotspot = (hotspot) => {
         const isOpen = ['open', 'completed'].includes(hotspot.state);
-        currentMissionKind = isOpen && ['bakery', 'cafe'].includes(hotspot.kind) ? hotspot.kind : null;
-        setText('[data-hub-mission-label]', currentMissionKind === 'cafe' ? 'Ga Café El Reloj binnen' : 'Bereid je bakkerijmissie voor');
+        currentMissionKind = isOpen && ['bakery', 'cafe', 'clinic'].includes(hotspot.kind) ? hotspot.kind : null;
+        setText(
+            '[data-hub-mission-label]',
+            currentMissionKind === 'cafe'
+                ? 'Ga Café El Reloj binnen'
+                : currentMissionKind === 'clinic'
+                    ? 'Open de fictieve consulta-missie'
+                    : 'Bereid je bakkerijmissie voor',
+        );
 
         showPanel({
             kind: hotspot.state === 'completed' ? 'Missie voltooid' : isOpen ? 'Open locatie' : 'Vooruitblik',
@@ -291,6 +298,25 @@ if (hub) {
             };
         }
 
+        const healthDay = trialWeekDays.find(({ day }) => day === 5);
+        if (hotspot.id === 'madrid.consulta.luz' && healthDay?.action_url) {
+            return {
+                ...hotspot,
+                state: healthDay.access_state === 'completed' ? 'completed' : 'open',
+                description: healthDay.access_state === 'completed'
+                    ? 'Je fictieve gesprek met Elena is voltooid. De rolkaart blijft beschikbaar om opnieuw te oefenen.'
+                    : 'Open · gebruik een fictieve rolkaart om in het Spaans een eenvoudige klacht uit te leggen.',
+            };
+        }
+
+        if (hotspot.id === 'madrid.consulta.luz' && mission?.states?.includes('madrid.health.preview_unlocked')) {
+            return {
+                ...hotspot,
+                state: 'preview',
+                description: 'Je hebt een vooruitblik ontgrendeld. In deze taaloefening gebruik je uitsluitend een fictieve rolkaart.',
+            };
+        }
+
         return hotspot;
     };
 
@@ -378,6 +404,12 @@ if (hub) {
         if (currentMissionKind === 'cafe') {
             elements.status.textContent = 'Je tafel in Café El Reloj wordt klaargemaakt.';
             window.location.assign(hub.dataset.restaurantRoute);
+            return;
+        }
+
+        if (currentMissionKind === 'clinic') {
+            elements.status.textContent = 'Je fictieve rolkaart ligt klaar in Consulta La Luz.';
+            window.location.assign(hub.dataset.healthRoute);
             return;
         }
 
@@ -491,6 +523,7 @@ function hotspotIcon(kind) {
         metro: 'M',
         cafe: '☕',
         market: '▦',
+        clinic: '+',
     }[kind] ?? '•';
 }
 

@@ -1700,6 +1700,176 @@
     50% { transform: translateX(-50%) rotate(3deg) scale(1.08); }
 }
 
+@layer components {
+    .health-body {
+        background: linear-gradient(155deg, #dfe9df 0%, #f5eddd 52%, #d6e5e5 100%);
+    }
+
+    .health-role-card {
+        @apply mx-auto mt-5 max-w-7xl rounded-[1.75rem] border border-[#315d47]/20 bg-[#f7fbf4] p-5 shadow-lg shadow-[#315d47]/10 sm:p-6;
+    }
+
+    .health-role-card-heading {
+        @apply flex items-center gap-3;
+    }
+
+    .health-role-card-heading > span {
+        @apply grid size-11 shrink-0 place-items-center rounded-2xl bg-[#315d47] font-serif text-xl font-black text-white;
+    }
+
+    .health-role-card h2 {
+        @apply mt-1 text-xl font-black text-[#273a31];
+    }
+
+    .health-role-card > p {
+        @apply mt-3 max-w-3xl text-sm leading-6 text-[#5f7065];
+    }
+
+    .health-role-card > ul {
+        @apply mt-4 grid list-none gap-2 p-0 sm:grid-cols-2 lg:grid-cols-4;
+    }
+
+    .health-role-card > ul li {
+        @apply rounded-2xl border border-[#315d47]/10 bg-white px-4 py-3 shadow-sm;
+    }
+
+    .health-role-card > ul strong,
+    .health-role-card > ul span {
+        @apply block;
+    }
+
+    .health-role-card > ul strong {
+        @apply text-sm font-black text-[#315d47];
+    }
+
+    .health-role-card > ul span {
+        @apply mt-1 text-xs leading-5 text-[#728078];
+    }
+
+    .health-role-card-notices {
+        @apply mt-4 grid gap-2 border-t border-[#315d47]/10 pt-4 text-xs leading-5 text-[#627169] md:grid-cols-2;
+    }
+
+    .health-role-card-notices p {
+        @apply rounded-xl bg-[#e8f1e5] px-3 py-2;
+    }
+
+    .health-role-card-notices strong {
+        @apply text-[#315d47];
+    }
+
+    .health-scene {
+        @apply min-h-[30rem] overflow-hidden bg-[#d9e6df] lg:min-h-[44rem];
+        background: linear-gradient(#dce9e3 0 64%, #c7aa7f 64% 68%, #b9895f 68% 100%);
+    }
+
+    .health-wall {
+        @apply absolute inset-x-0 top-0 h-[66%];
+        background:
+            radial-gradient(circle at 16% 20%, rgb(255 255 255 / 65%) 0 10%, transparent 10.5%),
+            linear-gradient(125deg, #dce9e3, #eef2e8 58%, #c9deda);
+    }
+
+    .health-window {
+        @apply absolute right-[8%] top-[9%] h-40 w-36 overflow-hidden rounded-2xl border-[7px] border-white/80 bg-[#b9dbea] shadow-xl;
+        background: linear-gradient(#9fd1e6 0 57%, #d8c28d 57% 64%, #c98255 64% 100%);
+    }
+
+    .health-window::before,
+    .health-window::after {
+        content: '';
+        @apply absolute bg-white/80;
+    }
+
+    .health-window::before { @apply inset-x-0 top-1/2 h-1.5; }
+    .health-window::after { @apply inset-y-0 left-1/2 w-1.5; }
+
+    .health-window span {
+        @apply absolute bottom-3 left-3 right-3 h-10 rounded-t-full bg-[#4f8062];
+        box-shadow: -22px 4px 0 #658f69, 26px 7px 0 #3f7458;
+    }
+
+    .health-poster {
+        @apply absolute left-[10%] top-[12%] grid h-44 w-32 place-items-center rounded-xl border-[6px] border-white bg-[#f8fbf4] text-center shadow-xl;
+    }
+
+    .health-poster > span {
+        @apply grid size-16 place-items-center rounded-full bg-[#dcebdd] text-4xl font-light text-[#42745a];
+    }
+
+    .health-poster > small {
+        @apply absolute bottom-4 text-[0.55rem] font-black tracking-[0.18em] text-[#587063];
+    }
+
+    .health-plant {
+        @apply absolute bottom-[30%] right-[7%] h-40 w-28;
+    }
+
+    .health-plant i {
+        @apply absolute bottom-12 left-1/2 h-20 w-10 origin-bottom rounded-[100%_0_100%_0] bg-[#4f8062];
+    }
+
+    .health-plant i:nth-child(1) { @apply -translate-x-3 -rotate-[35deg]; }
+    .health-plant i:nth-child(2) { @apply -translate-x-8 -rotate-[65deg]; }
+    .health-plant i:nth-child(3) { @apply translate-x-1 rotate-[35deg]; }
+
+    .health-plant span {
+        @apply absolute bottom-0 left-1/2 h-16 w-20 -translate-x-1/2 rounded-b-[2rem] rounded-t-lg bg-[#b86643] shadow-lg;
+    }
+
+    .health-desk {
+        @apply absolute bottom-[6%] left-1/2 z-10 h-40 w-[88%] max-w-md -translate-x-1/2 rounded-2xl border-4 border-[#7b593f] bg-[#d4aa78] shadow-2xl;
+        background-image: linear-gradient(90deg, rgb(255 255 255 / 8%) 1px, transparent 1px);
+        background-size: 52px 100%;
+    }
+
+    .health-clipboard {
+        @apply absolute left-[12%] -top-8 h-28 w-20 -rotate-6 rounded-md border-4 border-[#8d6e50] bg-[#fffaf0] shadow-lg;
+    }
+
+    .health-clipboard::before {
+        content: '';
+        @apply absolute -top-3 left-1/2 h-6 w-10 -translate-x-1/2 rounded bg-[#566a62];
+    }
+
+    .health-clipboard::after {
+        content: '';
+        @apply absolute inset-x-3 top-8 h-10;
+        background: repeating-linear-gradient(0deg, #c7d0c9 0 2px, transparent 2px 10px);
+    }
+
+    .health-lamp {
+        @apply absolute right-[18%] -top-20 h-24 w-3 rounded-full bg-[#4e6259];
+    }
+
+    .health-lamp::before {
+        content: '';
+        @apply absolute -left-7 -top-7 h-12 w-16 rounded-t-full bg-[#6f8c7d] shadow-lg;
+    }
+
+    .health-pencil {
+        @apply absolute left-[42%] top-7 h-2 w-24 rotate-6 rounded-full bg-[#d9793f] shadow;
+    }
+
+    .health-npc-card {
+        @apply border-[#315d47]/20 bg-[#fbfff8]/95;
+    }
+
+    .health-avatar {
+        @apply bg-[#315d47] text-[#f0d69c];
+    }
+
+    .health-body .bakery-recorder,
+    .health-body .bakery-spoken-goal,
+    .health-body .bakery-account-sync {
+        @apply bg-[#edf5eb];
+    }
+
+    .health-body .bakery-feedback-card[data-result='success'] {
+        @apply border-[#315d47]/25 bg-[#eef6eb];
+    }
+}
+
 @keyframes bakery-breathe {
     0%, 100% { transform: translateX(-50%) scaleY(1); }
     50% { transform: translateX(-50%) scaleY(1.012); }

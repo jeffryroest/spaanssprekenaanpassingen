@@ -5,6 +5,7 @@ if (dialogueRoot) {
     const expectedScene = dialogueRoot.dataset.scene;
     const scenarioSlug = dialogueRoot.dataset.scenarioSlug;
     const npcName = dialogueRoot.dataset.npcName || 'Je gesprekspartner';
+    const sensitiveRoleplay = dialogueRoot.dataset.sensitiveRoleplay === 'true';
     const elements = {
         stage: dialogueRoot.querySelector('[data-dialogue-stage]'),
         levelSelect: dialogueRoot.querySelector('[data-level-select]'),
@@ -33,7 +34,7 @@ if (dialogueRoot) {
     let translationVisible = false;
     let pendingStateBeforeTurn = null;
     let isEvaluating = false;
-    const persist = () => persistState(storageKey, state);
+    const persist = () => persistState(storageKey, state, sensitiveRoleplay);
 
     const showPreparationSummary = () => {
         const summary = dialogueRoot.querySelector('[data-preparation-summary]');
@@ -76,6 +77,13 @@ if (dialogueRoot) {
             throw new Error('Niet ieder niveau heeft een geldige complicatievariant.');
         }
 
+        if (sensitiveRoleplay
+            && (data.roleplay?.fictional !== true
+                || !Array.isArray(data.roleplay?.facts)
+                || data.roleplay.facts.length < 4)) {
+            throw new Error('De gevoelige gesprekssituatie mist een geldige fictieve rolkaart.');
+        }
+
         const nextTargetsAreValid = data.steps.every((step) => step.options.every(({ next }) =>
             ['@complication', '@complete'].includes(next) || stepIds.has(next)));
         if (!nextTargetsAreValid) {
@@ -92,6 +100,35 @@ if (dialogueRoot) {
         setText('[data-npc-name]', data.npc.name);
         setText('[data-npc-role-es]', data.npc.role.es);
         setText('[data-npc-role-nl]', data.npc.role.nl);
+        hydrateRoleplay(data.roleplay);
+    };
+
+    const hydrateRoleplay = (roleplay) => {
+        const card = dialogueRoot.querySelector('[data-roleplay-card]');
+        if (!card) return;
+
+        if (roleplay?.fictional !== true || !Array.isArray(roleplay.facts)) {
+            card.hidden = true;
+            return;
+        }
+
+        setText('[data-roleplay-title]', roleplay.title?.nl);
+        setText('[data-roleplay-description]', roleplay.description);
+        setText('[data-roleplay-privacy]', roleplay.privacy_notice);
+        setText('[data-roleplay-disclaimer]', roleplay.medical_disclaimer);
+        const list = card.querySelector('[data-roleplay-facts]');
+        list.replaceChildren(...roleplay.facts.map((fact) => {
+            const item = document.createElement('li');
+            const spanish = document.createElement('strong');
+            const dutch = document.createElement('span');
+            spanish.lang = 'es';
+            spanish.textContent = fact.es;
+            dutch.textContent = fact.nl;
+            item.append(spanish, dutch);
+
+            return item;
+        }));
+        card.hidden = false;
     };
 
     const startLevel = (level) => {
@@ -288,7 +325,9 @@ if (dialogueRoot) {
         setText('[data-feedback-strength]', 'Je antwoord wordt bekeken…');
         setText('[data-feedback-focus]', 'Eerst kijken we of je bedoeling duidelijk was; daarna volgt maximaal één concrete volgende stap.');
         setText('[data-feedback-example]', '');
-        setText('[data-feedback-note]', 'Uitspraak wordt niet beoordeeld, omdat alleen je transcript naar deze feedbacklaag gaat.');
+        setText('[data-feedback-note]', sensitiveRoleplay
+            ? 'Alleen je Spaanse taalgebruik wordt beoordeeld — niet de fictieve medische inhoud. Uitspraak wordt zonder audio-evidence niet beoordeeld.'
+            : 'Uitspraak wordt niet beoordeeld, omdat alleen je transcript naar deze feedbacklaag gaat.');
         elements.feedbackDetails.hidden = true;
         elements.feedbackRetry.hidden = true;
         elements.continueButton.hidden = true;
@@ -558,9 +597,11 @@ if (dialogueRoot) {
             const sourceLabel = entry.source === 'speech' ? 'gesproken' : entry.source === 'choice_assist' ? 'voorbeeldzin' : 'tekst';
             turn.textContent = `${entry.repair ? 'Herstelzin' : `Beurt ${entry.turn}`} · ${sourceLabel}`;
             player.lang = 'es';
-            player.textContent = entry.player;
+            player.textContent = entry.player ?? (sensitiveRoleplay ? 'Antwoordtekst niet in browseropslag bewaard.' : '');
             npc.lang = 'es';
-            npc.textContent = `${npcName}: ${entry.npc}`;
+            npc.textContent = entry.npc
+                ? `${npcName}: ${entry.npc}`
+                : sensitiveRoleplay ? `${npcName} reageerde; de tekst is niet in browseropslag bewaard.` : npcName;
             item.append(turn, player, npc);
             return item;
         });
@@ -727,9 +768,15 @@ function readState(key) {
     }
 }
 
-function persistState(key, state) {
+function persistState(key, state, redactDialogueText = false) {
     try {
-        window.sessionStorage.setItem(key, JSON.stringify(state));
+        const storedState = redactDialogueText
+            ? {
+                ...state,
+                history: state.history.map(({ player: _player, npc: _npc, feedback: _feedback, ...evidence }) => evidence),
+            }
+            : state;
+        window.sessionStorage.setItem(key, JSON.stringify(storedState));
     } catch {
         // De dialoog blijft speelbaar wanneer sessieopslag niet beschikbaar is.
     }

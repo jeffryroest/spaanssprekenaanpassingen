@@ -29,7 +29,7 @@
         "required": ["id", "kind", "label", "description", "state", "position", "action"],
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$" },
-          "kind": { "enum": ["bakery", "metro", "cafe", "market"] },
+          "kind": { "enum": ["bakery", "metro", "cafe", "market", "clinic"] },
           "label": { "$ref": "#/$defs/localizedText" },
           "description": { "type": "string", "minLength": 1 },
           "state": { "enum": ["open", "locked", "completed"] },

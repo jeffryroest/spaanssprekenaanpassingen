@@ -3,14 +3,15 @@
 namespace App\Actions\PlayerProgress;
 
 use App\Models\User;
+use App\PlayerProgress\Exceptions\ProgressRecordingFailed;
 use App\PlayerProgress\PublishedScenarioMission;
 use App\PlayerProgress\ScenarioMissionProfile;
 
-final class CompleteRestaurantMission
+final class CompleteHealthMission
 {
-    public const SCENARIO_SLUG = 'restaurant-el-reloj';
+    public const SCENARIO_SLUG = 'consulta-elena';
 
-    public const MISSION_KEY = 'mission.madrid.restaurant.order';
+    public const MISSION_KEY = 'mission.madrid.health.appointment';
 
     public function __construct(
         private readonly PublishedScenarioMission $publishedMission,
@@ -28,19 +29,27 @@ final class CompleteRestaurantMission
         array $turns,
         bool $usedRepairStrategy,
     ): array {
-        $definition = $this->publishedMission->definition(self::SCENARIO_SLUG, self::MISSION_KEY, 'restaurant_text_dialogue');
+        $definition = $this->publishedMission->definition(self::SCENARIO_SLUG, self::MISSION_KEY, 'health_text_dialogue');
+        if (data_get($definition->domainData, 'roleplay.fictional') !== true) {
+            throw new ProgressRecordingFailed(
+                'mission_definition_unavailable',
+                503,
+                'De gepubliceerde fictieve rolkaart is tijdelijk niet beschikbaar voor accountopslag.',
+            );
+        }
+
         $profile = new ScenarioMissionProfile(
-            stampKey: 'stamp.first_madrid_dinner',
-            collectibleKey: 'item.el_reloj_coaster',
-            repairBadgeKey: 'badge.con_soltura',
+            stampKey: 'stamp.first_consulta_conversation',
+            collectibleKey: 'item.consulta_phrase_card',
+            repairBadgeKey: 'badge.pregunta_clara',
             worldStates: [
-                'madrid.restaurant.mission_completed',
-                'madrid.health.preview_unlocked',
+                'madrid.health.mission_completed',
+                'madrid.station.preview_unlocked',
             ],
             extraRewards: [[
-                'key' => 'madrid.health.preview',
+                'key' => 'madrid.station.preview',
                 'type' => 'unlock',
-                'title' => ['es' => 'Próxima misión: la consulta', 'nl' => 'Vooruitblik: bij de dokter'],
+                'title' => ['es' => 'Próxima misión: la estación', 'nl' => 'Vooruitblik: op het station'],
             ]],
         );
 

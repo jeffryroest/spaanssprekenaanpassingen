@@ -20,12 +20,14 @@ const checks = [
   [css.includes('.world-home-body'), 'De spelersgerichte homepagestijlen ontbreken in de productie-CSS.'],
   [css.includes('.hub-preparation-dialog'), 'De Madrid-voorbereidingslaag ontbreekt in de productie-CSS.'],
   [css.includes('.bakery-body'), 'De dialoogstijlen ontbreken in de productie-CSS.'],
+  [css.includes('.health-role-card'), 'De fictieve consulta- en rolkaartstijlen ontbreken in de productie-CSS.'],
   [js.includes('madrid-mission-preparation'), 'De Madrid-voorbereidingslogica ontbreekt in de productie-JavaScript.'],
   [js.includes('data-scenario-dialogue'), 'De dialoogmotor ontbreekt in de productie-JavaScript.'],
+  [js.includes('Antwoordtekst niet in browseropslag bewaard'), 'De gevoelige lokale tekstredactie ontbreekt in de productie-JavaScript.'],
 ];
 
 for (const [passes, message] of checks) {
   if (!passes) throw new Error(message);
 }
 
-console.log(`Productie-assets geldig: ${cssEntry.file} en ${jsEntry.file} bevatten fase 3B1.5.`);
+console.log(`Productie-assets geldig: ${cssEntry.file} en ${jsEntry.file} bevatten de speelbare wereldlaag en fase 3B3.`);
