@@ -139,6 +139,34 @@
             </div>
         </section>
 
+        <section class="mt-6 rounded-3xl border border-[#493429]/10 bg-[#fffaf0] p-6 shadow-sm sm:p-8" aria-labelledby="restaurant-progress-title">
+            <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.15em] text-[#a9472b]">Dag 3 · Madrid · Café El Reloj</p>
+                    <h2 id="restaurant-progress-title" class="mt-2 text-2xl font-black">Mijn eerste diner</h2>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-[#76685f]">Vraag Carmen om een tafel, bestel drinken en eten, los een onverwachte vraag op en vraag om de rekening.</p>
+                </div>
+                <span class="w-fit rounded-full px-3 py-1 text-xs font-black {{ $restaurantProgress['mission']['status'] === 'completed' ? 'bg-[#dfeedd] text-[#315d47]' : 'bg-[#efe4d5] text-[#7b6558]' }}">
+                    {{ $restaurantProgress['mission']['status'] === 'completed' ? 'Voltooid' : 'Nog te spelen' }}
+                </span>
+            </div>
+
+            <dl class="mt-6 grid gap-3 sm:grid-cols-3">
+                <div class="rounded-2xl bg-[#f3e8d9] p-4"><dt class="text-xs font-bold text-[#806e63]">Voltooiingen</dt><dd class="mt-1 text-xl font-black">{{ $restaurantProgress['mission']['completion_count'] }}</dd></div>
+                <div class="rounded-2xl bg-[#f3e8d9] p-4"><dt class="text-xs font-bold text-[#806e63]">Beste score</dt><dd class="mt-1 text-xl font-black">{{ $restaurantProgress['mission']['best_xp'] }} XP</dd></div>
+                <div class="rounded-2xl bg-[#f3e8d9] p-4"><dt class="text-xs font-bold text-[#806e63]">Gesproken</dt><dd class="mt-1 text-xl font-black">{{ min($restaurantProgress['mission']['best_spoken_turns'], $restaurantProgress['mission']['spoken_goal_target']) }}/{{ $restaurantProgress['mission']['spoken_goal_target'] }}</dd></div>
+            </dl>
+
+            <div class="mt-5 flex flex-wrap items-center gap-3">
+                <a href="{{ route('game.madrid.restaurant') }}" class="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#a9472b] px-5 text-sm font-black text-white hover:bg-[#913b25] focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2">
+                    {{ $restaurantProgress['mission']['status'] === 'completed' ? 'Speel het diner opnieuw' : 'Open dag 3' }}
+                </a>
+                @foreach ($restaurantProgress['rewards'] as $reward)
+                    <span class="rounded-full border border-[#493429]/10 bg-white px-3 py-2 text-xs font-bold text-[#6f5f56]">{{ $reward['title']['nl'] }}</span>
+                @endforeach
+            </div>
+        </section>
+
         <p class="mt-8 text-center text-xs leading-5 text-[#8a7b72]">Voor voortgang bewaren we alleen missiestappen, invoerbron, hulpgebruik en beloningsmutaties — geen opname, transcript of AI-feedback.</p>
     </main>
 </body>

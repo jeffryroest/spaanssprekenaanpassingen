@@ -90,6 +90,19 @@ class ContentStudioContentCrudTest extends TestCase
         $this->assertDatabaseCount('content_nodes', 0);
     }
 
+    public function test_restaurant_template_prefills_carmens_private_dialogue_as_draft_only(): void
+    {
+        $this->actingAs($this->editor())
+            ->get(route('content-studio.content.create', ['template' => 'restaurant']))
+            ->assertOk()
+            ->assertSee('restaurant_text_dialogue')
+            ->assertSee('npc.carmen.santos')
+            ->assertSee('value="restaurant-el-reloj"', false)
+            ->assertSee('Alleen concept');
+
+        $this->assertDatabaseCount('content_nodes', 0);
+    }
+
     public function test_playable_domain_data_is_validated_and_saved_in_the_revision(): void
     {
         $editor = $this->editor();

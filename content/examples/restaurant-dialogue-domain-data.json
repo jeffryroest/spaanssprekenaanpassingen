@@ -1,0 +1,197 @@
+{
+  "schema_version": "1.0.0",
+  "scene": "restaurant_text_dialogue",
+  "runtime_access": {
+    "visibility": "entitled",
+    "entitlement": "trial_week"
+  },
+  "npc": {
+    "id": "npc.carmen.santos",
+    "name": "Carmen Santos",
+    "role": { "es": "camarera", "nl": "serveerster" },
+    "description": "Hartelijk, oplettend en professioneel. Carmen helpt de gast zoals in een echt Madrileens restaurant, niet als docent."
+  },
+  "mission": {
+    "id": "mission.madrid.restaurant.order",
+    "title": { "es": "Mi primera cena", "nl": "Mijn eerste diner" },
+    "objective": "Vraag een tafel, bestel drinken en eten, reageer op een vraag van Carmen en vraag om de rekening.",
+    "start_step": "turn.ask_table",
+    "required_text_turns": 5
+  },
+  "level_branches": {
+    "A0": "branch.still_or_sparkling",
+    "A1": "branch.drink_alternative",
+    "A2": "branch.drink_recommendation"
+  },
+  "repair": {
+    "terms": ["puede repetir", "repita por favor", "mas despacio", "no entiendo", "que significa", "quiero decir"],
+    "npc_response": {
+      "es": "Claro. Se lo digo de otra manera y más despacio.",
+      "nl": "Natuurlijk. Ik zeg het anders en wat langzamer."
+    },
+    "feedback": {
+      "strength": "Sterk: je houdt zelf het gesprek gaande.",
+      "focus": "Om uitleg of herhaling vragen is echte gespreksvaardigheid."
+    }
+  },
+  "steps": [
+    {
+      "id": "turn.ask_table",
+      "turn": 1,
+      "npc_line": { "es": "Buenas noches. ¿Tienen reserva?", "nl": "Goedenavond. Heeft u gereserveerd?" },
+      "prompt": "Begroet Carmen, zeg dat je niet hebt gereserveerd en vraag om een tafel voor twee.",
+      "placeholder": "Buenas noches. No tenemos reserva. ¿Tiene una mesa libre para dos?",
+      "hint": "Una mesa libre betekent een vrije tafel.",
+      "choices": ["Buenas noches. No tenemos reserva. ¿Tiene una mesa libre para dos?", "Hola. ¿Hay una mesa para dos, por favor?"],
+      "options": [
+        {
+          "id": "table_for_two",
+          "requirements": [["buenas noches", "hola", "buenas tardes"], ["mesa", "sitio"], ["dos", "2"]],
+          "npc_response": { "es": "Sí, claro. Síganme, por favor.", "nl": "Ja, natuurlijk. Loopt u mee, alstublieft." },
+          "feedback": { "strength": "Je begroeting, situatie en aantal personen waren meteen duidelijk.", "focus": "¿Tiene una mesa libre? is een natuurlijke, beleefde vraag bij binnenkomst." },
+          "states": ["greeted_carmen", "table_for_two_requested"],
+          "next": "turn.order_drink"
+        }
+      ],
+      "fallback": { "strength": "Je hebt contact gemaakt met Carmen.", "focus": "Vraag ook om una mesa para dos zodat zij je kan plaatsen." }
+    },
+    {
+      "id": "turn.order_drink",
+      "turn": 2,
+      "npc_line": { "es": "Aquí tienen la carta. ¿Qué van a beber?", "nl": "Hier is de kaart. Wat wilt u drinken?" },
+      "prompt": "Bestel water en geef aan dat je het zonder bubbels wilt.",
+      "placeholder": "Para mí, agua sin gas, por favor.",
+      "hint": "Sin gas betekent zonder bubbels of koolzuur.",
+      "choices": ["Para mí, agua sin gas, por favor.", "Una botella de agua sin gas, por favor."],
+      "options": [
+        {
+          "id": "still_water",
+          "requirements": [["agua"], ["sin gas", "natural"]],
+          "npc_response": { "es": "Muy bien. Ahora mismo.", "nl": "Prima. Komt eraan." },
+          "feedback": { "strength": "Je bestelde precies het drankje dat je wilde.", "focus": "Agua sin gas is in Spanje de gebruikelijke manier om water zonder bubbels te vragen." },
+          "states": ["drink_ordered", "still_water_selected"],
+          "next": "@complication"
+        }
+      ],
+      "fallback": { "strength": "Je begrijpt dat Carmen naar het drinken vraagt.", "focus": "Noem agua en voeg sin gas toe voor water zonder bubbels." }
+    },
+    {
+      "id": "branch.still_or_sparkling",
+      "turn": 3,
+      "npc_line": { "es": "¿Agua con gas o sin gas?", "nl": "Water met of zonder bubbels?" },
+      "prompt": "Bevestig dat je water zonder bubbels wilt.",
+      "placeholder": "Sin gas, por favor.",
+      "hint": "Herhaal sin gas en voeg por favor toe.",
+      "choices": ["Sin gas, por favor.", "Agua sin gas, gracias."],
+      "options": [
+        {
+          "id": "confirm_still_water",
+          "requirements": [["sin gas", "natural"]],
+          "npc_response": { "es": "Perfecto. Una botella de agua sin gas.", "nl": "Prima. Een fles water zonder bubbels." },
+          "feedback": { "strength": "Je bevestigde de keuze kort en duidelijk.", "focus": "Bij een controlevraag is een compact antwoord als sin gas, por favor volledig genoeg." },
+          "states": ["complication_resolved", "drink_clarified"],
+          "next": "turn.order_food"
+        }
+      ],
+      "fallback": { "strength": "Je hoort dat Carmen twee soorten water noemt.", "focus": "Kies sin gas voor water zonder bubbels." }
+    },
+    {
+      "id": "branch.drink_alternative",
+      "turn": 3,
+      "npc_line": { "es": "Lo siento, solo nos queda agua con gas. ¿Le parece bien una limonada casera?", "nl": "Sorry, we hebben alleen nog water met bubbels. Is huisgemaakte limonade goed?" },
+      "prompt": "Accepteer de limonade of kies toch water met bubbels.",
+      "placeholder": "La limonada me parece bien, gracias.",
+      "hint": "Me parece bien betekent: dat klinkt goed / dat is prima.",
+      "choices": ["La limonada me parece bien, gracias.", "Entonces, agua con gas, por favor."],
+      "options": [
+        {
+          "id": "choose_drink_alternative",
+          "requirements": [["limonada", "agua con gas", "me parece bien", "entonces"]],
+          "npc_response": { "es": "De acuerdo. Se la traigo enseguida.", "nl": "In orde. Ik breng het meteen." },
+          "feedback": { "strength": "Je reageerde zelfstandig toen je eerste keuze niet beschikbaar was.", "focus": "Me parece bien is een natuurlijke manier om een alternatief te accepteren." },
+          "states": ["complication_resolved", "drink_alternative_selected"],
+          "next": "turn.order_food"
+        }
+      ],
+      "fallback": { "strength": "Je begrijpt dat het water zonder bubbels op is.", "focus": "Accepteer met me parece bien of kies agua con gas." }
+    },
+    {
+      "id": "branch.drink_recommendation",
+      "turn": 3,
+      "npc_line": { "es": "También tenemos limonada casera y vino de la casa. ¿Quiere que le recomiende algo?", "nl": "We hebben ook huisgemaakte limonade en huiswijn. Zal ik iets aanbevelen?" },
+      "prompt": "Vraag om een aanbeveling en geef aan dat je liever geen alcohol drinkt.",
+      "placeholder": "Sí, ¿qué me recomienda sin alcohol?",
+      "hint": "Sin alcohol betekent alcoholvrij; recomendar is aanbevelen.",
+      "choices": ["Sí, ¿qué me recomienda sin alcohol?", "Prefiero algo sin alcohol. ¿Qué me recomienda?"],
+      "options": [
+        {
+          "id": "request_non_alcoholic_recommendation",
+          "requirements": [["recomienda", "recomendacion"], ["sin alcohol", "no bebo alcohol", "prefiero"]],
+          "npc_response": { "es": "La limonada casera está muy rica.", "nl": "De huisgemaakte limonade is erg lekker." },
+          "feedback": { "strength": "Je vroeg gericht advies en maakte je voorkeur duidelijk.", "focus": "¿Qué me recomienda? is breed inzetbaar wanneer je de keuze aan de bediening wilt laten." },
+          "states": ["complication_resolved", "drink_recommendation_requested"],
+          "next": "turn.order_food"
+        }
+      ],
+      "fallback": { "strength": "Je begrijpt dat Carmen een aanbeveling aanbiedt.", "focus": "Vraag ¿Qué me recomienda? en voeg sin alcohol toe als voorkeur." }
+    },
+    {
+      "id": "turn.order_food",
+      "turn": 4,
+      "npc_line": { "es": "¿Ya saben qué van a tomar?", "nl": "Weet u al wat u wilt nemen?" },
+      "prompt": "Bestel de tortilla en vraag er een salade bij.",
+      "placeholder": "Quiero la tortilla y una ensalada, por favor.",
+      "hint": "Gebruik quiero of para mí gevolgd door het gerecht.",
+      "choices": ["Quiero la tortilla y una ensalada, por favor.", "Para mí, la tortilla con una ensalada."],
+      "options": [
+        {
+          "id": "order_tortilla_and_salad",
+          "requirements": [["tortilla"], ["ensalada"]],
+          "npc_response": { "es": "Muy buena elección. Enseguida se lo traigo.", "nl": "Heel goede keuze. Ik breng het zo." },
+          "feedback": { "strength": "Je bestelde hoofdgerecht en bijgerecht in één heldere zin.", "focus": "Para mí… klinkt natuurlijk wanneer meerdere gasten om de beurt bestellen." },
+          "states": ["food_ordered", "tortilla_selected", "salad_selected"],
+          "next": "turn.request_bill"
+        }
+      ],
+      "fallback": { "strength": "Je reageert op de vraag naar je eten.", "focus": "Noem zowel tortilla als ensalada om de bestelling compleet te maken." }
+    },
+    {
+      "id": "turn.request_bill",
+      "turn": 5,
+      "npc_line": { "es": "¿Han terminado? ¿Desean algo más?", "nl": "Heeft u genoeg gehad? Wilt u nog iets?" },
+      "prompt": "Vraag om nog wat water en om de rekening.",
+      "placeholder": "Sí, un poco más de agua y la cuenta, por favor.",
+      "hint": "La cuenta is de rekening; un poco más de agua is nog wat water.",
+      "choices": ["Sí, un poco más de agua y la cuenta, por favor.", "¿Nos trae la cuenta y un poco más de agua, por favor?"],
+      "options": [
+        {
+          "id": "water_and_bill",
+          "requirements": [["cuenta"], ["agua", "un poco mas"]],
+          "npc_response": { "es": "De acuerdo. Ahora mismo les traigo el agua y la cuenta.", "nl": "In orde. Ik breng meteen het water en de rekening." },
+          "feedback": { "strength": "Je rondde de maaltijd zelfstandig en beleefd af.", "focus": "¿Nos trae la cuenta? is een natuurlijke manier om in een restaurant om de rekening te vragen." },
+          "states": ["more_water_requested", "bill_requested", "conversation_completed"],
+          "next": "@complete"
+        }
+      ],
+      "fallback": { "strength": "Je bent bij het afronden van de maaltijd.", "focus": "Vraag om la cuenta en noem agua als je nog wat water wilt." }
+    }
+  ],
+  "completion": {
+    "polite_farewell": {
+      "es": "Gracias por todo. La cena ha estado muy rica. ¡Hasta luego!",
+      "nl": "Dank u voor alles. Het eten was erg lekker. Tot ziens!"
+    },
+    "default_farewell": {
+      "es": "Gracias. ¡Hasta luego!",
+      "nl": "Bedankt. Tot ziens!"
+    },
+    "rewards": {
+      "xp": 100,
+      "confianza": 1,
+      "valentia": 1,
+      "stamp": { "es": "Mi primera cena", "nl": "Mijn eerste diner" },
+      "collectible": { "es": "Posavasos de El Reloj", "nl": "Onderzetter van El Reloj" },
+      "repair_badge": { "es": "Con soltura", "nl": "Met gemak doorpraten" }
+    }
+  }
+}

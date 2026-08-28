@@ -49,7 +49,7 @@
 
         <section class="grid gap-7 lg:grid-cols-[1.2fr_0.8fr] lg:items-end" aria-labelledby="trial-week-title">
             <div>
-                <p class="text-xs font-black uppercase tracking-[0.18em] text-[#a9472b]">Fase 3A · Mi semana</p>
+                <p class="text-xs font-black uppercase tracking-[0.18em] text-[#a9472b]">Proefweek · Mi semana</p>
                 <h1 id="trial-week-title" class="mt-3 max-w-3xl font-serif text-4xl font-black tracking-tight text-[#302722] sm:text-5xl">Zeven dagen spreken in Madrid</h1>
                 <p class="mt-4 max-w-2xl text-base leading-7 text-[#72645c]">Van een ontbijt bestellen tot een treinreis regelen. Elke dag heeft één duidelijke communicatieve missie; actieve reproductie blijft belangrijker dan meerkeuzeherkenning.</p>
             </div>

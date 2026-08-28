@@ -57,7 +57,7 @@ final class PlayableDomainData implements ValidationRule
 
         match ($scene) {
             'madrid_hub' => $this->validateMadridHub($data, $fail),
-            'panaderia_text_dialogue', 'taxi_text_dialogue' => $this->validateDialogue($data, $scene, $fail),
+            'panaderia_text_dialogue', 'taxi_text_dialogue', 'restaurant_text_dialogue' => $this->validateDialogue($data, $scene, $fail),
             default => $fail("Het speelcontract {$scene} wordt nog niet ondersteund."),
         };
     }
@@ -104,9 +104,9 @@ final class PlayableDomainData implements ValidationRule
             $fail('Een speelbaar gesprek vereist aparte A0-, A1- en A2-paden.');
         }
 
-        if ($scene === 'taxi_text_dialogue'
+        if (in_array($scene, ['taxi_text_dialogue', 'restaurant_text_dialogue'], true)
             && data_get($data, 'runtime_access.visibility') !== 'entitled') {
-            $fail('De taximissie moet runtime_access.visibility entitled gebruiken.');
+            $fail('Een afgeschermde proefweekmissie moet runtime_access.visibility entitled gebruiken.');
         }
     }
 
