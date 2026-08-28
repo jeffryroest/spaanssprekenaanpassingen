@@ -135,7 +135,7 @@ class ContentStudioContentCrudTest extends TestCase
 
         $revision = ContentNode::query()->with('revisions')->sole()->revisions->sole();
         $this->assertSame('madrid_hub', $revision->snapshot['domain_data']['scene']);
-        $this->assertCount(4, $revision->snapshot['domain_data']['hotspots']);
+        $this->assertCount(5, $revision->snapshot['domain_data']['hotspots']);
         $this->assertDatabaseHas('content_nodes', [
             'slug' => 'madrid',
             'status' => ContentStatus::Draft->value,
