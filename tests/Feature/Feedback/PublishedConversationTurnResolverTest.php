@@ -8,6 +8,7 @@ use App\Actions\ContentStudio\CreateDraftContent;
 use App\Actions\ContentStudio\DecideContentReview;
 use App\Actions\ContentStudio\PublishContentRelease;
 use App\Actions\ContentStudio\SubmitContentForReview;
+use App\ContentStudio\PlayableContentTemplates;
 use App\Enums\ContentReleaseChannel;
 use App\Enums\ContentReviewAction;
 use App\Enums\ContentRole;
@@ -25,26 +26,21 @@ class PublishedConversationTurnResolverTest extends TestCase
     public function test_only_the_exact_production_release_supplies_assessment_context(): void
     {
         $editor = User::factory()->create(['content_role' => ContentRole::Editor]);
+        $domainData = app(PlayableContentTemplates::class)->find('panaderia')['domain_data'];
+        $domainData['repair']['terms'] = ['¿Puede repetir?'];
+        $domainData['mission']['start_step'] = 'greeting';
+        $domainData['steps'][0]['id'] = 'greeting';
+        $domainData['steps'][0]['npc_line'] = ['es' => 'Hola, buenos días.'];
+        $domainData['steps'][0]['prompt'] = 'Begroet Lucía.';
+        $domainData['steps'][0]['hint'] = 'Zeg buenos días.';
+        $domainData['steps'][0]['options'][0]['requirements'] = [['hola', 'buenos días']];
         $node = app(CreateDraftContent::class)->handle(
             actor: $editor,
             contentType: ContentType::ConversationScenario,
             slug: 'la-espiga-lucia',
             locale: 'es-ES',
             title: 'La Espiga',
-            domainData: [
-                'schema_version' => '1.0.0',
-                'repair' => ['terms' => ['¿Puede repetir?']],
-                'steps' => [[
-                    'id' => 'greeting',
-                    'turn' => 1,
-                    'npc_line' => ['es' => 'Hola, buenos días.'],
-                    'prompt' => 'Begroet Lucía.',
-                    'hint' => 'Zeg buenos días.',
-                    'options' => [[
-                        'requirements' => [['hola', 'buenos días']],
-                    ]],
-                ]],
-            ],
+            domainData: $domainData,
         );
         app(SubmitContentForReview::class)->handle($editor, $node, 1);
         app(DecideContentReview::class)->handle(

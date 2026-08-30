@@ -9,6 +9,7 @@ use App\Actions\ContentStudio\DecideContentReview;
 use App\Actions\ContentStudio\PublishContentRelease;
 use App\Actions\ContentStudio\SubmitContentForReview;
 use App\ContentApi\PublicApiResponder;
+use App\ContentStudio\PlayableContentTemplates;
 use App\Enums\ContentReleaseChannel;
 use App\Enums\ContentReviewAction;
 use App\Enums\ContentRole;
@@ -302,6 +303,8 @@ class PublicContentApiTest extends TestCase
         array $domainData = [],
         ?User $editor = null,
     ): ContentNode {
+        $domainData = $this->completePlayableDomainData($contentType, $domainData);
+
         return app(CreateDraftContent::class)->handle(
             actor: $editor ?? $this->userWithRole(ContentRole::Editor),
             contentType: $contentType,
@@ -313,6 +316,29 @@ class PublicContentApiTest extends TestCase
             metadata: ['audience' => 'starter'],
             domainData: $domainData,
         );
+    }
+
+    /**
+     * @param  array<string, mixed>  $overrides
+     * @return array<string, mixed>
+     */
+    private function completePlayableDomainData(ContentType $contentType, array $overrides): array
+    {
+        $templateKey = match ($contentType) {
+            ContentType::Region => 'madrid-hub',
+            ContentType::ConversationScenario => data_get($overrides, 'runtime_access.visibility') === 'entitled'
+                ? 'taxi'
+                : 'panaderia',
+            default => null,
+        };
+
+        if ($templateKey === null) {
+            return $overrides;
+        }
+
+        $template = app(PlayableContentTemplates::class)->find($templateKey);
+
+        return array_replace_recursive($template['domain_data'], $overrides);
     }
 
     private function userWithRole(ContentRole $role): User
