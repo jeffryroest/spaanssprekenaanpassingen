@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
-            <p class="cs-eyebrow">Vier-ogencontrole</p>
+            <p class="cs-eyebrow">Risicogestuurde controle</p>
             <h1 class="cs-page-title">Reviewwachtrij</h1>
             <p class="cs-page-description">Beoordeel uitsluitend de ingediende revisie. Goedkeuren of terugsturen vereist altijd een gemotiveerde beslissing.</p>
         </div>
@@ -44,6 +44,8 @@
                                 && $review->action === App\Enums\ContentReviewAction::Submitted,
                         );
                         $ownRevision = (int) $revision?->created_by === (int) auth()->id();
+                        $ownApprovalAllowed = $ownRevision && $revision !== null
+                            && $reviewPolicy->allowsSelfApproval(auth()->user(), $revision);
                     @endphp
                     <article class="flex flex-col gap-5 p-5 transition hover:bg-slate-50/80 sm:p-6 lg:flex-row lg:items-center">
                         <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-700" aria-hidden="true">
@@ -70,7 +72,9 @@
                         </div>
                         <div class="flex shrink-0 flex-col items-stretch gap-2 sm:flex-row sm:items-center">
                             @if ($ownRevision)
-                                <span class="text-xs font-medium text-amber-700">Een andere reviewer is vereist</span>
+                                <span class="text-xs font-medium {{ $ownApprovalAllowed ? 'text-emerald-700' : 'text-amber-700' }}">
+                                    {{ $ownApprovalAllowed ? 'Gemotiveerde zelfgoedkeuring mogelijk' : 'Onafhankelijke reviewer vereist' }}
+                                </span>
                             @endif
                             <a href="{{ route('content-studio.content.show', $contentNode) }}" class="cs-button-secondary">
                                 Beoordelen

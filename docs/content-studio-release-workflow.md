@@ -39,6 +39,7 @@ De huidige preflight blokkeert wanneer:
 - het actuele versienummer afwijkt van het release-item;
 - de gekoppelde revisie ontbreekt of bij een ander contentobject hoort;
 - voor die exacte revisie geen goedkeuringsgebeurtenis bestaat;
+- een speelbare regio of gesprek geen ingevuld en ondersteund scene-contract heeft;
 - het gewenste publicatiemoment nog in de toekomst ligt.
 
 De controle wordt zowel op het detailscherm getoond als opnieuw uitgevoerd onder databasevergrendeling tijdens publicatie. Een verouderd scherm kan daardoor geen gedeeltelijke publicatie veroorzaken.

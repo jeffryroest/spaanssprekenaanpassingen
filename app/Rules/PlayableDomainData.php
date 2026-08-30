@@ -57,7 +57,7 @@ final class PlayableDomainData implements ValidationRule
 
         match ($scene) {
             'madrid_hub' => $this->validateMadridHub($data, $fail),
-            'panaderia_text_dialogue', 'taxi_text_dialogue', 'restaurant_text_dialogue' => $this->validateDialogue($data, $scene, $fail),
+            'panaderia_text_dialogue', 'taxi_text_dialogue', 'restaurant_text_dialogue', 'health_text_dialogue' => $this->validateDialogue($data, $scene, $fail),
             default => $fail("Het speelcontract {$scene} wordt nog niet ondersteund."),
         };
     }
@@ -104,9 +104,16 @@ final class PlayableDomainData implements ValidationRule
             $fail('Een speelbaar gesprek vereist aparte A0-, A1- en A2-paden.');
         }
 
-        if (in_array($scene, ['taxi_text_dialogue', 'restaurant_text_dialogue'], true)
+        if (in_array($scene, ['taxi_text_dialogue', 'restaurant_text_dialogue', 'health_text_dialogue'], true)
             && data_get($data, 'runtime_access.visibility') !== 'entitled') {
             $fail('Een afgeschermde proefweekmissie moet runtime_access.visibility entitled gebruiken.');
+        }
+
+        if ($scene === 'health_text_dialogue'
+            && (data_get($data, 'roleplay.fictional') !== true
+                || ! is_array(data_get($data, 'roleplay.facts'))
+                || count(data_get($data, 'roleplay.facts')) < 4)) {
+            $fail('De gezondheidsmissie vereist een expliciet fictieve rolkaart met minimaal vier feiten.');
         }
     }
 

@@ -19,6 +19,7 @@ class MadridHubTest extends TestCase
             ->assertSee(route('game.progress'), false)
             ->assertSee(route('game.trial-week.status'), false)
             ->assertSee(route('game.madrid.restaurant'), false)
+            ->assertSee(route('game.madrid.health'), false)
             ->assertSee('data-account-xp', false)
             ->assertSee('data-hub-list-view', false)
             ->assertSee('data-hub-sound', false)

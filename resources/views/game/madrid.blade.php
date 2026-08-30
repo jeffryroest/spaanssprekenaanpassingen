@@ -18,6 +18,7 @@
         data-home="{{ route('home') }}"
         data-panaderia-route="{{ route('game.madrid.panaderia') }}"
         data-restaurant-route="{{ route('game.madrid.restaurant') }}"
+        data-health-route="{{ route('game.madrid.health') }}"
         data-authenticated="{{ auth()->check() ? 'true' : 'false' }}"
         data-progress-url="{{ route('game.progress') }}"
         data-trial-week-url="{{ route('game.trial-week.status') }}"

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Actions\ContentStudio\CreateDraftContent;
+use App\ContentStudio\PlayableContentTemplates;
 use App\Enums\ContentReviewAction;
 use App\Enums\ContentRole;
 use App\Enums\ContentStatus;
@@ -135,22 +136,131 @@ class ContentStudioReviewWorkflowTest extends TestCase
         ]);
     }
 
-    public function test_four_eyes_rule_blocks_reviewing_own_revision(): void
+    public function test_risk_based_policy_allows_editor_in_chief_to_approve_own_ordinary_revision(): void
     {
         $editorInChief = $this->userWithRole(ContentRole::EditorInChief);
         $contentNode = $this->createContent($editorInChief, 'hasta-luego', 'Hasta luego');
         $this->submit($contentNode, $editorInChief);
 
         $this->actingAs($editorInChief)
+            ->get(route('content-studio.content.show', $contentNode))
+            ->assertOk()
+            ->assertSee('Gemotiveerde zelfgoedkeuring toegestaan');
+
+        $this->actingAs($editorInChief)
             ->post(route('content-studio.reviews.decide', $contentNode), [
                 'expected_version' => 1,
                 'action' => ContentReviewAction::Approved->value,
-                'note' => 'Eigen controle mag niet tellen.',
+                'note' => 'Taal, context en bruikbaarheid zijn gecontroleerd.',
+            ])
+            ->assertRedirect(route('content-studio.content.show', $contentNode));
+
+        $this->assertSame(ContentStatus::Approved, $contentNode->fresh()->status);
+        $this->assertDatabaseHas('audit_logs', [
+            'subject_id' => $contentNode->getKey(),
+            'action' => 'content.review_self_approved',
+        ]);
+    }
+
+    public function test_strict_mode_still_blocks_reviewing_own_revision(): void
+    {
+        config()->set('content-studio.review_mode', 'strict');
+        $editorInChief = $this->userWithRole(ContentRole::EditorInChief);
+        $contentNode = $this->createContent($editorInChief, 'hasta-pronto', 'Hasta pronto');
+        $this->submit($contentNode, $editorInChief);
+
+        $this->actingAs($editorInChief)
+            ->post(route('content-studio.reviews.decide', $contentNode), [
+                'expected_version' => 1,
+                'action' => ContentReviewAction::Approved->value,
+                'note' => 'Eigen controle is in de strikte modus geblokkeerd.',
             ])
             ->assertSessionHasErrors('reviewer');
 
         $this->assertSame(ContentStatus::InReview, $contentNode->fresh()->status);
         $this->assertDatabaseCount('content_reviews', 1);
+    }
+
+    public function test_sensitive_health_content_always_requires_an_independent_reviewer(): void
+    {
+        $administrator = $this->userWithRole(ContentRole::Administrator);
+        $healthTemplate = app(PlayableContentTemplates::class)->find('health');
+        $contentNode = app(CreateDraftContent::class)->handle(
+            actor: $administrator,
+            contentType: ContentType::ConversationScenario,
+            slug: $healthTemplate['slug'],
+            locale: $healthTemplate['locale'],
+            title: $healthTemplate['title'],
+            summary: $healthTemplate['summary'],
+            domainData: $healthTemplate['domain_data'],
+        );
+        $this->submit($contentNode, $administrator);
+
+        $this->actingAs($administrator)
+            ->get(route('content-studio.content.show', $contentNode))
+            ->assertOk()
+            ->assertSee('Onafhankelijke reviewer vereist');
+
+        $this->actingAs($administrator)
+            ->post(route('content-studio.reviews.decide', $contentNode), [
+                'expected_version' => 1,
+                'action' => ContentReviewAction::Approved->value,
+                'note' => 'De fictieve rolkaart en privacygrens zijn gecontroleerd.',
+            ])
+            ->assertSessionHasErrors('reviewer');
+
+        $this->assertSame(ContentStatus::InReview, $contentNode->fresh()->status);
+    }
+
+    public function test_author_can_withdraw_a_review_request_and_continue_editing(): void
+    {
+        $editor = $this->editor();
+        $contentNode = $this->createContent($editor, 'de-acuerdo', 'De acuerdo');
+        $this->submit($contentNode, $editor);
+
+        $this->actingAs($editor)
+            ->get(route('content-studio.content.show', $contentNode))
+            ->assertOk()
+            ->assertSee('Review intrekken');
+
+        $this->actingAs($editor)
+            ->post(route('content-studio.content.withdraw-review', $contentNode), [
+                'expected_version' => 1,
+                'reason' => 'Ik wil eerst een extra gebruiksvoorbeeld toevoegen.',
+            ])
+            ->assertRedirect(route('content-studio.content.show', $contentNode));
+
+        $this->assertSame(ContentStatus::Draft, $contentNode->fresh()->status);
+        $this->assertDatabaseHas('content_reviews', [
+            'content_node_id' => $contentNode->getKey(),
+            'action' => ContentReviewAction::Withdrawn->value,
+            'actor_user_id' => $editor->getKey(),
+        ]);
+        $this->assertDatabaseHas('audit_logs', [
+            'subject_id' => $contentNode->getKey(),
+            'action' => 'content.review_withdrawn',
+        ]);
+    }
+
+    public function test_playable_content_without_a_scene_contract_cannot_enter_review(): void
+    {
+        $editor = $this->editor();
+        $contentNode = app(CreateDraftContent::class)->handle(
+            actor: $editor,
+            contentType: ContentType::ConversationScenario,
+            slug: 'onvolledig-gesprek',
+            locale: 'es-ES',
+            title: 'Onvolledig gesprek',
+        );
+
+        $this->actingAs($editor)
+            ->post(route('content-studio.content.submit-review', $contentNode), [
+                'expected_version' => 1,
+            ])
+            ->assertSessionHasErrors('domain_data');
+
+        $this->assertSame(ContentStatus::Draft, $contentNode->fresh()->status);
+        $this->assertDatabaseCount('content_reviews', 0);
     }
 
     public function test_reviewer_can_request_changes_and_editor_can_create_a_new_revision(): void

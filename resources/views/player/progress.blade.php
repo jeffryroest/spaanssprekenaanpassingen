@@ -167,7 +167,35 @@
             </div>
         </section>
 
-        <p class="mt-8 text-center text-xs leading-5 text-[#8a7b72]">Voor voortgang bewaren we alleen missiestappen, invoerbron, hulpgebruik en beloningsmutaties — geen opname, transcript of AI-feedback.</p>
+        <section class="mt-6 rounded-3xl border border-[#315d47]/15 bg-[#f8fbf4] p-6 shadow-sm sm:p-8" aria-labelledby="health-progress-title">
+            <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.15em] text-[#42745a]">Dag 5 · Madrid · Consulta La Luz</p>
+                    <h2 id="health-progress-title" class="mt-2 text-2xl font-black">Ik sprak in de spreekkamer</h2>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-[#627169]">Gebruik een vaste, fictieve rolkaart om Elena twee klachten uit te leggen, een vraag te beantwoorden en om schriftelijke uitleg te vragen.</p>
+                </div>
+                <span class="w-fit rounded-full px-3 py-1 text-xs font-black {{ $healthProgress['mission']['status'] === 'completed' ? 'bg-[#dfeedd] text-[#315d47]' : 'bg-[#e7eee5] text-[#627169]' }}">
+                    {{ $healthProgress['mission']['status'] === 'completed' ? 'Voltooid' : 'Nog te spelen' }}
+                </span>
+            </div>
+
+            <dl class="mt-6 grid gap-3 sm:grid-cols-3">
+                <div class="rounded-2xl bg-[#e7f0e4] p-4"><dt class="text-xs font-bold text-[#627169]">Voltooiingen</dt><dd class="mt-1 text-xl font-black">{{ $healthProgress['mission']['completion_count'] }}</dd></div>
+                <div class="rounded-2xl bg-[#e7f0e4] p-4"><dt class="text-xs font-bold text-[#627169]">Beste score</dt><dd class="mt-1 text-xl font-black">{{ $healthProgress['mission']['best_xp'] }} XP</dd></div>
+                <div class="rounded-2xl bg-[#e7f0e4] p-4"><dt class="text-xs font-bold text-[#627169]">Gesproken</dt><dd class="mt-1 text-xl font-black">{{ min($healthProgress['mission']['best_spoken_turns'], $healthProgress['mission']['spoken_goal_target']) }}/{{ $healthProgress['mission']['spoken_goal_target'] }}</dd></div>
+            </dl>
+
+            <div class="mt-5 flex flex-wrap items-center gap-3">
+                <a href="{{ route('game.madrid.health') }}" class="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#315d47] px-5 text-sm font-black text-white hover:bg-[#254936] focus:outline-none focus:ring-2 focus:ring-[#4c8b65] focus:ring-offset-2">
+                    {{ $healthProgress['mission']['status'] === 'completed' ? 'Speel het rollenspel opnieuw' : 'Open dag 5' }}
+                </a>
+                @foreach ($healthProgress['rewards'] as $reward)
+                    <span class="rounded-full border border-[#315d47]/10 bg-white px-3 py-2 text-xs font-bold text-[#53675b]">{{ $reward['title']['nl'] }}</span>
+                @endforeach
+            </div>
+        </section>
+
+        <p class="mt-8 text-center text-xs leading-5 text-[#8a7b72]">Voor voortgang bewaren we alleen missiestappen, invoerbron, hulpgebruik en beloningsmutaties — geen opname, antwoord, transcript, gezondheidsinformatie of AI-feedback.</p>
     </main>
 </body>
 </html>

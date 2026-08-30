@@ -20,6 +20,7 @@ class AssessTurnRequest extends FormRequest
         $scenarioSlug = match (true) {
             $this->routeIs('game.madrid.taxi.feedback') => 'taxi-diego',
             $this->routeIs('game.madrid.restaurant.feedback') => 'restaurant-el-reloj',
+            $this->routeIs('game.madrid.health.feedback') => 'consulta-elena',
             default => 'la-espiga-lucia',
         };
 

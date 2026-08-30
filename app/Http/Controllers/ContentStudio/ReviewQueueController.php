@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ContentStudio;
 
+use App\ContentStudio\ContentReviewPolicy;
 use App\Enums\ContentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ContentNode;
@@ -10,7 +11,7 @@ use Illuminate\View\View;
 
 class ReviewQueueController extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(ContentReviewPolicy $reviewPolicy): View
     {
         Gate::authorize('content-studio.review');
 
@@ -20,6 +21,6 @@ class ReviewQueueController extends Controller
             ->oldest('updated_at')
             ->paginate(20);
 
-        return view('content-studio.reviews.index', compact('contentNodes'));
+        return view('content-studio.reviews.index', compact('contentNodes', 'reviewPolicy'));
     }
 }

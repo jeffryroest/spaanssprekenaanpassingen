@@ -8,6 +8,7 @@ use App\Http\Controllers\ContentStudio\ContentReleasePublicationController;
 use App\Http\Controllers\ContentStudio\ContentReviewController;
 use App\Http\Controllers\ContentStudio\DashboardController;
 use App\Http\Controllers\ContentStudio\ReviewQueueController;
+use App\Http\Controllers\Game\CompleteHealthMissionController;
 use App\Http\Controllers\Game\CompletePanaderiaMissionController;
 use App\Http\Controllers\Game\CompleteRestaurantMissionController;
 use App\Http\Controllers\Game\CompleteTaxiMissionController;
@@ -86,6 +87,24 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/spelen/madrid/restaurant/voltooien', CompleteRestaurantMissionController::class)
         ->middleware(['entitled:trial_week', 'throttle:mission-completions'])
         ->name('game.madrid.restaurant.complete');
+
+    Route::view('/spelen/madrid/gezondheid', 'game.health')
+        ->middleware('entitled:trial_week')
+        ->name('game.madrid.health');
+    Route::get('/spelen/madrid/gezondheid/content', EntitledConversationController::class)
+        ->defaults('scenarioSlug', 'consulta-elena')
+        ->defaults('requiredEntitlement', 'trial_week')
+        ->middleware(['entitled:trial_week', 'throttle:120,1'])
+        ->name('game.madrid.health.content');
+    Route::post('/spelen/madrid/gezondheid/transcriptie', SpeechTranscriptionController::class)
+        ->middleware(['entitled:trial_week', 'throttle:speech-transcriptions'])
+        ->name('game.madrid.health.transcription');
+    Route::post('/spelen/madrid/gezondheid/feedback', TurnFeedbackController::class)
+        ->middleware(['entitled:trial_week', 'throttle:turn-feedback'])
+        ->name('game.madrid.health.feedback');
+    Route::post('/spelen/madrid/gezondheid/voltooien', CompleteHealthMissionController::class)
+        ->middleware(['entitled:trial_week', 'throttle:mission-completions'])
+        ->name('game.madrid.health.complete');
 });
 
 Route::prefix('content-studio')
@@ -134,6 +153,9 @@ Route::prefix('content-studio')
         Route::post('/content/{contentNode}/submit-review', [ContentReviewController::class, 'submit'])
             ->whereNumber('contentNode')
             ->name('content.submit-review');
+        Route::post('/content/{contentNode}/withdraw-review', [ContentReviewController::class, 'withdraw'])
+            ->whereNumber('contentNode')
+            ->name('content.withdraw-review');
         Route::delete('/content/{contentNode}', [ContentController::class, 'destroy'])
             ->whereNumber('contentNode')
             ->name('content.destroy');

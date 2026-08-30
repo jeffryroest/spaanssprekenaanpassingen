@@ -50,7 +50,7 @@ class ContentWorkflowEnumsTest extends TestCase
             ContentReviewAction::cases(),
         );
 
-        $this->assertSame(['submitted', 'approved', 'changes_requested'], $values);
+        $this->assertSame(['submitted', 'approved', 'changes_requested', 'withdrawn'], $values);
         $this->assertNotContains('published', $values);
     }
 

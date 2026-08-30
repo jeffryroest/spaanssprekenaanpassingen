@@ -1,6 +1,6 @@
 # Gelaagde beurtfeedback
 
-Fase 2D voegt persoonlijke, rubricgestuurde feedback toe na een betekenisvol antwoord in La Espiga. De dialoog blijft deterministisch: de bestaande Content Studio-regels beslissen of de intentie geldig is, welke reactie Lucía geeft, wat de volgende stap is en welke voortgang ontstaat. De feedbackservice mag die uitkomst niet wijzigen.
+Fase 2D voegt persoonlijke, rubricgestuurde feedback toe na een betekenisvol antwoord. De dialoog blijft deterministisch: de bestaande Content Studio-regels beslissen of de intentie geldig is, welke reactie de NPC geeft, wat de volgende stap is en welke voortgang ontstaat. De feedbackservice mag die uitkomst niet wijzigen.
 
 ## Ervaringsvolgorde
 
@@ -17,11 +17,12 @@ Een fout, timeout, ontbrekende sleutel of ongeldig modelantwoord toont de bestaa
 ## Vertrouwensgrenzen
 
 - De client mag alleen `step_id`, antwoord, niveau, invoerbron en transcriptmetadata insturen.
-- De server vertrouwt geen taakomschrijving of rubric van de client, maar leest de onveranderlijke productie-release `la-espiga-lucia`.
+- De server vertrouwt geen taakomschrijving of rubric van de client, maar leest de onveranderlijke productie-release van de routespecifieke scenarioslug.
 - De OpenAI-respons gebruikt een strikt JSON-schema en wordt daarna nogmaals server-side gevalideerd.
 - Modeloutput bepaalt nooit gespreksrouting, missievoortgang, spreekdoel, XP of beloningen.
 - Antwoorden en feedback worden niet server-side opgeslagen en niet naar productanalytics gestuurd.
-- De browser plaatst alleen versies en de afgeleide totaalscore in de tijdelijke sessiehistorie; de volledige modeltekst is niet nodig om de missie te hervatten.
+- De browser plaatst alleen versies en de afgeleide totaalscore in de tijdelijke sessiehistorie; de volledige modeltekst is niet nodig om de missie te hervatten. Bij het gevoelige gezondheidsrollenspel worden daarnaast antwoord- en NPC-tekst uit de opgeslagen sessiekopie verwijderd.
+- De beoordelaar beoordeelt alleen taal en communicatieve taakuitvoering. Medische beoordeling, diagnose of advies is expliciet verboden.
 
 ## Rubric en uitspraakgrens
 

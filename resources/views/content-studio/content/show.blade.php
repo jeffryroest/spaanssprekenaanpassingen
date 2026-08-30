@@ -115,25 +115,68 @@
         </aside>
     </div>
 
-    @if ($contentNode->status === App\Enums\ContentStatus::InReview)
-        @can('content-studio.review')
-            <section class="mt-6 overflow-hidden rounded-2xl border border-blue-200 bg-blue-50/60" aria-labelledby="review-decision-title">
-                <div class="flex items-start gap-3 border-b border-blue-100 p-5 sm:p-6">
-                    <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-blue-100 text-blue-700"><x-content-studio.icon name="review" /></span>
-                    <div>
-                        <h2 id="review-decision-title" class="font-bold text-blue-950">Revisie {{ $contentNode->current_version }} beoordelen</h2>
-                        <p class="mt-1 text-sm leading-6 text-blue-800">Controleer taal, didactiek en culturele juistheid. De beslissing geldt alleen voor deze onveranderlijke revisie.</p>
-                    </div>
+    @if ($contentNode->status === App\Enums\ContentStatus::InReview && ($isOwnCurrentRevision || auth()->user()->can('content-studio.review')))
+        <section class="mt-6 overflow-hidden rounded-2xl border border-blue-200 bg-blue-50/60" aria-labelledby="review-decision-title">
+            <div class="flex items-start gap-3 border-b border-blue-100 p-5 sm:p-6">
+                <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-blue-100 text-blue-700"><x-content-studio.icon name="review" /></span>
+                <div>
+                    <h2 id="review-decision-title" class="font-bold text-blue-950">Revisie {{ $contentNode->current_version }} beoordelen</h2>
+                    <p class="mt-1 text-sm leading-6 text-blue-800">Controleer taal, didactiek, speelbaarheid en culturele juistheid. De beslissing geldt alleen voor deze onveranderlijke revisie.</p>
                 </div>
+            </div>
 
-                @if ($isOwnCurrentRevision)
-                    <div class="p-5 sm:p-6">
-                        <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800" role="note">
-                            <p class="font-bold">Een andere reviewer is vereist</p>
-                            <p class="mt-1 leading-6">Vier-ogencontrole is actief. Je kunt een revisie die je zelf hebt gemaakt niet goedkeuren of terugsturen.</p>
-                        </div>
+            @if ($isOwnCurrentRevision)
+                <div class="space-y-5 p-5 sm:p-6">
+                    <div class="rounded-xl border {{ $allowsSelfApproval ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-amber-200 bg-amber-50 text-amber-900' }} p-4 text-sm" role="note">
+                        <p class="font-bold">{{ $allowsSelfApproval ? 'Gemotiveerde zelfgoedkeuring toegestaan' : 'Onafhankelijke reviewer vereist' }}</p>
+                        <p class="mt-1 leading-6">
+                            @if ($allowsSelfApproval)
+                                Deze revisie valt onder het risicogestuurde beleid. Als beheerder of hoofdredacteur mag je haar na controle zelf goedkeuren; de motivatie en zelfgoedkeuring worden apart gelogd.
+                            @elseif ($requiresIndependentReviewer)
+                                Deze revisie bevat gevoelige inhoud en houdt daarom altijd de vier-ogencontrole.
+                            @else
+                                De huidige reviewinstelling vereist voor deze revisie een tweede beoordelaar.
+                            @endif
+                        </p>
                     </div>
-                @else
+
+                    @if ($allowsSelfApproval)
+                        @can('content-studio.approve')
+                            <form method="POST" action="{{ route('content-studio.reviews.decide', $contentNode) }}">
+                                @csrf
+                                <input type="hidden" name="expected_version" value="{{ $contentNode->current_version }}">
+                                <input type="hidden" name="action" value="{{ App\Enums\ContentReviewAction::Approved->value }}">
+                                <label for="self-review-note" class="cs-label text-blue-950">Controle en motivatie <span class="text-red-600" aria-hidden="true">*</span></label>
+                                <textarea id="self-review-note" name="note" rows="4" required minlength="3" maxlength="1000" class="cs-field border-blue-200 focus:border-blue-500 focus:ring-blue-500/10" aria-describedby="self-review-note-help">{{ old('note') }}</textarea>
+                                <p id="self-review-note-help" class="cs-help text-blue-700">Noem concreet welke inhoudelijke en technische controles je hebt uitgevoerd.</p>
+                                <div class="mt-5 flex justify-end">
+                                    <button type="submit" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                                        <x-content-studio.icon name="review" class="size-4" />
+                                        Gemotiveerd goedkeuren
+                                    </button>
+                                </div>
+                            </form>
+                        @endcan
+                    @endif
+
+                    @can('update', $contentNode)
+                        <details class="rounded-xl border border-slate-200 bg-white">
+                            <summary class="cursor-pointer px-4 py-3 text-sm font-bold text-slate-700">Review intrekken en verder bewerken</summary>
+                            <form method="POST" action="{{ route('content-studio.content.withdraw-review', $contentNode) }}" class="border-t border-slate-200 p-4">
+                                @csrf
+                                <input type="hidden" name="expected_version" value="{{ $contentNode->current_version }}">
+                                <label for="withdraw-reason" class="cs-label">Reden <span class="text-red-600" aria-hidden="true">*</span></label>
+                                <textarea id="withdraw-reason" name="reason" rows="3" required minlength="3" maxlength="1000" class="cs-field" aria-describedby="withdraw-reason-help">{{ old('reason') }}</textarea>
+                                <p id="withdraw-reason-help" class="cs-help">De intrekking blijft zichtbaar in de audit- en reviewgeschiedenis.</p>
+                                <div class="mt-4 flex justify-end">
+                                    <button type="submit" class="cs-button-secondary">Review intrekken</button>
+                                </div>
+                            </form>
+                        </details>
+                    @endcan
+                </div>
+            @else
+                @can('content-studio.review')
                     <form method="POST" action="{{ route('content-studio.reviews.decide', $contentNode) }}" class="p-5 sm:p-6">
                         @csrf
                         <input type="hidden" name="expected_version" value="{{ $contentNode->current_version }}">
@@ -155,9 +198,9 @@
                             @endcan
                         </div>
                     </form>
-                @endif
-            </section>
-        @endcan
+                @endcan
+            @endif
+        </section>
     @endif
 
     <section class="cs-panel mt-6 overflow-hidden" aria-labelledby="revisions-title">

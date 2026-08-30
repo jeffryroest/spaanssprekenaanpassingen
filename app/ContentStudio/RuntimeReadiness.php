@@ -19,10 +19,11 @@ final class RuntimeReadiness
     public function items(): array
     {
         return [
-            $this->item('Madrid-wereld', ContentType::Region, 'madrid', 'madrid_hub', 'Openbare startwereld', true),
+            $this->item('Madrid-wereld met Consulta La Luz', ContentType::Region, 'madrid', 'madrid_hub', 'Openbare startwereld', true, 'madrid.consulta.luz'),
             $this->item('La Espiga met Lucía', ContentType::ConversationScenario, 'la-espiga-lucia', 'panaderia_text_dialogue', 'Openbare eerste missie', true),
             $this->item('Taxi met Diego', ContentType::ConversationScenario, 'taxi-diego', 'taxi_text_dialogue', 'Proefweek · recht vereist', false),
             $this->item('Café El Reloj met Carmen', ContentType::ConversationScenario, 'restaurant-el-reloj', 'restaurant_text_dialogue', 'Proefweek · recht vereist', false),
+            $this->item('Consulta La Luz met Elena', ContentType::ConversationScenario, 'consulta-elena', 'health_text_dialogue', 'Proefweek · fictief rollenspel · recht vereist', false),
         ];
     }
 
@@ -34,6 +35,7 @@ final class RuntimeReadiness
         string $expectedScene,
         string $scope,
         bool $public,
+        ?string $requiredHotspotId = null,
     ): array {
         $publishedNode = $public
             ? $this->publishedContent->findPublic($type, $slug)
@@ -44,7 +46,10 @@ final class RuntimeReadiness
             ->first();
         $releaseItem = $publishedNode === null ? null : $this->publishedContent->latestProductionItem($publishedNode);
         $publishedScene = data_get($releaseItem?->contentRevision?->snapshot, 'domain_data.scene');
-        $ready = $publishedNode !== null && $publishedScene === $expectedScene;
+        $hotspots = data_get($releaseItem?->contentRevision?->snapshot, 'domain_data.hotspots', []);
+        $hasRequiredHotspot = $requiredHotspotId === null || collect(is_array($hotspots) ? $hotspots : [])
+            ->contains(fn (mixed $hotspot): bool => is_array($hotspot) && ($hotspot['id'] ?? null) === $requiredHotspotId);
+        $ready = $publishedNode !== null && $publishedScene === $expectedScene && $hasRequiredHotspot;
 
         return [
             'label' => $label,
@@ -60,6 +65,7 @@ final class RuntimeReadiness
                 'la-espiga-lucia' => 'panaderia',
                 'taxi-diego' => 'taxi',
                 'restaurant-el-reloj' => 'restaurant',
+                'consulta-elena' => 'health',
             },
         ];
     }

@@ -28,7 +28,7 @@ final class CompleteTaxiMission
         array $turns,
         bool $usedRepairStrategy,
     ): array {
-        $definition = $this->publishedMission->definition(self::SCENARIO_SLUG, self::MISSION_KEY);
+        $definition = $this->publishedMission->definition(self::SCENARIO_SLUG, self::MISSION_KEY, 'taxi_text_dialogue');
         $profile = new ScenarioMissionProfile(
             stampKey: 'stamp.first_taxi_ride',
             collectibleKey: 'item.madrid_taxi_receipt',

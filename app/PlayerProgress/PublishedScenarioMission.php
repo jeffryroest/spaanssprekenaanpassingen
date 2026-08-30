@@ -14,7 +14,7 @@ final class PublishedScenarioMission
         private readonly RuntimeContentAccess $runtimeAccess,
     ) {}
 
-    public function definition(string $scenarioSlug, string $missionKey): ScenarioMissionDefinition
+    public function definition(string $scenarioSlug, string $missionKey, string $expectedScene): ScenarioMissionDefinition
     {
         $node = $this->repository->find(ContentType::ConversationScenario, $scenarioSlug);
         $releaseItem = $node === null ? null : $this->repository->latestProductionItem($node);
@@ -26,6 +26,7 @@ final class PublishedScenarioMission
             || ! $this->runtimeAccess->allowsEntitlement($releaseItem, 'trial_week')
             || ! is_array($domainData)
             || ($domainData['schema_version'] ?? null) !== '1.0.0'
+            || ($domainData['scene'] ?? null) !== $expectedScene
             || ($domainData['mission']['id'] ?? null) !== $missionKey
             || ($domainData['mission']['required_text_turns'] ?? null) !== 5
             || ! is_array($domainData['steps'] ?? null)
