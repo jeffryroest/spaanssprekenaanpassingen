@@ -6,6 +6,7 @@ use App\Actions\ContentStudio\ArchiveDraftContent;
 use App\Actions\ContentStudio\CreateDraftContent;
 use App\Actions\ContentStudio\UpdateDraftContent;
 use App\ContentStudio\ContentReviewPolicy;
+use App\ContentStudio\ContentMediaRoles;
 use App\ContentStudio\PlayableContentTemplates;
 use App\Enums\ContentStatus;
 use App\Enums\ContentType;
@@ -14,10 +15,12 @@ use App\Http\Requests\ContentStudio\ArchiveContentRequest;
 use App\Http\Requests\ContentStudio\StoreContentRequest;
 use App\Http\Requests\ContentStudio\UpdateContentRequest;
 use App\Models\ContentNode;
+use App\Models\MediaAsset;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -66,17 +69,25 @@ class ContentController extends Controller
         ]);
     }
 
-    public function create(Request $request, PlayableContentTemplates $templates): View
+    public function create(
+        Request $request,
+        PlayableContentTemplates $templates,
+        ContentMediaRoles $mediaRoles,
+    ): View
     {
         Gate::authorize('create', ContentNode::class);
         $validated = $request->validate([
             'template' => ['nullable', 'string', Rule::in(array_keys($templates->all()))],
         ]);
 
+        $selectedTemplate = $templates->find($validated['template'] ?? null);
+
         return view('content-studio.content.create', [
             'contentTypes' => ContentType::cases(),
             'playableTemplates' => $templates->all(),
-            'selectedTemplate' => $templates->find($validated['template'] ?? null),
+            'selectedTemplate' => $selectedTemplate,
+            'mediaRoles' => $selectedTemplate === null ? [] : $mediaRoles->for($selectedTemplate['content_type']),
+            'availableMedia' => MediaAsset::query()->orderBy('title')->get(),
         ]);
     }
 
@@ -92,6 +103,7 @@ class ContentController extends Controller
             summary: $validated['summary'] ?? null,
             body: $validated['body'] ?? null,
             domainData: $this->decodeDomainData($validated['domain_data'] ?? null),
+            media: $validated['media'] ?? [],
         );
 
         return redirect()
@@ -104,6 +116,7 @@ class ContentController extends Controller
         $contentNode->load([
             'localizations',
             'revisions.creator',
+            'revisions.mediaAssets',
             'reviews.actor',
             'releaseItems.release',
             'creator',
@@ -118,19 +131,28 @@ class ContentController extends Controller
                 && $reviewPolicy->allowsSelfApproval(request()->user(), $currentRevision),
             'requiresIndependentReviewer' => $currentRevision !== null
                 && $reviewPolicy->requiresIndependentReviewer($currentRevision),
+            'previewUrl' => $currentRevision === null || blank(data_get($currentRevision->snapshot, 'domain_data.scene'))
+                ? null
+                : URL::temporarySignedRoute(
+                    'content-studio.content.preview',
+                    now()->addHour(),
+                    ['contentNode' => $contentNode, 'version' => $currentRevision->version],
+                ),
         ]);
     }
 
-    public function edit(ContentNode $contentNode): View
+    public function edit(ContentNode $contentNode, ContentMediaRoles $mediaRoles): View
     {
         Gate::authorize('update', $contentNode);
         abort_unless($contentNode->isEditableDraft(), 409, 'Deze status kan niet worden bewerkt.');
-        $contentNode->load('localizations');
+        $contentNode->load(['localizations', 'revisions.mediaAssets']);
 
         return view('content-studio.content.edit', [
             'contentNode' => $contentNode,
             'playableTemplates' => [],
             'selectedTemplate' => null,
+            'mediaRoles' => $mediaRoles->for($contentNode->content_type),
+            'availableMedia' => MediaAsset::query()->orderBy('title')->get(),
         ]);
     }
 
@@ -150,6 +172,7 @@ class ContentController extends Controller
             summary: $validated['summary'] ?? null,
             body: $validated['body'] ?? null,
             domainData: $this->decodeDomainData($validated['domain_data'] ?? null),
+            media: $validated['media'] ?? [],
         );
 
         return redirect()

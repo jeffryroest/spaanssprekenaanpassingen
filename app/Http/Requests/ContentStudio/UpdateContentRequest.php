@@ -37,6 +37,8 @@ class UpdateContentRequest extends FormRequest
             'summary' => ['nullable', 'string'],
             'body' => ['nullable', 'string'],
             'domain_data' => ['nullable', 'string', new PlayableDomainData($contentNode->content_type)],
+            'media' => ['nullable', 'array'],
+            'media.*' => ['nullable', 'integer', 'exists:media_assets,id'],
         ];
     }
 }

@@ -40,11 +40,13 @@ De huidige preflight blokkeert wanneer:
 - de gekoppelde revisie ontbreekt of bij een ander contentobject hoort;
 - voor die exacte revisie geen goedkeuringsgebeurtenis bestaat;
 - een speelbare regio of gesprek geen ingevuld en ondersteund scene-contract heeft;
+- een gekoppeld medium ontbreekt of is gearchiveerd;
+- media geen aantoonbaar publicatierecht hebben, verlopen zijn of alt-tekst/transcript missen;
 - het gewenste publicatiemoment nog in de toekomst ligt.
 
 De controle wordt zowel op het detailscherm getoond als opnieuw uitgevoerd onder databasevergrendeling tijdens publicatie. Een verouderd scherm kan daardoor geen gedeeltelijke publicatie veroorzaken.
 
-Relatie-, media- en licentiecontroles worden als zichtbare waarschuwing gemarkeerd totdat de typespecifieke editors en relationele tabellen in een volgende fase bestaan. Dat is geen stilzwijgende claim dat die controles al volledig zijn.
+Mediabestanden en hun revisiegebonden rollen worden nu volledig gecontroleerd. Tekstuele herkomst- en licentievelden zijn nog niet volledig gemodelleerd en blijven daarom een zichtbare handmatige waarschuwing.
 
 ## Menselijke beslispoort
 
@@ -54,9 +56,9 @@ De functionaliteit maakt productiepublicatie technisch mogelijk, maar voert zelf
 
 - nog geen automatische scheduler of wachtrijtaak voor toekomstige publicatiemomenten;
 - nog geen terugtrek- of rollbackrelease voor reeds gepubliceerde content;
-- nog geen veldniveau-validatie voor rechten, media en afhankelijkheidsgrafen;
+- mediarechten en toegankelijkheidsmetadata worden gevalideerd; algemene tekstherkomst en relaties volgen nog;
 - de publieke runtime-API staat beschreven in `docs/public-content-api.md`; typed relaties en spelerstatus vallen nog buiten deze releasefase;
-- nog geen previewrenderer; preview legt in deze slice alleen het kanaalresultaat reproduceerbaar vast.
+- kanaalpreview en de nieuwe voortgangsvrije objectpreview hebben verschillende doelen: de objectpreview test een actuele revisie, de kanaaluitvoering blijft het reproduceerbare releasebewijs.
 
 De releaseworkflow is nu de enige publicatie-ingang voor de versieerbare read-only API. De volgende blauwdrukstap is de test- en kwaliteitsstraat voor het volledige Fase 1-skelet.
 

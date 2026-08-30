@@ -55,6 +55,15 @@
         @case('archive')
             <path d="M4 7h16M5 7v13h14V7M3 3h18v4H3V3Zm6 8h6" />
             @break
+        @case('media')
+            <rect x="3" y="4" width="18" height="16" rx="2" />
+            <circle cx="9" cy="10" r="2" />
+            <path d="m4 17 4-4 3 3 3-3 6 6" />
+            @break
+        @case('preview')
+            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6S2.5 12 2.5 12Z" />
+            <circle cx="12" cy="12" r="2.5" />
+            @break
         @case('shield')
             <path d="M12 3 4 7v5c0 5 3.4 8 8 9 4.6-1 8-4 8-9V7l-8-4Z" />
             <path d="m9 12 2 2 4-4" />

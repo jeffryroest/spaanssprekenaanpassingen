@@ -24,10 +24,12 @@ const checks = [
   [js.includes('madrid-mission-preparation'), 'De Madrid-voorbereidingslogica ontbreekt in de productie-JavaScript.'],
   [js.includes('data-scenario-dialogue'), 'De dialoogmotor ontbreekt in de productie-JavaScript.'],
   [js.includes('Antwoordtekst niet in browseropslag bewaard'), 'De gevoelige lokale tekstredactie ontbreekt in de productie-JavaScript.'],
+  [js.includes('data-content-builder-source'), 'De speelcontentbouwer ontbreekt in de productie-JavaScript.'],
+  [js.includes('data-preview-submit'), 'De voortgangsvrije preview ontbreekt in de productie-JavaScript.'],
 ];
 
 for (const [passes, message] of checks) {
   if (!passes) throw new Error(message);
 }
 
-console.log(`Productie-assets geldig: ${cssEntry.file} en ${jsEntry.file} bevatten de speelbare wereldlaag en fase 3B3.`);
+console.log(`Productie-assets geldig: ${cssEntry.file} en ${jsEntry.file} bevatten de speelbare wereldlaag en fase 3B4.`);
