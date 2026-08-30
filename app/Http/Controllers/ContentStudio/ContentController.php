@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ContentStudio;
 use App\Actions\ContentStudio\ArchiveDraftContent;
 use App\Actions\ContentStudio\CreateDraftContent;
 use App\Actions\ContentStudio\UpdateDraftContent;
+use App\ContentStudio\ContentReviewPolicy;
 use App\ContentStudio\PlayableContentTemplates;
 use App\Enums\ContentStatus;
 use App\Enums\ContentType;
@@ -98,7 +99,7 @@ class ContentController extends Controller
             ->with('success', 'Conceptcontent is veilig aangemaakt.');
     }
 
-    public function show(ContentNode $contentNode): View
+    public function show(ContentNode $contentNode, ContentReviewPolicy $reviewPolicy): View
     {
         $contentNode->load([
             'localizations',
@@ -109,7 +110,15 @@ class ContentController extends Controller
             'updater',
         ]);
 
-        return view('content-studio.content.show', compact('contentNode'));
+        $currentRevision = $contentNode->revisions->firstWhere('version', $contentNode->current_version);
+
+        return view('content-studio.content.show', [
+            'contentNode' => $contentNode,
+            'allowsSelfApproval' => $currentRevision !== null
+                && $reviewPolicy->allowsSelfApproval(request()->user(), $currentRevision),
+            'requiresIndependentReviewer' => $currentRevision !== null
+                && $reviewPolicy->requiresIndependentReviewer($currentRevision),
+        ]);
     }
 
     public function edit(ContentNode $contentNode): View

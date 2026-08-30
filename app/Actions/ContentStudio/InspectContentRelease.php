@@ -2,6 +2,7 @@
 
 namespace App\Actions\ContentStudio;
 
+use App\ContentStudio\ReviewableContent;
 use App\Enums\ContentReleaseStatus;
 use App\Enums\ContentReviewAction;
 use App\Enums\ContentStatus;
@@ -9,6 +10,8 @@ use App\Models\ContentRelease;
 
 final class InspectContentRelease
 {
+    public function __construct(private readonly ReviewableContent $reviewableContent) {}
+
     /**
      * @return array{blockers: list<string>, warnings: list<string>}
      */
@@ -55,6 +58,10 @@ final class InspectContentRelease
                 ->where('action', ContentReviewAction::Approved->value)
                 ->exists()) {
                 $blockers[] = "{$label}: de goedkeuring voor revisie {$item->version} ontbreekt.";
+            }
+
+            foreach ($this->reviewableContent->errors($contentNode, $revision) as $error) {
+                $blockers[] = "{$label}: {$error}";
             }
         }
 

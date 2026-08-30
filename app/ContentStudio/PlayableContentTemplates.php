@@ -52,6 +52,16 @@ final class PlayableContentTemplates
                 summary: 'Vertakkend gesprek voor een tafel, bestelling en rekening in Madrid.',
                 exampleFile: 'restaurant-dialogue-domain-data.json',
             ),
+            'health' => $this->template(
+                key: 'health',
+                label: 'Gesprek in de consulta',
+                description: 'De afgeschermde proefweekmissie met arts Elena en een fictieve rolkaart.',
+                contentType: ContentType::ConversationScenario,
+                slug: 'consulta-elena',
+                title: 'En la consulta · Elena',
+                summary: 'Vertakkend rollenspel om een klacht uit te leggen en om schriftelijke uitleg te vragen.',
+                exampleFile: 'health-dialogue-domain-data.json',
+            ),
         ];
     }
 

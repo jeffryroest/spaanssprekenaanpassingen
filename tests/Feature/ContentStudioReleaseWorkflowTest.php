@@ -241,6 +241,46 @@ class ContentStudioReleaseWorkflowTest extends TestCase
         $this->assertDatabaseMissing('audit_logs', ['action' => 'content.release_published']);
     }
 
+    public function test_preflight_blocks_legacy_approved_playable_content_without_a_scene_contract(): void
+    {
+        $publisher = $this->publisher();
+        $reviewer = $this->reviewer();
+        $release = $this->createRelease($publisher, ContentReleaseChannel::Production);
+        $contentNode = app(CreateDraftContent::class)->handle(
+            actor: $publisher,
+            contentType: ContentType::ConversationScenario,
+            slug: 'legacy-onvolledig-gesprek',
+            locale: 'es-ES',
+            title: 'Legacy onvolledig gesprek',
+        );
+        $revision = $contentNode->revisions()->sole();
+        $contentNode->update(['status' => ContentStatus::Approved]);
+        $contentNode->reviews()->create([
+            'content_revision_id' => $revision->getKey(),
+            'version' => 1,
+            'action' => ContentReviewAction::Approved,
+            'from_status' => ContentStatus::InReview,
+            'to_status' => ContentStatus::Approved,
+            'note' => 'Legacy goedkeuring vóór de inhoudelijke preflight.',
+            'actor_user_id' => $reviewer->getKey(),
+            'actor_role' => $reviewer->content_role->value,
+            'created_at' => now(),
+        ]);
+        app(AddContentToRelease::class)->handle($publisher, $release, $contentNode, 1);
+
+        $this->actingAs($publisher)
+            ->post(route('content-studio.releases.publish', $release), [
+                'confirmation' => 'PUBLICEREN',
+                'reason' => 'Dit onvolledige contract moet blokkeren.',
+                'acknowledge_warnings' => true,
+            ])
+            ->assertSessionHasErrors('preflight');
+
+        $this->assertSame(ContentReleaseStatus::Draft, $release->fresh()->status);
+        $this->assertSame(ContentStatus::Scheduled, $contentNode->fresh()->status);
+        $this->assertNull($contentNode->fresh()->published_at);
+    }
+
     public function test_future_release_cannot_be_executed_early(): void
     {
         $publisher = $this->publisher();

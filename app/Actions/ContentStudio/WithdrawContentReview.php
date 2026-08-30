@@ -2,7 +2,6 @@
 
 namespace App\Actions\ContentStudio;
 
-use App\ContentStudio\ReviewableContent;
 use App\Enums\ContentReviewAction;
 use App\Enums\ContentStatus;
 use App\Models\AuditLog;
@@ -14,31 +13,26 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-final class SubmitContentForReview
+final class WithdrawContentReview
 {
-    public function __construct(private readonly ReviewableContent $reviewableContent) {}
-
     public function handle(
         User $actor,
         ContentNode $contentNode,
         int $expectedVersion,
-        ?string $note = null,
+        string $reason,
     ): ContentNode {
         Gate::forUser($actor)->authorize('update', $contentNode);
 
-        $validated = Validator::make(['note' => $note], [
-            'note' => ['nullable', 'string', 'max:1000'],
+        $validated = Validator::make(['reason' => $reason], [
+            'reason' => ['required', 'string', 'min:3', 'max:1000'],
         ])->validate();
 
         return DB::transaction(function () use ($actor, $contentNode, $expectedVersion, $validated): ContentNode {
-            $lockedNode = ContentNode::query()
-                ->with('localizations')
-                ->lockForUpdate()
-                ->findOrFail($contentNode->getKey());
+            $lockedNode = ContentNode::query()->lockForUpdate()->findOrFail($contentNode->getKey());
 
-            if ($lockedNode->status !== ContentStatus::Draft) {
+            if ($lockedNode->status !== ContentStatus::InReview) {
                 throw ValidationException::withMessages([
-                    'status' => 'Alleen een actuele conceptrevisie kan worden ingediend. Verwerk gevraagde wijzigingen eerst in een nieuwe revisie.',
+                    'status' => 'Alleen een lopende review kan worden ingetrokken.',
                 ]);
             }
 
@@ -48,44 +42,40 @@ final class SubmitContentForReview
                 ]);
             }
 
-            if (blank($lockedNode->defaultLocalization()?->title)) {
-                throw ValidationException::withMessages([
-                    'title' => 'Een titel is verplicht voordat review kan worden aangevraagd.',
-                ]);
-            }
-
             $revision = ContentRevision::query()
                 ->whereBelongsTo($lockedNode)
                 ->where('version', $lockedNode->current_version)
                 ->first();
 
-            if ($revision === null) {
+            if ($revision === null || (int) $revision->created_by !== (int) $actor->getKey()) {
                 throw ValidationException::withMessages([
-                    'expected_version' => 'De actuele revisie ontbreekt en moet eerst worden hersteld.',
+                    'reviewer' => 'Alleen de maker van de actuele revisie kan de review intrekken.',
                 ]);
             }
 
-            $playabilityErrors = $this->reviewableContent->errors($lockedNode, $revision);
+            $hasSubmission = $lockedNode->reviews()
+                ->where('content_revision_id', $revision->getKey())
+                ->where('action', ContentReviewAction::Submitted->value)
+                ->exists();
 
-            if ($playabilityErrors !== []) {
+            if (! $hasSubmission) {
                 throw ValidationException::withMessages([
-                    'domain_data' => $playabilityErrors,
+                    'status' => 'Voor deze revisie ontbreekt een geldige reviewaanvraag.',
                 ]);
             }
 
-            $fromStatus = $lockedNode->status;
             $lockedNode->update([
-                'status' => ContentStatus::InReview,
+                'status' => ContentStatus::Draft,
                 'updated_by' => $actor->getKey(),
             ]);
 
             $lockedNode->reviews()->create([
                 'content_revision_id' => $revision->getKey(),
                 'version' => $lockedNode->current_version,
-                'action' => ContentReviewAction::Submitted,
-                'from_status' => $fromStatus,
-                'to_status' => ContentStatus::InReview,
-                'note' => $validated['note'],
+                'action' => ContentReviewAction::Withdrawn,
+                'from_status' => ContentStatus::InReview,
+                'to_status' => ContentStatus::Draft,
+                'note' => $validated['reason'],
                 'actor_user_id' => $actor->getKey(),
                 'actor_role' => $actor->content_role?->value,
                 'created_at' => now(),
@@ -93,10 +83,10 @@ final class SubmitContentForReview
 
             AuditLog::recordContentChange(
                 actor: $actor,
-                action: 'content.review_submitted',
+                action: 'content.review_withdrawn',
                 contentNode: $lockedNode,
-                before: $this->state($lockedNode, $fromStatus),
-                after: $this->state($lockedNode, ContentStatus::InReview) + ['note' => $validated['note']],
+                before: $this->state($lockedNode, ContentStatus::InReview),
+                after: $this->state($lockedNode, ContentStatus::Draft) + ['reason' => $validated['reason']],
             );
 
             return $lockedNode->refresh()->load(['localizations', 'revisions', 'reviews.actor']);

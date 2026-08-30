@@ -7,6 +7,7 @@ enum ContentReviewAction: string
     case Submitted = 'submitted';
     case Approved = 'approved';
     case ChangesRequested = 'changes_requested';
+    case Withdrawn = 'withdrawn';
 
     public function label(): string
     {
@@ -14,6 +15,7 @@ enum ContentReviewAction: string
             self::Submitted => 'Review aangevraagd',
             self::Approved => 'Goedgekeurd',
             self::ChangesRequested => 'Wijzigingen gevraagd',
+            self::Withdrawn => 'Review ingetrokken',
         };
     }
 }

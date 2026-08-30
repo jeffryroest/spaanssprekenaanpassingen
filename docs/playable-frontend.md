@@ -14,13 +14,13 @@ Deze tussenfase maakt de bestaande technische vertical slice herkenbaar speelbaa
 5. gesprek met Lucía via spreken of tekst;
 6. beloning en zichtbare ontgrendeling in de hub.
 
-De taxi blijft de afgeschermde tweede proefweekmissie. Fase 3B2 voegt daarna het restaurant toe; gezondheid en station blijven volgende uitbreidingen.
+De taxi, het restaurant en het fictieve gezondheidsrollenspel gebruiken inmiddels deze afgeschermde spelerslaag; het station blijft de volgende uitbreiding.
 
 ## Content Studio
 
-De contenteditor bevat nu een versiegebonden veld `domain_data`. Ingevoerde JSON wordt altijd syntactisch gecontroleerd. De bekende contracten `madrid_hub`, `panaderia_text_dialogue`, `taxi_text_dialogue` en `restaurant_text_dialogue` krijgen extra structuurvalidatie.
+De contenteditor bevat nu een versiegebonden veld `domain_data`. Ingevoerde JSON wordt altijd syntactisch gecontroleerd. De bekende contracten `madrid_hub`, `panaderia_text_dialogue`, `taxi_text_dialogue`, `restaurant_text_dialogue` en `health_text_dialogue` krijgen extra structuurvalidatie.
 
-Drie startertemplates vullen een nieuw concept in:
+Vijf startertemplates vullen een nieuw concept in:
 
 | Starter | Contenttype | Slug | Runtimegrens |
 |---|---|---|---|
@@ -28,6 +28,7 @@ Drie startertemplates vullen een nieuw concept in:
 | La Espiga-gesprek | Gespreksscenario | `la-espiga-lucia` | publiek |
 | Taxigesprek | Gespreksscenario | `taxi-diego` | recht `trial_week` |
 | Restaurantgesprek | Gespreksscenario | `restaurant-el-reloj` | recht `trial_week` |
+| Consultrollenspel | Gespreksscenario | `consulta-elena` | recht `trial_week` + fictieve rolkaart |
 
 Een starter schrijft niets naar de database totdat een editor het formulier opslaat. Opslaan maakt alleen een conceptrevisie. De bestaande vier-ogenreview, releasepreflight en expliciete productiebevestiging blijven ongewijzigd.
 
@@ -41,6 +42,7 @@ Het dashboard toont per vereist runtimecontract of het ontbreekt, in concept/rev
 - De boodschappenkaart wordt samengesteld uit gepubliceerde `inspectables` en tijdelijk in `sessionStorage` bewaard.
 - La Espiga toont de keuze als geheugensteun, maar staat een andere vrije formulering toe.
 - Na lokale of accountgebonden voltooiing toont La Espiga `Voltooid` en wordt Café El Reloj een zichtbare vooruitblik.
+- Consulta La Luz toont alleen gepubliceerde rolkaartcontent en schrijft bij lokale hervatting geen antwoordtekst naar `sessionStorage`.
 - Voorbeeldzinnen en opnameprivacy zijn inklapbare hulp, zodat spreken en vrije tekst de primaire acties blijven.
 - Straatambiance start alleen na een expliciete klik en bevat geen essentiële informatie.
 
@@ -53,6 +55,7 @@ Het dashboard toont per vereist runtimecontract of het ontbreekt, in concept/rev
 - Een gast kan vanaf `/` via Madrid de volledige La Espiga-dialoog bereiken en afronden.
 - Een gebruiker met `trial_week`-recht kan de taximissie blijven spelen.
 - Een gebruiker met `trial_week`-recht kan dag 3 starten zodra `restaurant-el-reloj` is gereviewd en in productie gepubliceerd.
+- Een gebruiker met `trial_week`-recht kan dag 5 starten zodra `consulta-elena` is gereviewd en in productie gepubliceerd.
 - Ontbrekende productiecontent toont een herstelbare fout en nooit een eindeloze laadstatus.
 - De publieke pagina’s bevatten geen frameworks of fasenummers.
 - Interactie is toetsenbordbedienbaar, heeft tekstalternatieven en respecteert reduced motion.

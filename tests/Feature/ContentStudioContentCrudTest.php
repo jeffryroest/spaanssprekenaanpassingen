@@ -103,6 +103,20 @@ class ContentStudioContentCrudTest extends TestCase
         $this->assertDatabaseCount('content_nodes', 0);
     }
 
+    public function test_health_template_prefills_elenas_fictional_private_roleplay_as_draft_only(): void
+    {
+        $this->actingAs($this->editor())
+            ->get(route('content-studio.content.create', ['template' => 'health']))
+            ->assertOk()
+            ->assertSee('health_text_dialogue')
+            ->assertSee('npc.elena.ortiz')
+            ->assertSee('fictional')
+            ->assertSee('value="consulta-elena"', false)
+            ->assertSee('Alleen concept');
+
+        $this->assertDatabaseCount('content_nodes', 0);
+    }
+
     public function test_playable_domain_data_is_validated_and_saved_in_the_revision(): void
     {
         $editor = $this->editor();
@@ -121,7 +135,7 @@ class ContentStudioContentCrudTest extends TestCase
 
         $revision = ContentNode::query()->with('revisions')->sole()->revisions->sole();
         $this->assertSame('madrid_hub', $revision->snapshot['domain_data']['scene']);
-        $this->assertCount(4, $revision->snapshot['domain_data']['hotspots']);
+        $this->assertCount(5, $revision->snapshot['domain_data']['hotspots']);
         $this->assertDatabaseHas('content_nodes', [
             'slug' => 'madrid',
             'status' => ContentStatus::Draft->value,

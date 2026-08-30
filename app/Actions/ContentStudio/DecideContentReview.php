@@ -2,6 +2,7 @@
 
 namespace App\Actions\ContentStudio;
 
+use App\ContentStudio\ContentReviewPolicy;
 use App\Enums\ContentReviewAction;
 use App\Enums\ContentStatus;
 use App\Models\AuditLog;
@@ -16,6 +17,8 @@ use InvalidArgumentException;
 
 final class DecideContentReview
 {
+    public function __construct(private readonly ContentReviewPolicy $reviewPolicy) {}
+
     public function handle(
         User $actor,
         ContentNode $contentNode,
@@ -23,8 +26,8 @@ final class DecideContentReview
         ContentReviewAction $action,
         string $note,
     ): ContentNode {
-        if ($action === ContentReviewAction::Submitted) {
-            throw new InvalidArgumentException('Indienen is geen reviewbeslissing.');
+        if (! in_array($action, [ContentReviewAction::Approved, ContentReviewAction::ChangesRequested], true)) {
+            throw new InvalidArgumentException('Deze actie is geen reviewbeslissing.');
         }
 
         Gate::forUser($actor)->authorize(
@@ -63,9 +66,19 @@ final class DecideContentReview
                 ]);
             }
 
-            if ((int) $revision->created_by === (int) $actor->getKey()) {
+            $isOwnRevision = (int) $revision->created_by === (int) $actor->getKey();
+
+            if ($isOwnRevision && $action === ContentReviewAction::ChangesRequested) {
                 throw ValidationException::withMessages([
-                    'reviewer' => 'Vier-ogencontrole is actief: je kunt je eigen revisie niet beoordelen.',
+                    'reviewer' => 'Trek je eigen reviewaanvraag in om de revisie opnieuw te bewerken.',
+                ]);
+            }
+
+            if ($isOwnRevision && ! $this->reviewPolicy->allowsSelfApproval($actor, $revision)) {
+                throw ValidationException::withMessages([
+                    'reviewer' => $this->reviewPolicy->requiresIndependentReviewer($revision)
+                        ? 'Deze gevoelige revisie vereist altijd een onafhankelijke tweede beoordelaar.'
+                        : 'De huidige reviewinstelling vereist een onafhankelijke tweede beoordelaar.',
                 ]);
             }
 
@@ -104,11 +117,14 @@ final class DecideContentReview
             AuditLog::recordContentChange(
                 actor: $actor,
                 action: $action === ContentReviewAction::Approved
-                    ? 'content.review_approved'
+                    ? ($isOwnRevision ? 'content.review_self_approved' : 'content.review_approved')
                     : 'content.review_changes_requested',
                 contentNode: $lockedNode,
                 before: $this->state($lockedNode, ContentStatus::InReview),
-                after: $this->state($lockedNode, $targetStatus) + ['note' => $validated['note']],
+                after: $this->state($lockedNode, $targetStatus) + [
+                    'note' => $validated['note'],
+                    'self_approved' => $isOwnRevision,
+                ],
             );
 
             return $lockedNode->refresh()->load(['localizations', 'revisions', 'reviews.actor']);
