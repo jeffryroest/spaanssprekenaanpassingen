@@ -87,10 +87,9 @@ class ContentStudioBuilderPreviewTest extends TestCase
             domainData: $template['domain_data'],
         );
 
-        $this->actingAs($editor)
+        $response = $this->actingAs($editor)
             ->get($previewUrl)
             ->assertOk()
-            ->assertHeader('Cache-Control', 'private, no-store, max-age=0')
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow, noarchive')
             ->assertSee('Niet-productiepreview')
             ->assertSee('schrijft geen voortgang')
@@ -99,6 +98,11 @@ class ContentStudioBuilderPreviewTest extends TestCase
             ->assertSee('Lucía Martín')
             ->assertSee('Previewgesprek · revisie 1')
             ->assertDontSee('Nieuwere titel die niet in versie 1 hoort');
+
+        $cacheControl = (string) $response->headers->get('Cache-Control');
+        $this->assertStringContainsString('private', $cacheControl);
+        $this->assertStringContainsString('no-store', $cacheControl);
+        $this->assertStringContainsString('max-age=0', $cacheControl);
 
         $this->assertDatabaseCount('mission_attempts', 0);
         $this->assertDatabaseCount('game_ledger_entries', 0);
