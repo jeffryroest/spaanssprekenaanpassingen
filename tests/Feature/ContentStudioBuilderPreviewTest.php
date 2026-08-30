@@ -8,7 +8,6 @@ use App\ContentStudio\PlayableContentInspector;
 use App\ContentStudio\PlayableContentTemplates;
 use App\Enums\ContentRole;
 use App\Enums\ContentType;
-use App\Models\ContentNode;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\URL;

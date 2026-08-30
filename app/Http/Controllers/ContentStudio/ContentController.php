@@ -5,8 +5,8 @@ namespace App\Http\Controllers\ContentStudio;
 use App\Actions\ContentStudio\ArchiveDraftContent;
 use App\Actions\ContentStudio\CreateDraftContent;
 use App\Actions\ContentStudio\UpdateDraftContent;
-use App\ContentStudio\ContentReviewPolicy;
 use App\ContentStudio\ContentMediaRoles;
+use App\ContentStudio\ContentReviewPolicy;
 use App\ContentStudio\PlayableContentTemplates;
 use App\Enums\ContentStatus;
 use App\Enums\ContentType;
@@ -160,7 +160,8 @@ class ContentController extends Controller
         UpdateContentRequest $request,
         ContentNode $contentNode,
         UpdateDraftContent $updateDraftContent,
-    ): RedirectResponse {
+    ): RedirectResponse
+    {
         $validated = $request->validated();
         $contentNode = $updateDraftContent->handle(
             actor: $request->user(),
@@ -184,7 +185,8 @@ class ContentController extends Controller
         ArchiveContentRequest $request,
         ContentNode $contentNode,
         ArchiveDraftContent $archiveDraftContent,
-    ): RedirectResponse {
+    ): RedirectResponse
+    {
         $validated = $request->validated();
         $contentNode = $archiveDraftContent->handle(
             actor: $request->user(),

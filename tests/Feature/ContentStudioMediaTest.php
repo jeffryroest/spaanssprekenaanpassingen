@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Actions\ContentStudio\CreateDraftContent;
 use App\Actions\ContentStudio\AddContentToRelease;
 use App\Actions\ContentStudio\CreateContentRelease;
+use App\Actions\ContentStudio\CreateDraftContent;
 use App\Actions\ContentStudio\InspectContentRelease;
 use App\ContentStudio\PlayableContentTemplates;
 use App\Enums\ContentReleaseChannel;
@@ -17,8 +17,9 @@ use App\Models\MediaAsset;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use LogicException;
 use Tests\TestCase;
 
@@ -115,7 +116,7 @@ class ContentStudioMediaTest extends TestCase
         $editor = $this->editor();
         $image = $this->imageAsset($editor);
 
-        $this->expectException(\Illuminate\Validation\ValidationException::class);
+        $this->expectException(ValidationException::class);
         app(CreateDraftContent::class)->handle(
             actor: $editor,
             contentType: ContentType::Region,
