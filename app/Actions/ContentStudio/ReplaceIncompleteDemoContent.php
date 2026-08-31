@@ -153,8 +153,9 @@ final class ReplaceIncompleteDemoContent
                 $revision->mediaAssets()->attach($asset->getKey(), [
                     'content_node_id' => $lockedNode->getKey(),
                     'role' => (string) $role,
-                    'sort_order' => $sortOrder++,
+                    'sort_order' => $sortOrder,
                 ]);
+                $sortOrder += 1;
             }
 
             $lockedNode->refresh()->load(['localizations', 'revisions.mediaAssets', 'releaseItems']);
