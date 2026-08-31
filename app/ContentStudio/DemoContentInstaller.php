@@ -6,8 +6,10 @@ use App\Actions\ContentStudio\CreateDraftContent;
 use App\Actions\ContentStudio\UpdateDraftContent;
 use App\Enums\ContentPermission;
 use App\Models\ContentNode;
+use App\Models\MediaAsset;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 final class DemoContentInstaller
@@ -217,7 +219,7 @@ final class DemoContentInstaller
     }
 
     /**
-     * @param  \Illuminate\Support\Collection<int, \App\Models\MediaAsset>|null  $assets
+     * @param  Collection<int, MediaAsset>|null  $assets
      * @param  array<string, string>  $roles
      */
     private function matchesMedia($assets, array $roles): bool
