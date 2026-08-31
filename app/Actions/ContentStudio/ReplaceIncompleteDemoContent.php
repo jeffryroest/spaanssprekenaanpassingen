@@ -180,8 +180,7 @@ final class ReplaceIncompleteDemoContent
         ContentNode $contentNode,
         ?ContentRevision $revision,
         ?ContentLocalization $localization,
-    ): bool
-    {
+    ): bool {
         return $contentNode->trashed() === false
             && $contentNode->published_at === null
             && in_array($contentNode->status, [
