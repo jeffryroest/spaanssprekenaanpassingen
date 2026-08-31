@@ -3,8 +3,11 @@
 namespace App\ContentStudio;
 
 use App\Actions\ContentStudio\CreateDraftContent;
+use App\Actions\ContentStudio\ReplaceIncompleteDemoContent;
 use App\Actions\ContentStudio\UpdateDraftContent;
 use App\Enums\ContentPermission;
+use App\Enums\ContentRole;
+use App\Enums\ContentStatus;
 use App\Models\ContentNode;
 use App\Models\MediaAsset;
 use App\Models\User;
@@ -20,19 +23,24 @@ final class DemoContentInstaller
         private readonly PlayableContentTemplates $templates,
         private readonly CreateDraftContent $createDraftContent,
         private readonly UpdateDraftContent $updateDraftContent,
+        private readonly ReplaceIncompleteDemoContent $replaceIncompleteDemoContent,
         private readonly GoldenRouteMedia $goldenRouteMedia,
     ) {}
 
     /**
      * @return array{package_version: string, applied: bool, conflicts: bool, items: list<array{key: string, slug: string, result: string, message: string}>}
      */
-    public function install(User $actor, bool $dryRun = false): array
+    public function install(User $actor, bool $dryRun = false, bool $replaceExisting = false): array
     {
         if (! $actor->hasContentPermission(ContentPermission::Edit)) {
             throw new AuthorizationException('De gekozen actor mag geen Content Studio-concepten aanmaken.');
         }
 
-        $plan = $this->plan();
+        if ($replaceExisting && $actor->content_role !== ContentRole::Administrator) {
+            throw new AuthorizationException('Alleen een Content Studio-beheerder mag oude demoplaceholders vervangen.');
+        }
+
+        $plan = $this->plan($replaceExisting);
         $hasConflicts = collect($plan)->contains(fn (array $item): bool => $item['result'] === 'conflict');
 
         if ($hasConflicts || $dryRun) {
@@ -46,7 +54,7 @@ final class DemoContentInstaller
 
         DB::transaction(function () use ($actor, $plan): void {
             $assetKeys = collect($plan)
-                ->filter(fn (array $item): bool => in_array($item['result'], ['create', 'upgrade'], true))
+                ->filter(fn (array $item): bool => in_array($item['result'], ['create', 'replace', 'upgrade'], true))
                 ->flatMap(fn (array $item): array => array_values($this->goldenRouteMedia->rolesForTemplate($item['key'])))
                 ->unique()
                 ->values()
@@ -62,6 +70,23 @@ final class DemoContentInstaller
                     ])
                     ->filter()
                     ->all();
+
+                if (($planned['result'] ?? null) === 'replace') {
+                    $contentNode = ContentNode::query()
+                        ->where('content_type', $template['content_type']->value)
+                        ->where('slug', $template['slug'])
+                        ->firstOrFail();
+
+                    $this->replaceIncompleteDemoContent->handle(
+                        actor: $actor,
+                        contentNode: $contentNode,
+                        template: $template,
+                        media: $media,
+                        packageVersion: self::PACKAGE_VERSION,
+                    );
+
+                    continue;
+                }
 
                 if (($planned['result'] ?? null) === 'upgrade') {
                     $contentNode = ContentNode::query()
@@ -116,6 +141,7 @@ final class DemoContentInstaller
             'items' => array_map(
                 static fn (array $item): array => match ($item['result']) {
                     'create' => array_replace($item, ['result' => 'created', 'message' => 'Concept met voorbeeldmedia aangemaakt.']),
+                    'replace' => array_replace($item, ['result' => 'replaced', 'message' => 'Onvolledige oude placeholder is als nieuwe, controleerbare conceptrevisie vervangen.']),
                     'upgrade' => array_replace($item, ['result' => 'upgraded', 'message' => 'Ongewijzigd democoncept kreeg de gouden-route-media als nieuwe revisie.']),
                     default => $item,
                 },
@@ -125,13 +151,13 @@ final class DemoContentInstaller
     }
 
     /** @return list<array{key: string, slug: string, result: string, message: string}> */
-    private function plan(): array
+    private function plan(bool $replaceExisting = false): array
     {
         $items = [];
 
         foreach ($this->templates->all() as $key => $template) {
             $contentNode = ContentNode::withTrashed()
-                ->with(['localizations', 'revisions.mediaAssets'])
+                ->with(['localizations', 'revisions.mediaAssets', 'releaseItems'])
                 ->where('content_type', $template['content_type']->value)
                 ->where('slug', $template['slug'])
                 ->first();
@@ -187,6 +213,17 @@ final class DemoContentInstaller
                 continue;
             }
 
+            if ($replaceExisting && $this->isReplaceablePlaceholder($contentNode)) {
+                $items[] = [
+                    'key' => $key,
+                    'slug' => $template['slug'],
+                    'result' => 'replace',
+                    'message' => 'Onvolledige ongepubliceerde placeholder kan bewust als nieuwe conceptrevisie worden vervangen.',
+                ];
+
+                continue;
+            }
+
             $items[] = [
                 'key' => $key,
                 'slug' => $template['slug'],
@@ -198,6 +235,25 @@ final class DemoContentInstaller
         }
 
         return $items;
+    }
+
+    private function isReplaceablePlaceholder(ContentNode $contentNode): bool
+    {
+        $revision = $contentNode->revisions->firstWhere('version', $contentNode->current_version);
+
+        return ! $contentNode->trashed()
+            && $contentNode->published_at === null
+            && in_array($contentNode->status, [
+                ContentStatus::Draft,
+                ContentStatus::InReview,
+                ContentStatus::ChangesRequested,
+            ], true)
+            && $contentNode->releaseItems->isEmpty()
+            && $contentNode->localizations->count() === 1
+            && $contentNode->defaultLocalization() !== null
+            && $revision !== null
+            && blank(data_get($revision->snapshot, 'domain_data.scene'))
+            && $revision->mediaAssets->isEmpty();
     }
 
     /** @param array<string, mixed> $template */

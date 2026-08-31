@@ -62,7 +62,11 @@ Artisan::command('content-studio:provision-administrator {email} {--name=}', fun
     return Command::SUCCESS;
 })->purpose('Maak de eerste beheerder aan of geef een bestaande gebruiker de beheerdersrol');
 
-Artisan::command('game:install-demo-content {--actor= : E-mailadres van de bestaande Content Studio-beheerder} {--dry-run : Toon alleen wat zou veranderen}', function () {
+Artisan::command('game:install-demo-content
+    {--actor= : E-mailadres van de bestaande Content Studio-beheerder}
+    {--dry-run : Toon alleen wat zou veranderen}
+    {--replace-existing : Vervang uitsluitend onvolledige, ongepubliceerde demoplaceholders}
+    {--confirm= : Vereist OVERSCHRIJVEN bij een echte vervanging}', function () {
     $email = Str::lower(trim((string) ($this->option('actor') ?: config('content-studio.demo_actor_email'))));
 
     if ($email === '') {
@@ -85,7 +89,16 @@ Artisan::command('game:install-demo-content {--actor= : E-mailadres van de besta
         return Command::FAILURE;
     }
 
-    $result = app(DemoContentInstaller::class)->install($actor, (bool) $this->option('dry-run'));
+    $replaceExisting = (bool) $this->option('replace-existing');
+    $dryRun = (bool) $this->option('dry-run');
+
+    if ($replaceExisting && ! $dryRun && $this->option('confirm') !== 'OVERSCHRIJVEN') {
+        $this->error('Bevestig een echte vervanging expliciet met --confirm=OVERSCHRIJVEN.');
+
+        return Command::FAILURE;
+    }
+
+    $result = app(DemoContentInstaller::class)->install($actor, $dryRun, $replaceExisting);
     $this->info('Demopakket '.$result['package_version'].($this->option('dry-run') ? ' · controlemodus' : ''));
     $this->table(
         ['Sleutel', 'Slug', 'Uitkomst', 'Toelichting'],
