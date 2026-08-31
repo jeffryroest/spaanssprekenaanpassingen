@@ -55,6 +55,17 @@ Vanaf pakket `2026.08.2` bevat het pakket ook drie toegankelijke, rechtenbeschre
 
 Het commando is veilig om opnieuw uit te voeren. Exact gelijke records blijven ongemoeid. Zodra een bestaand record inhoudelijk afwijkt, stopt de volledige installatie met een conflict en wordt niets overschreven.
 
+### Oude onvolledige placeholders vervangen
+
+Een vroege installatie kan al een Madrid- of La Espiga-record zonder `scene`-contract en media bevatten. Een beheerder kan zo'n ongepubliceerde placeholder bewust vervangen, terwijl de oude revisie en reviewhistorie behouden blijven:
+
+```bash
+php artisan game:install-demo-content --actor=beheerder@example.com --dry-run --replace-existing
+php artisan game:install-demo-content --actor=beheerder@example.com --replace-existing --confirm=OVERSCHRIJVEN
+```
+
+Deze uitzondering geldt uitsluitend wanneer het record geen speelbaar `scene`-contract, media, publicatietijdstip of releasekoppeling heeft en de status `draft`, `in_review` of `changes_requested` gebruikt. Alleen de rol Beheerder mag de optie uitvoeren. De vervanging maakt een nieuwe conceptrevisie; de vorige revisie, reviewaanvraag en auditgeschiedenis worden niet verwijderd. Werkelijk aangepaste, gearchiveerde, goedgekeurde, geplande, gepubliceerde of aan een release gekoppelde content blijft ook met deze optie geblokkeerd.
+
 Als alternatief kan een bestaande beheerder via de omgeving aan de benoemde seeder worden gekoppeld:
 
 ```dotenv
@@ -86,6 +97,7 @@ Er wordt geen proefabonnement, testspeler, prijs of recht aangemaakt. Toegang to
 - Een lege database krijgt vijf coherente conceptrecords en drie gekoppelde gouden-route-assets.
 - Een tweede installatie maakt geen duplicaten of revisies.
 - Handmatig gewijzigde, gearchiveerde of gepubliceerde afwijkende content wordt nooit overschreven.
+- Alleen een beheerder kan met een dubbele expliciete bevestiging een aantoonbaar onvolledige en nooit gepubliceerde placeholder als nieuwe conceptrevisie vervangen.
 - Gewone eigen content kan door beheerder of hoofdredacteur gemotiveerd worden goedgekeurd.
 - Gezondheidscontent vereist altijd een onafhankelijke beoordelaar.
 - Een maker kan een lopende review veilig intrekken.

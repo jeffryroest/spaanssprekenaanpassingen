@@ -35,6 +35,15 @@ php artisan game:install-demo-content --actor=beheerder@example.com
 Een bestaand, aantoonbaar ongewijzigd democoncept zonder media krijgt een nieuwe conceptrevisie. Zodra tekst of media handmatig afwijkt, stopt het volledige pakket met een conflict. Review, preview en `PUBLICEREN` blijven altijd bewuste Content Studio-stappen.
 Het installatiecommando publiceert niets automatisch.
 
+Voor oude, onvolledige placeholders zonder `scene`, media of releasekoppeling bestaat een afzonderlijke beheerdersroute. Controleer altijd eerst droog en bevestig een echte vervanging daarna expliciet:
+
+```bash
+php artisan game:install-demo-content --actor=beheerder@example.com --dry-run --replace-existing
+php artisan game:install-demo-content --actor=beheerder@example.com --replace-existing --confirm=OVERSCHRIJVEN
+```
+
+De oude revisie en reviewhistorie blijven daarbij intact; de pakketinhoud wordt een nieuwe conceptrevisie en gaat nooit automatisch naar review of productie.
+
 ## Acceptatiecriteria
 
 - De runtime gebruikt bij voorkeur media van de exacte gepubliceerde revisie.
