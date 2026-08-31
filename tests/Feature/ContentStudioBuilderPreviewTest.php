@@ -105,7 +105,7 @@ class ContentStudioBuilderPreviewTest extends TestCase
         $this->assertStringContainsString('max-age=0', $cacheControl);
 
         $this->assertDatabaseCount('mission_attempts', 0);
-        $this->assertDatabaseCount('game_ledger_entries', 0);
+        $this->assertDatabaseCount('game_ledger', 0);
         $this->assertDatabaseCount('user_rewards', 0);
     }
 
