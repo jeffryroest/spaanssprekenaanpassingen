@@ -49,9 +49,10 @@ Het pakket bevat:
 - La Espiga met Lucía;
 - taxi met Diego;
 - Café El Reloj met Carmen;
-- Consulta La Luz met Elena.
+- Consulta La Luz met Elena;
+- Estación del Centro met Mateo.
 
-Vanaf pakket `2026.08.2` bevat het pakket ook drie toegankelijke, rechtenbeschreven gouden-route-assets: de Madrid-wereld, het interieur van La Espiga en Lucía met drie reactiestaten. Een ongewijzigd ouder Madrid- of La Espiga-democoncept zonder media krijgt veilig een nieuwe conceptrevisie. Eigen tekst- of mediakeuzes veroorzaken altijd een conflict en worden nooit overschreven.
+Vanaf pakket `2026.08.3` bevat het pakket vijf toegankelijke, rechtenbeschreven spelassets: de Madrid-wereld, het interieur van La Espiga, Lucía met drie reactiestaten, Estación del Centro en Mateo met drie reactiestaten. Een ongewijzigd ouder Madrid- of La Espiga-democoncept zonder media krijgt veilig een nieuwe conceptrevisie. De stationsstarter wordt als afzonderlijk concept toegevoegd; eigen tekst- of mediakeuzes veroorzaken altijd een conflict en worden nooit overschreven.
 
 Het commando is veilig om opnieuw uit te voeren. Exact gelijke records blijven ongemoeid. Zodra een bestaand record inhoudelijk afwijkt, stopt de volledige installatie met een conflict en wordt niets overschreven.
 

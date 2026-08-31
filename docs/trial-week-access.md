@@ -39,6 +39,6 @@ De migratie verwijdert eerst `subscriptions` en daarna `subscription_plans`. Er 
 
 ## Vervolg binnen fase 3
 
-1. **3B4 — station:** als gereviewde Content Studio-content; taxi, restaurant en het fictieve gezondheidsrollenspel zijn gerealiseerd.
-2. **3C — persoonlijke herhaling en NPC-geheugen:** uitsluitend spelrelevante, minimale geheugenfeiten.
+1. **3B6 — station (gerealiseerd):** als gereviewde Content Studio-content met fictieve oefenreis en versiegebonden media.
+2. **3C — persoonlijke continuïteit:** gespreide herhaling en minimaal NPC-geheugen.
 3. **3D — conversie:** proefactivatie, paywall, provider-webhooks en abonnement na expliciete besluiten over prijs en voorwaarden.
