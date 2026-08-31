@@ -439,6 +439,24 @@
         @apply mx-auto mt-3 max-w-7xl px-1 text-sm text-[#66736c];
     }
 
+    .hub-world-return {
+        @apply mx-auto mt-5 grid max-w-7xl items-center gap-4 rounded-[1.75rem] border border-[#4c8b65]/25 bg-[#edf4e8] p-5 shadow-lg shadow-[#315d47]/10 sm:grid-cols-[auto_1fr_auto] sm:p-6;
+        animation: golden-route-rise 520ms ease-out both;
+    }
+
+    .hub-world-return-stamp {
+        @apply grid size-20 rotate-[-4deg] place-content-center rounded-full border-2 border-[#9e4422] text-center text-[0.55rem] font-black tracking-[0.12em] text-[#9e4422];
+        box-shadow: inset 0 0 0 4px #edf4e8, inset 0 0 0 6px #9e4422;
+    }
+
+    .hub-world-return-stamp strong { @apply mt-0.5 block text-[0.65rem]; }
+    .hub-world-return h2 { @apply mt-1 font-serif text-2xl font-black text-[#172c36]; }
+    .hub-world-return p:last-child { @apply mt-1 text-sm leading-6 text-[#57655f]; }
+
+    .hub-world-return button {
+        @apply min-h-11 rounded-xl bg-[#315d47] px-5 text-sm font-black text-white transition hover:bg-[#254b39] focus:outline-none focus:ring-2 focus:ring-[#315d47] focus:ring-offset-2;
+    }
+
     .hub-stage {
         @apply relative mx-auto mt-5 max-w-7xl overflow-hidden rounded-[2rem] border border-[#172c36]/15 bg-[#ecd7b7] shadow-2xl shadow-[#6d4931]/20;
     }
@@ -448,9 +466,25 @@
         background-color: #d8c08d;
         background-image:
             linear-gradient(180deg, rgb(19 42 45 / 2%) 45%, rgb(36 30 22 / 18%) 100%),
-            url('/images/game/madrid-morning.webp');
+            var(--hub-map-image, url('/images/game/madrid-morning.webp'));
         background-position: 58% center;
         background-size: cover;
+    }
+
+    .hub-app[data-bakery-completed='true'] .hub-map {
+        background-image:
+            linear-gradient(180deg, rgb(244 185 75 / 5%) 34%, rgb(40 57 39 / 20%) 100%),
+            var(--hub-map-image, url('/images/game/madrid-morning.webp'));
+    }
+
+    .hub-app[data-bakery-completed='true'] .hub-hotspot-cafe {
+        box-shadow: 0 10px 28px rgb(87 55 31 / 28%), 0 0 0 6px rgb(244 182 75 / 30%);
+    }
+
+    .hub-app[data-transitioning='true']::after {
+        content: 'La Espiga';
+        @apply fixed inset-0 z-[200] grid place-content-center bg-[#172c36] font-serif text-4xl font-black text-[#ffe2a0];
+        animation: golden-route-door 440ms ease both;
     }
 
     .hub-sky,
@@ -775,7 +809,7 @@
 
     .hub-arrival-visual {
         @apply h-48 bg-cover bg-center sm:h-56;
-        background-image: linear-gradient(0deg, rgb(27 49 47 / 24%), transparent), url('/images/game/madrid-morning.webp');
+        background-image: linear-gradient(0deg, rgb(27 49 47 / 24%), transparent), var(--hub-map-image, url('/images/game/madrid-morning.webp'));
     }
 
     .hub-dialog-content {
@@ -982,11 +1016,39 @@
     }
 
     .bakery-scene {
-        @apply relative isolate min-h-[28rem] overflow-hidden border-b border-[#422d22]/10 bg-[#eabf7f] lg:min-h-[44rem] lg:border-b-0 lg:border-r;
+        @apply relative isolate min-h-[30rem] overflow-hidden border-b border-[#422d22]/10 bg-[#eabf7f] lg:min-h-[44rem] lg:border-b-0 lg:border-r;
+    }
+
+    .bakery-scene-art {
+        @apply absolute inset-0 -z-20 bg-cover bg-center;
+        background-image: var(--bakery-scene-image, url('/images/game/la-espiga-interior.webp'));
+    }
+
+    .bakery-scene-light {
+        @apply absolute inset-0 -z-10;
         background:
-            linear-gradient(90deg, transparent 49%, rgb(92 56 36 / 8%) 50%, transparent 51%) 0 0 / 70px 70px,
-            linear-gradient(0deg, transparent 49%, rgb(92 56 36 / 8%) 50%, transparent 51%) 0 0 / 70px 70px,
-            #e7bd82;
+            linear-gradient(180deg, rgb(26 34 32 / 4%) 48%, rgb(25 24 21 / 34%) 100%),
+            radial-gradient(circle at 74% 30%, rgb(255 230 172 / 22%), transparent 38%);
+    }
+
+    .bakery-lucia-frame {
+        @apply absolute bottom-[15%] left-[53%] z-30 w-[min(46%,16rem)] -translate-x-1/2 overflow-hidden rounded-[48%_48%_20%_20%] border-4 border-[#fff6df]/85 bg-[#f4eadb] shadow-[0_24px_45px_rgb(35_27_22/0.35)];
+        aspect-ratio: 0.63;
+        animation: bakery-character-arrive 520ms ease-out both;
+        transform-origin: bottom;
+    }
+
+    .bakery-lucia-frame img,
+    .bakery-complete-lucia img {
+        @apply block h-full w-auto max-w-none transition-transform duration-300;
+    }
+
+    .bakery-lucia-frame[data-lucia-state='listening'] img { transform: translateX(0); }
+    .bakery-lucia-frame[data-lucia-state='encouraging'] img { transform: translateX(-33.333333%); }
+    .bakery-lucia-frame[data-lucia-state='success'] img { transform: translateX(-66.666667%); }
+
+    .bakery-lucia-reaction {
+        @apply absolute inset-x-3 bottom-3 rounded-full bg-[#172c36]/90 px-3 py-2 text-center text-[0.65rem] font-black uppercase tracking-[0.1em] text-[#ffe2a0] shadow-lg backdrop-blur;
     }
 
     .bakery-awning {
@@ -1410,13 +1472,31 @@
 
     .bakery-complete:focus { @apply outline-none ring-4 ring-[#e7a53c]/40; }
 
-    .bakery-stamp {
-        @apply mx-auto grid size-16 place-items-center rounded-full border-4 border-[#fff9ed] bg-[#4c8b65] text-2xl font-black text-white shadow-[0_0_0_5px_#4c8b65,0_12px_25px_rgb(48_85_61/0.22)];
+    .bakery-complete-hero {
+        @apply mx-auto grid max-w-2xl items-center gap-6 text-left sm:grid-cols-[10rem_1fr];
     }
 
-    .bakery-complete > .bakery-eyebrow { @apply mt-7; }
-    .bakery-complete > p[lang='es'] { @apply mt-5 font-serif text-xl font-black text-[#873e28]; }
-    .bakery-complete > p[data-farewell-nl] { @apply mt-2 text-sm text-[#75685f]; }
+    .bakery-complete-hero > div:last-child { @apply text-center sm:text-left; }
+
+    .bakery-complete-lucia {
+        @apply mx-auto w-36 overflow-hidden rounded-[45%_45%_18%_18%] border-4 border-[#fff9ed] bg-[#f4eadb] shadow-xl;
+        aspect-ratio: 0.63;
+    }
+
+    .bakery-complete-lucia img { transform: translateX(-66.666667%); }
+
+    .bakery-stamp {
+        @apply mx-auto grid size-24 rotate-[-5deg] place-content-center rounded-full border-2 border-[#9e4422] text-center text-[#9e4422] sm:mx-0;
+        box-shadow: inset 0 0 0 4px #fff9ed, inset 0 0 0 6px #9e4422;
+    }
+
+    .bakery-stamp span { @apply text-[0.55rem] font-black tracking-[0.15em]; }
+    .bakery-stamp strong { @apply block text-xs font-black tracking-[0.08em]; }
+    .bakery-stamp small { @apply mt-0.5 block text-base font-black; }
+
+    .bakery-complete-hero .bakery-eyebrow { @apply mt-5; }
+    .bakery-complete-hero p[lang='es'] { @apply mt-4 font-serif text-xl font-black text-[#873e28]; }
+    .bakery-complete-hero p[data-farewell-nl] { @apply mt-2 text-sm text-[#75685f]; }
 
     .bakery-rewards {
         @apply mx-auto mt-7 grid max-w-xl grid-cols-3 gap-2;
@@ -1457,6 +1537,15 @@
     .bakery-reward-cards p { @apply mt-3 text-[0.65rem] font-black uppercase tracking-wide text-[#8a7a70]; }
     .bakery-reward-cards strong { @apply mt-1 block text-sm font-black text-[#3f332d]; }
 
+    .bakery-world-reaction {
+        @apply mx-auto mt-5 flex max-w-xl items-center gap-4 rounded-2xl border border-[#d4953b]/25 bg-[#fff1c9] p-4 text-left;
+    }
+
+    .bakery-world-reaction > span { @apply grid size-12 shrink-0 place-items-center rounded-xl bg-white text-2xl shadow-sm; }
+    .bakery-world-reaction p { @apply text-[0.65rem] font-black uppercase tracking-[0.12em] text-[#9a5a2e]; }
+    .bakery-world-reaction strong { @apply mt-1 block text-sm font-black text-[#3f332d]; }
+    .bakery-world-reaction small { @apply mt-1 block text-xs leading-5 text-[#75685f]; }
+
     .bakery-account-sync {
         @apply mx-auto mt-5 max-w-xl rounded-2xl border border-[#315d47]/20 bg-[#edf4e9] p-4 text-left;
     }
@@ -1493,6 +1582,10 @@
     .bakery-error a { @apply border border-[#422d22]/15 bg-white text-[#5c4437]; }
     .bakery-complete-actions button,
     .bakery-error button { @apply bg-[#a9472b] text-white; }
+
+    .bakery-complete-actions .bakery-primary-return {
+        @apply border-[#315d47] bg-[#315d47] text-white hover:bg-[#254b39];
+    }
 
     .bakery-error > span {
         @apply mx-auto grid size-16 place-items-center rounded-full bg-[#ffebc4] text-3xl;
@@ -1884,6 +1977,21 @@
 @keyframes bakery-breathe {
     0%, 100% { transform: translateX(-50%) scaleY(1); }
     50% { transform: translateX(-50%) scaleY(1.012); }
+}
+
+@keyframes bakery-character-arrive {
+    from { opacity: 0; transform: translate(-50%, 20px) scale(0.97); }
+    to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+@keyframes golden-route-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes golden-route-door {
+    from { opacity: 0; letter-spacing: 0.02em; }
+    to { opacity: 1; letter-spacing: 0.08em; }
 }
 
 @media (prefers-reduced-motion: reduce) {

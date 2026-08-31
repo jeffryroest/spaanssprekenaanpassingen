@@ -12,6 +12,7 @@ Alle routes vallen onder `/api/v1`, accepteren `application/json` en vereisen ge
 | Locaties | `location` | `GET /api/v1/locations` | `GET /api/v1/locations/{slug}` |
 | Missies | `mission` | `GET /api/v1/missions` | `GET /api/v1/missions/{slug}` |
 | Gesprekken | `conversation_scenario` | `GET /api/v1/conversations` | `GET /api/v1/conversations/{slug}` |
+| Gepubliceerde media | exacte contentrevisie | — | `GET /api/v1/media/{type}/{slug}/{version}/{role}` |
 
 De limiet is 120 aanvragen per minuut per client. Collecties ondersteunen `page` en `per_page`; toegestane paginagroottes zijn 10, 20 en 50, met 20 als standaard.
 
@@ -60,6 +61,17 @@ Een detailresponse heeft deze vorm:
       "metadata": {},
       "domain_data": {
         "difficulty": "starter"
+      },
+      "media": {
+        "scene_background": {
+          "kind": "image",
+          "url": "https://v2.spaansspreken.nl/api/v1/media/conversation_scenario/la-espiga-lucia/2/scene_background",
+          "mime_type": "image/webp",
+          "width": 1672,
+          "height": 941,
+          "alt_text": "Een warme Madrileense bakkerij bij de toonbank.",
+          "transcript": null
+        }
       }
     }
   }
@@ -67,6 +79,8 @@ Een detailresponse heeft deze vorm:
 ```
 
 Collecties gebruiken dezelfde identiteit in compacte vorm met `title` en `summary`, plus paginering en navigatielinks. Auditregels, gebruikers, reviewnotities en andere beheergegevens worden niet opgenomen.
+
+`content.media` bevat alleen bestanden uit exact de gepubliceerde revisie die nog bestaan, geldige publicatierechten hebben en toegankelijk zijn beschreven. De URL bevat type, slug, revisieversie en mediarol. Een vervangen, ontbrekend, verlopen of afgeschermd bestand levert 404; objectkeys en interne rechtenmetadata worden nooit vrijgegeven. Mediabytes zijn één jaar immutable cachebaar en ondersteunen `ETag`.
 
 ## Lokalisatie
 
@@ -102,7 +116,7 @@ Validatiefouten voegen `error.details` toe. Foutresponses krijgen `Cache-Control
 - geen spelerstatus, voortgang of beloningen;
 - geen accountgebonden proefweekcontent; die gebruikt een ingelogde, rechtgecontroleerde privéroute;
 - nog geen typed relationele runtimegraph tussen wereld, locatie, missie en gesprek;
-- nog geen audio-, transcriptie- of feedback-endpoints;
+- geen publieke speleropnamen, transcriptie- of feedback-endpoints;
 - nog geen terugtrek- of rollbackpublicatie.
 
 Deze API maakt de eerste gameclient mogelijk zonder toekomstige typed domeintabellen vooruit te lopen. `domain_data` blijft in v1 bewust een versiegebonden uitbreidingsobject.

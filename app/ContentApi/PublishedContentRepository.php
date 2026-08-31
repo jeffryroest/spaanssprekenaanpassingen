@@ -87,7 +87,7 @@ final class PublishedContentRepository
             ->with(['releaseItems' => function ($query): void {
                 $query
                     ->whereHas('release', $this->productionReleaseQuery(...))
-                    ->with(['release', 'contentRevision']);
+                    ->with(['release', 'contentRevision.mediaAssets']);
             }]);
     }
 

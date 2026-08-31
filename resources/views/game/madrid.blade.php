@@ -14,6 +14,7 @@
     <div
         class="hub-app"
         data-madrid-hub
+        data-golden-route-version="3B5"
         data-source="{{ url('/api/v1/worlds/madrid?locale=nl-NL') }}"
         data-home="{{ route('home') }}"
         data-panaderia-route="{{ route('game.madrid.panaderia') }}"
@@ -88,8 +89,18 @@
                 De productiecontent voor Madrid wordt gecontroleerd.
             </div>
 
+            <section class="hub-world-return" data-hub-world-return hidden aria-labelledby="hub-world-return-title">
+                <div class="hub-world-return-stamp" aria-hidden="true">LA ESPIGA<br><strong>VOLTOOID</strong></div>
+                <div>
+                    <p class="hub-eyebrow">Madrid reageert</p>
+                    <h2 id="hub-world-return-title">Je eerste gesprek staat in je paspoort</h2>
+                    <p>La Espiga blijft open om vrij te oefenen. Aan het plein verschijnt alvast je volgende bestemming.</p>
+                </div>
+                <button type="button" data-hub-world-return-close>Bekijk de veranderde buurt</button>
+            </section>
+
             <section class="hub-stage" aria-labelledby="map-title">
-                <div class="hub-map" data-hub-map>
+                <div class="hub-map" data-hub-map tabindex="-1">
                     <div class="hub-sky" aria-hidden="true">
                         <span class="hub-sun"></span>
                         <span class="hub-cloud hub-cloud-one"></span>

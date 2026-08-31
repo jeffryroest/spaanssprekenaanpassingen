@@ -42,7 +42,7 @@
 - **3B2.5 — demo-ready Content Studio (gerealiseerd):** risicogestuurde zelfgoedkeuring voor gewone content, onafhankelijke review voor gevoelige content, veilige reviewintrekking, inhoudelijke speelbaarheidscontrole en een idempotent conceptpakket met vijf voorbeeldrecords.
 - **3B3 — gezondheid (gerealiseerd):** fictieve rolkaart, vijf actieve beurten met Elena, drie niveaupaden, gevoelige lokale tekstredactie, taalfeedback zonder medische beoordeling en duurzame dag-5-beloningen.
 - **3B4 — speelcontentbouwer en preview (gerealiseerd):** typespecifieke wereld-, NPC- en gesprekseditor, diepe routevalidatie, privémediabeheer en een voortgangsvrije spelpreview.
-- **3B5 — visuele gouden route:** echte scène- en personage-assets, reacties, beloningspresentatie en één volledig geteste Madrid → La Espiga-spelersreis.
+- **3B5 — visuele gouden route (gerealiseerd):** gereviewde scène- en personage-assets via de runtime, drie zichtbare Lucía-reacties, tastbare beloningspresentatie, veranderde Madrid-hub en één volledig geteste Madrid → La Espiga-spelersreis.
 - **3B6 — station:** treinreis regelen via de dan werkelijk auteurvriendelijke en visuele Content Studio- en gespreksmotor.
 - **3C — persoonlijke continuïteit:** gespreide herhaling en minimaal, spelrelevant NPC-geheugen.
 - **3D — conversie:** proefactivatie, paywall, provider-events en abonnement na expliciete besluiten over prijs en voorwaarden.

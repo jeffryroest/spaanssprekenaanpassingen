@@ -17,6 +17,7 @@ const requiredPaths = [
   'app/ContentApi/PublicContentTransformer.php',
   'app/ContentApi/PublishedContentRepository.php',
   'app/Http/Controllers/Api/V1/PublishedContentController.php',
+  'app/Http/Controllers/Api/V1/PublishedMediaController.php',
   'docs/contracts/public-content-api-v1.schema.json',
   'docs/public-content-api.md',
   'routes/api.php',
@@ -65,5 +66,7 @@ assert(repository.includes('runtime_access->visibility') && repository.includes(
 assert(tests.includes('test_only_exact_current_production_publications_are_listed'), 'De fail-closed publicatiegrens mist een featuretest');
 assert(tests.includes('test_entitled_content_is_not_exposed_by_the_public_api'), 'De publieke API mist een regressietest voor accountgebonden content');
 assert(tests.includes('test_detail_response_supports_conditional_gets'), 'ETag-gedrag mist een featuretest');
+assert(routes.includes("'/media/{contentType}/{slug}/{version}/{role}'"), 'De revisiegebonden publieke mediaroute ontbreekt');
+assert(tests.includes('exact_published_revision'), 'De publieke mediaroute mist een regressietest voor revisie, rol en caching');
 
-console.log('Publieke content-API v1 geldig: routes, contract, publicatiegrens en tests zijn aanwezig.');
+console.log('Publieke content-API v1 geldig: routes, contract, publicatiegrens, revisiemedia en tests zijn aanwezig.');

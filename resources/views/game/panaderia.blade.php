@@ -6,6 +6,8 @@
     <meta name="description" content="Voer je eerste Spaanse gesprek met Lucía in Panadería La Espiga.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>La Espiga · Spaansspreken.nl</title>
+    <link rel="preload" href="{{ asset('images/game/la-espiga-interior.webp') }}" as="image" type="image/webp">
+    <link rel="preload" href="{{ asset('images/game/lucia-expressions.webp') }}" as="image" type="image/webp">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bakery-body">
@@ -15,6 +17,7 @@
         class="bakery-app"
         data-scenario-dialogue
         data-panaderia-dialogue
+        data-golden-route-version="3B5"
         data-scene="panaderia_text_dialogue"
         data-scenario-slug="la-espiga-lucia"
         data-storage-key="panaderia-text-dialogue-v1"
@@ -78,30 +81,18 @@
 
             <section class="bakery-stage" data-dialogue-stage hidden>
                 <aside class="bakery-scene" aria-label="Interieur van Panadería La Espiga">
-                    <div class="bakery-awning" aria-hidden="true"></div>
-                    <div class="bakery-sign" aria-hidden="true">
-                        <span>Panadería</span>
-                        <strong>La Espiga</strong>
-                        <small>Pan artesano · Madrid</small>
-                    </div>
-                    <div class="bakery-shelves" aria-hidden="true">
-                        <span class="bakery-shelf bakery-shelf-one"></span>
-                        <span class="bakery-shelf bakery-shelf-two"></span>
-                        <span class="bakery-loaf bakery-loaf-one"></span>
-                        <span class="bakery-loaf bakery-loaf-two"></span>
-                        <span class="bakery-loaf bakery-loaf-three"></span>
-                        <span class="bakery-pastry bakery-pastry-one"></span>
-                        <span class="bakery-pastry bakery-pastry-two"></span>
-                    </div>
-                    <div class="bakery-counter" aria-hidden="true"></div>
+                    <div class="bakery-scene-art" data-bakery-scene-art aria-hidden="true"></div>
+                    <div class="bakery-scene-light" aria-hidden="true"></div>
 
-                    <div class="bakery-lucia" aria-hidden="true">
-                        <span class="bakery-lucia-hair"></span>
-                        <span class="bakery-lucia-head"></span>
-                        <span class="bakery-lucia-neck"></span>
-                        <span class="bakery-lucia-body"></span>
-                        <span class="bakery-lucia-apron"></span>
-                        <span class="bakery-lucia-badge">Lucía</span>
+                    <div class="bakery-lucia-frame" data-lucia-state="listening" aria-hidden="true">
+                        <img
+                            src="{{ asset('images/game/lucia-expressions.webp') }}"
+                            width="1724"
+                            height="912"
+                            alt=""
+                            data-lucia-expression-sheet
+                        >
+                        <span class="bakery-lucia-reaction" data-lucia-reaction>Lucía luistert</span>
                     </div>
 
                     <div class="bakery-npc-card">
@@ -272,11 +263,24 @@
             </section>
 
             <section class="bakery-complete" data-dialogue-complete hidden tabindex="-1" aria-labelledby="complete-title">
-                <div class="bakery-stamp" aria-hidden="true">✓</div>
-                <p class="bakery-eyebrow">Missie voltooid</p>
-                <h2 id="complete-title">¡Lo has conseguido!</h2>
-                <p lang="es" data-farewell-es></p>
-                <p data-farewell-nl hidden></p>
+                <div class="bakery-complete-hero">
+                    <div class="bakery-complete-lucia" aria-hidden="true">
+                        <img
+                            src="{{ asset('images/game/lucia-expressions.webp') }}"
+                            width="1724"
+                            height="912"
+                            alt=""
+                            data-lucia-expression-sheet-complete
+                        >
+                    </div>
+                    <div>
+                        <div class="bakery-stamp" aria-hidden="true"><span>MADRID</span><strong>LA ESPIGA</strong><small>✓</small></div>
+                        <p class="bakery-eyebrow">Missie voltooid</p>
+                        <h2 id="complete-title">¡Lo has conseguido!</h2>
+                        <p lang="es" data-farewell-es></p>
+                        <p data-farewell-nl hidden></p>
+                    </div>
+                </div>
 
                 <dl class="bakery-rewards">
                     <div><dt>XP</dt><dd data-reward-xp>80</dd></div>
@@ -293,9 +297,18 @@
                 </div>
 
                 <div class="bakery-reward-cards">
-                    <div><span aria-hidden="true">▣</span><p>Paspoortstempel</p><strong data-reward-stamp></strong></div>
-                    <div><span aria-hidden="true">◇</span><p>Verzamelitem</p><strong data-reward-item></strong></div>
+                    <div><span aria-hidden="true">▣</span><p>In je paspoort</p><strong data-reward-stamp></strong></div>
+                    <div><span aria-hidden="true">🥖</span><p>In je reistas</p><strong data-reward-item></strong></div>
                     <div data-repair-badge hidden><span aria-hidden="true">★</span><p>Bonusbadge</p><strong data-reward-badge></strong></div>
+                </div>
+
+                <div class="bakery-world-reaction">
+                    <span aria-hidden="true">☕</span>
+                    <div>
+                        <p>De buurt verandert</p>
+                        <strong>Café El Reloj verschijnt op je Madrid-kaart</strong>
+                        <small>Keer terug naar het plein en bekijk je volgende bestemming.</small>
+                    </div>
                 </div>
 
                 <div class="bakery-account-sync" data-account-sync>
@@ -311,7 +324,7 @@
                 </div>
 
                 <div class="bakery-complete-actions">
-                    <a href="{{ route('game.madrid') }}">Terug naar Madrid</a>
+                    <a class="bakery-primary-return" href="{{ route('game.madrid', ['mission' => 'la-espiga-complete']) }}">Bekijk het veranderde Madrid <span aria-hidden="true">→</span></a>
                     @auth
                         <a href="{{ route('player.progress') }}">Bekijk mijn voortgang</a>
                     @endauth

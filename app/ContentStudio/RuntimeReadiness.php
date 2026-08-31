@@ -5,6 +5,7 @@ namespace App\ContentStudio;
 use App\ContentApi\PublishedContentRepository;
 use App\Enums\ContentType;
 use App\Models\ContentNode;
+use Illuminate\Support\Facades\Storage;
 
 final class RuntimeReadiness
 {
@@ -19,8 +20,25 @@ final class RuntimeReadiness
     public function items(): array
     {
         return [
-            $this->item('Madrid-wereld met Consulta La Luz', ContentType::Region, 'madrid', 'madrid_hub', 'Openbare startwereld', true, 'madrid.consulta.luz'),
-            $this->item('La Espiga met Lucía', ContentType::ConversationScenario, 'la-espiga-lucia', 'panaderia_text_dialogue', 'Openbare eerste missie', true),
+            $this->item(
+                'Madrid-wereld met Consulta La Luz',
+                ContentType::Region,
+                'madrid',
+                'madrid_hub',
+                'Openbare startwereld',
+                true,
+                'madrid.consulta.luz',
+                ['map_background'],
+            ),
+            $this->item(
+                'La Espiga met Lucía',
+                ContentType::ConversationScenario,
+                'la-espiga-lucia',
+                'panaderia_text_dialogue',
+                'Openbare eerste missie',
+                true,
+                requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
+            ),
             $this->item('Taxi met Diego', ContentType::ConversationScenario, 'taxi-diego', 'taxi_text_dialogue', 'Proefweek · recht vereist', false),
             $this->item('Café El Reloj met Carmen', ContentType::ConversationScenario, 'restaurant-el-reloj', 'restaurant_text_dialogue', 'Proefweek · recht vereist', false),
             $this->item('Consulta La Luz met Elena', ContentType::ConversationScenario, 'consulta-elena', 'health_text_dialogue', 'Proefweek · fictief rollenspel · recht vereist', false),
@@ -36,6 +54,7 @@ final class RuntimeReadiness
         string $scope,
         bool $public,
         ?string $requiredHotspotId = null,
+        array $requiredMediaRoles = [],
     ): array {
         $publishedNode = $public
             ? $this->publishedContent->findPublic($type, $slug)
@@ -49,7 +68,15 @@ final class RuntimeReadiness
         $hotspots = data_get($releaseItem?->contentRevision?->snapshot, 'domain_data.hotspots', []);
         $hasRequiredHotspot = $requiredHotspotId === null || collect(is_array($hotspots) ? $hotspots : [])
             ->contains(fn (mixed $hotspot): bool => is_array($hotspot) && ($hotspot['id'] ?? null) === $requiredHotspotId);
-        $ready = $publishedNode !== null && $publishedScene === $expectedScene && $hasRequiredHotspot;
+        $publishedMediaRoles = $releaseItem?->contentRevision?->mediaAssets
+            ?->filter(fn ($asset): bool => $asset->isPublishable()
+                && Storage::disk($asset->disk)->exists($asset->object_key)
+            )
+            ->pluck('pivot.role')
+            ->all() ?? [];
+        $missingMediaRoles = array_values(array_diff($requiredMediaRoles, $publishedMediaRoles));
+        $contractReady = $publishedNode !== null && $publishedScene === $expectedScene && $hasRequiredHotspot;
+        $ready = $contractReady && $missingMediaRoles === [];
 
         return [
             'label' => $label,
@@ -58,7 +85,8 @@ final class RuntimeReadiness
             'ready' => $ready,
             'status' => $ready
                 ? 'Speelbaar'
-                : ($publishedNode !== null ? 'Contract ongeldig' : ($node?->status?->label() ?? 'Ontbreekt')),
+                : ($contractReady ? 'Media ontbreekt' : ($publishedNode !== null ? 'Contract ongeldig' : ($node?->status?->label() ?? 'Ontbreekt'))),
+            'missing_media_roles' => $missingMediaRoles,
             'content_node' => $node,
             'template' => match ($slug) {
                 'madrid' => 'madrid-hub',

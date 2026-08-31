@@ -107,9 +107,9 @@ Relaties zoals “voorbeeld bij woord”, “vereist woord” en “oefent gramm
 
 ### 3.3 Media
 
-`media_assets` bevat uitsluitend metadata en een storage-objectkey; geen binaire bestanden. Content kan via `content_media` meerdere rollen krijgen, zoals `hero`, `map_marker`, `npc_portrait`, `audio_es` of `ambient_audio`.
+`media_assets` bevat uitsluitend metadata en een storage-objectkey; geen binaire bestanden. Content kan via `content_media` meerdere rollen krijgen, zoals `hero`, `map_marker`, `npc_portrait`, `npc_expression_sheet`, `audio_es` of `ambient_audio`.
 
-Vanaf fase 3B4 verwijst iedere `content_media`-koppeling ook naar de exacte `content_revision`. Daardoor blijven preview, review en release herleidbaar tot dezelfde onveranderlijke combinatie van speeldata en media. De objecten zelf staan privé op de geconfigureerde Laravel-disk; alleen gecontroleerde Content Studio-routes mogen ze uitlezen.
+Vanaf fase 3B4 verwijst iedere `content_media`-koppeling ook naar de exacte `content_revision`. Daardoor blijven preview, review en release herleidbaar tot dezelfde onveranderlijke combinatie van speeldata en media. De objecten zelf staan privé op de geconfigureerde Laravel-disk. Content Studio leest ze via een ingelogde beheerroute; vanaf fase 3B5 kan de publieke runtime uitsluitend publiceerbare media van exact de actuele openbare productierevisie streamen via een versie- en rolgebonden URL.
 
 Gebruikersopnamen staan bewust niet in `media_assets`, maar in `speech_recordings`. Hierdoor kunnen bewaartermijnen en verwijdering van persoonlijke audio onafhankelijk van redactionele media worden uitgevoerd.
 
