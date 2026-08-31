@@ -26,6 +26,9 @@ class PanaderiaDialogueTest extends TestCase
             ->assertSee('data-feedback-retry', false)
             ->assertSee('data-dialogue-history', false)
             ->assertSee('data-preparation-summary', false)
+            ->assertSee('data-lucia-expression-sheet', false)
+            ->assertSee('la-espiga-interior.webp', false)
+            ->assertSee('Bekijk het veranderde Madrid')
             ->assertSee('Ik wil een voorbeeldzin');
     }
 

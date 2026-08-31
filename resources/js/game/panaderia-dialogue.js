@@ -24,6 +24,8 @@ if (dialogueRoot) {
         accountSyncMessage: dialogueRoot.querySelector('[data-account-sync-message]'),
         accountBalances: dialogueRoot.querySelector('[data-account-balances]'),
         accountSyncRetry: dialogueRoot.querySelector('[data-account-sync-retry]'),
+        luciaFrame: dialogueRoot.querySelector('[data-lucia-state]'),
+        luciaSheets: dialogueRoot.querySelectorAll('[data-lucia-expression-sheet], [data-lucia-expression-sheet-complete]'),
     };
     let content;
     let state = emptyState();
@@ -103,6 +105,33 @@ if (dialogueRoot) {
         hydrateRoleplay(data.roleplay);
     };
 
+    const applyRuntimeMedia = (media = {}) => {
+        const scene = media.scene_background;
+        const expressions = media.npc_expression_sheet ?? media.npc_portrait;
+
+        if (scene?.kind === 'image' && typeof scene.url === 'string') {
+            dialogueRoot.style.setProperty('--bakery-scene-image', `url("${scene.url}")`);
+        }
+
+        if (expressions?.kind === 'image' && typeof expressions.url === 'string') {
+            elements.luciaSheets.forEach((image) => {
+                image.src = expressions.url;
+            });
+        }
+    };
+
+    const setLuciaState = (state) => {
+        if (!elements.luciaFrame) return;
+
+        const labels = {
+            listening: 'Lucía luistert',
+            encouraging: 'Lucía moedigt je aan',
+            success: 'Lucía viert je bestelling',
+        };
+        elements.luciaFrame.dataset.luciaState = state;
+        setText('[data-lucia-reaction]', labels[state] ?? labels.listening);
+    };
+
     const hydrateRoleplay = (roleplay) => {
         const card = dialogueRoot.querySelector('[data-roleplay-card]');
         if (!card) return;
@@ -173,6 +202,7 @@ if (dialogueRoot) {
         updateProgress();
         renderHistory();
         document.dispatchEvent(new CustomEvent('scenario:turn-changed'));
+        setLuciaState('listening');
     };
 
     const renderChoices = (choices) => {
@@ -233,6 +263,7 @@ if (dialogueRoot) {
 
         if (!option) {
             showFeedback(step.fallback, false);
+            setLuciaState('encouraging');
             elements.status.textContent = `${npcName} heeft nog niet genoeg informatie. Bekijk de gerichte tip en probeer opnieuw.`;
             return;
         }
@@ -271,6 +302,7 @@ if (dialogueRoot) {
         showFeedbackLoading();
         updateProgress();
         renderHistory();
+        setLuciaState('encouraging');
 
         isEvaluating = true;
         elements.submitButton.disabled = true;
@@ -438,6 +470,7 @@ if (dialogueRoot) {
         state.completionKey ||= createCompletionKey();
         elements.stage.hidden = true;
         elements.complete.hidden = false;
+        setLuciaState('success');
         document.dispatchEvent(new CustomEvent('scenario:turn-changed'));
         const farewell = state.states.includes('used_politeness')
             ? content.completion.polite_farewell
@@ -648,6 +681,7 @@ if (dialogueRoot) {
             });
             if (!response.ok) throw new Error(`De conversatie kon niet worden geladen (${response.status}).`);
             const payload = await response.json();
+            applyRuntimeMedia(payload?.data?.content?.media);
             content = validateContent(payload?.data?.content?.domain_data);
             hydrateContent(content);
             restoreOrPrepare();

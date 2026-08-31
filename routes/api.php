@@ -1,12 +1,22 @@
 <?php
 
 use App\Http\Controllers\Api\V1\PublishedContentController;
+use App\Http\Controllers\Api\V1\PublishedMediaController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')
     ->name('api.v1.')
     ->middleware('throttle:120,1')
     ->group(function (): void {
+        Route::get('/media/{contentType}/{slug}/{version}/{role}', PublishedMediaController::class)
+            ->where([
+                'contentType' => '[a-z_]+',
+                'slug' => '[a-z0-9]+(?:-[a-z0-9]+)*',
+                'version' => '[1-9][0-9]*',
+                'role' => '[a-z0-9_]+',
+            ])
+            ->name('media.show');
+
         Route::get('/worlds', [PublishedContentController::class, 'worlds'])->name('worlds.index');
         Route::get('/worlds/{slug}', [PublishedContentController::class, 'world'])
             ->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')

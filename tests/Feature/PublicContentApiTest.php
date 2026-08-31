@@ -15,9 +15,14 @@ use App\Enums\ContentReviewAction;
 use App\Enums\ContentRole;
 use App\Enums\ContentStatus;
 use App\Enums\ContentType;
+use App\Enums\MediaKind;
+use App\Enums\MediaRightsStatus;
 use App\Models\ContentNode;
+use App\Models\MediaAsset;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class PublicContentApiTest extends TestCase
@@ -121,6 +126,8 @@ class PublicContentApiTest extends TestCase
 
     public function test_entitled_content_is_not_exposed_by_the_public_api(): void
     {
+        Storage::fake('local');
+        $asset = $this->imageAsset('golden-route/entitled.webp', 'Afgeschermde scène');
         $this->publishProduction(
             ContentType::ConversationScenario,
             'afgeschermd-gesprek',
@@ -131,6 +138,7 @@ class PublicContentApiTest extends TestCase
                     'entitlement' => 'trial_week',
                 ],
             ],
+            media: ['scene_background' => $asset->getKey()],
         );
 
         $this->getJson('/api/v1/conversations')
@@ -141,6 +149,9 @@ class PublicContentApiTest extends TestCase
         $this->getJson('/api/v1/conversations/afgeschermd-gesprek')
             ->assertNotFound()
             ->assertJsonPath('error.code', 'published_content_not_found');
+
+        $this->get('/api/v1/media/conversation_scenario/afgeschermd-gesprek/1/scene_background')
+            ->assertNotFound();
     }
 
     public function test_locale_falls_back_to_the_published_default_locale(): void
@@ -171,6 +182,67 @@ class PublicContentApiTest extends TestCase
             ->assertStatus(304)
             ->assertHeader('ETag', $etag)
             ->assertContent('');
+    }
+
+    public function test_public_runtime_exposes_and_streams_only_media_from_the_exact_published_revision(): void
+    {
+        Storage::fake('local');
+        $asset = $this->imageAsset('golden-route/madrid.webp', 'Madrid in de ochtend');
+        $this->publishProduction(
+            ContentType::Region,
+            'madrid-media',
+            'Madrid met media',
+            media: ['map_background' => $asset->getKey()],
+        );
+
+        $response = $this->getJson('/api/v1/worlds/madrid-media')
+            ->assertOk()
+            ->assertJsonPath('data.content.media.map_background.kind', 'image')
+            ->assertJsonPath('data.content.media.map_background.mime_type', 'image/webp')
+            ->assertJsonPath('data.content.media.map_background.alt_text', 'Een warme geïllustreerde wereld van Madrid.');
+        $mediaUrl = $response->json('data.content.media.map_background.url');
+
+        $first = $this->get($mediaUrl)
+            ->assertOk()
+            ->assertHeader('Content-Type', 'image/webp')
+            ->assertHeader('Cross-Origin-Resource-Policy', 'same-origin')
+            ->assertHeader('X-Content-Type-Options', 'nosniff')
+            ->assertStreamedContent('golden pixels');
+        $cacheControl = $first->headers->get('Cache-Control');
+        $etag = $first->headers->get('ETag');
+
+        $this->assertNotNull($cacheControl);
+        $this->assertStringContainsString('public', $cacheControl);
+        $this->assertStringContainsString('max-age=31536000', $cacheControl);
+        $this->assertStringContainsString('immutable', $cacheControl);
+        $this->assertNotNull($etag);
+
+        $this->withHeader('If-None-Match', $etag)
+            ->get($mediaUrl)
+            ->assertStatus(304)
+            ->assertHeader('ETag', $etag);
+
+        $this->get('/api/v1/media/region/madrid-media/2/map_background')->assertNotFound();
+        $this->get('/api/v1/media/region/madrid-media/1/scene_background')->assertNotFound();
+    }
+
+    public function test_missing_media_object_is_never_advertised_or_streamed(): void
+    {
+        Storage::fake('local');
+        $asset = $this->imageAsset('golden-route/missing.webp', 'Ontbrekende wereld');
+        $this->publishProduction(
+            ContentType::Region,
+            'wereld-zonder-bestand',
+            'Wereld zonder bestand',
+            media: ['map_background' => $asset->getKey()],
+        );
+        Storage::disk('local')->delete($asset->object_key);
+
+        $this->getJson('/api/v1/worlds/wereld-zonder-bestand')
+            ->assertOk()
+            ->assertJsonPath('data.content.media', []);
+
+        $this->get('/api/v1/media/region/wereld-zonder-bestand/1/map_background')->assertNotFound();
     }
 
     public function test_invalid_queries_and_unknown_content_have_stable_errors(): void
@@ -217,6 +289,7 @@ class PublicContentApiTest extends TestCase
         ?string $summary = null,
         ?string $body = null,
         array $domainData = [],
+        array $media = [],
     ): ContentNode {
         $publisher = $this->userWithRole(ContentRole::EditorInChief);
         $contentNode = $this->createApproved(
@@ -226,6 +299,7 @@ class PublicContentApiTest extends TestCase
             $summary,
             $body,
             $domainData,
+            $media,
         );
         $release = app(CreateContentRelease::class)->handle(
             actor: $publisher,
@@ -271,6 +345,7 @@ class PublicContentApiTest extends TestCase
         ?string $summary = null,
         ?string $body = null,
         array $domainData = [],
+        array $media = [],
     ): ContentNode {
         $editor = $this->userWithRole(ContentRole::Editor);
         $contentNode = $this->createDraft(
@@ -281,6 +356,7 @@ class PublicContentApiTest extends TestCase
             $body,
             $domainData,
             $editor,
+            $media,
         );
         app(SubmitContentForReview::class)->handle($editor, $contentNode, 1);
         app(DecideContentReview::class)->handle(
@@ -302,6 +378,7 @@ class PublicContentApiTest extends TestCase
         ?string $body = null,
         array $domainData = [],
         ?User $editor = null,
+        array $media = [],
     ): ContentNode {
         $domainData = $this->completePlayableDomainData($contentType, $domainData);
 
@@ -315,7 +392,32 @@ class PublicContentApiTest extends TestCase
             body: $body,
             metadata: ['audience' => 'starter'],
             domainData: $domainData,
+            media: $media,
         );
+    }
+
+    private function imageAsset(string $objectKey, string $title): MediaAsset
+    {
+        $contents = 'golden pixels';
+        Storage::disk('local')->put($objectKey, $contents);
+
+        return MediaAsset::query()->create([
+            'uuid' => Str::uuid()->toString(),
+            'kind' => MediaKind::Image,
+            'disk' => 'local',
+            'object_key' => $objectKey,
+            'original_name' => basename($objectKey),
+            'mime_type' => 'image/webp',
+            'byte_size' => strlen($contents),
+            'width' => 1672,
+            'height' => 941,
+            'checksum_sha256' => hash('sha256', $contents),
+            'title' => $title,
+            'alt_text' => 'Een warme geïllustreerde wereld van Madrid.',
+            'source_name' => 'Testbron',
+            'creator_name' => 'Testmaker',
+            'rights_status' => MediaRightsStatus::Owned,
+        ]);
     }
 
     /**

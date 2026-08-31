@@ -76,7 +76,7 @@ Via **Spelpreview** opent de actuele revisie via een één uur geldige, ondertek
 
 De preview gebruikt uitsluitend de opgeslagen revisiesnapshot en privémediastream. Hij publiceert niets en kan nooit als verkorte release- of rechtenroute worden gebruikt.
 
-Deze fase maakt media beheerbaar, versiegebonden en beoordeelbaar. De publieke spelersruntime gebruikt nog de bestaande statische scène-assets; het gecontroleerd uitserveren van goedgekeurde redactionele media naar de volledige Madrid → La Espiga-route hoort bij fase 3B5.
+Deze fase maakt media beheerbaar, versiegebonden en beoordeelbaar. Vanaf fase 3B5 gebruikt de publieke Madrid → La Espiga-runtime bij voorkeur media uit exact de actuele productiepublicatie. Meegeleverde statische beelden blijven uitsluitend als veilige frontendfallback beschikbaar.
 
 ## Deployment en terugrol
 

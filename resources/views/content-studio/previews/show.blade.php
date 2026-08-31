@@ -74,7 +74,7 @@
                 </section>
             @else
                 @php($sceneBackground = $mediaByRole->get('scene_background'))
-                @php($npcPortrait = $mediaByRole->get('npc_portrait'))
+                @php($npcPortrait = $mediaByRole->get('npc_portrait') ?? $mediaByRole->get('npc_expression_sheet'))
                 <section class="preview-dialogue-scene min-h-[720px] p-5 sm:p-10" @if($sceneBackground) style="background-image: linear-gradient(rgb(23 44 54 / 48%), rgb(23 44 54 / 22%)), url('{{ route('content-studio.media.stream', $sceneBackground) }}')" @endif>
                     <div class="mx-auto max-w-4xl">
                         <div class="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">

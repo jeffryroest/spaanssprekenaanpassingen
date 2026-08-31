@@ -6,6 +6,7 @@ use App\Enums\ContentType;
 use App\Models\ContentNode;
 use App\Models\ContentReleaseItem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 final class PublicContentTransformer
 {
@@ -29,8 +30,39 @@ final class PublicContentTransformer
                 'body' => $localization['body'] ?? null,
                 'metadata' => $localization['metadata'] ?? [],
                 'domain_data' => Arr::get($snapshot, 'domain_data', []),
+                'media' => $this->media($contentNode, $releaseItem),
             ],
         ];
+    }
+
+    /** @return array<string, array<string, int|string|null>> */
+    private function media(ContentNode $contentNode, ContentReleaseItem $releaseItem): array
+    {
+        if (Arr::get($releaseItem->contentRevision->snapshot, 'domain_data.runtime_access.visibility', 'public') !== 'public') {
+            return [];
+        }
+
+        return $releaseItem->contentRevision->mediaAssets
+            ->filter(fn ($asset): bool => $asset->isPublishable()
+                && Storage::disk($asset->disk)->exists($asset->object_key)
+            )
+            ->mapWithKeys(fn ($asset): array => [
+                $asset->pivot->role => [
+                    'kind' => $asset->kind->value,
+                    'url' => route('api.v1.media.show', [
+                        'contentType' => $contentNode->content_type->value,
+                        'slug' => $contentNode->slug,
+                        'version' => $releaseItem->version,
+                        'role' => $asset->pivot->role,
+                    ]),
+                    'mime_type' => $asset->mime_type,
+                    'width' => $asset->width,
+                    'height' => $asset->height,
+                    'alt_text' => $asset->alt_text,
+                    'transcript' => $asset->transcript,
+                ],
+            ])
+            ->all();
     }
 
     /** @return array<string, mixed> */

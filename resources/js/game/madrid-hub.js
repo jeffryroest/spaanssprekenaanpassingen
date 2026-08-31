@@ -13,6 +13,7 @@ if (hub) {
         listView: hub.querySelector('[data-hub-list-view]'),
         arrival: hub.querySelector('[data-hub-arrival]'),
         preparation: hub.querySelector('[data-hub-preparation]'),
+        worldReturn: hub.querySelector('[data-hub-world-return]'),
     };
     const explored = new Set(readExplored());
     let accountProgress = null;
@@ -214,6 +215,8 @@ if (hub) {
         setText('[data-hub-objective]', data.intro.objective);
 
         const hotspots = data.hotspots.map(applyAccountState);
+        const bakeryCompleted = hotspots.some(({ id, state }) => id === 'madrid.panaderia' && state === 'completed');
+        hub.dataset.bakeryCompleted = String(bakeryCompleted);
         elements.hotspots.replaceChildren(...hotspots.map((hotspot) => createHotspot(hotspot)));
         elements.locationList.replaceChildren(...hotspots.map((hotspot) => createHotspot(hotspot, true)));
         elements.inspectables.replaceChildren(...data.inspectables.map(createInspectable));
@@ -224,14 +227,35 @@ if (hub) {
             ? 'Madrid is klaar. Je accounttotalen konden tijdelijk niet worden geladen; de kaart blijft volledig werken.'
             : 'Madrid is klaar. Kies een locatie of onderzoek een detail op de kaart.';
         updateCuriosity();
-        showArrival(data);
+        showWorldReturn(bakeryCompleted);
+        showArrival(data, bakeryCompleted);
     };
 
-    const showArrival = (data) => {
-        if (!elements.arrival || readSessionValue('madrid-hub-arrival-seen') === 'true') return;
+    const showArrival = (data, bakeryCompleted) => {
+        if (bakeryCompleted || !elements.arrival || readSessionValue('madrid-hub-arrival-seen') === 'true') return;
 
         setText('[data-hub-arrival-description]', data.intro.description);
         openDialog(elements.arrival);
+    };
+
+    const showWorldReturn = (bakeryCompleted) => {
+        if (!elements.worldReturn || !bakeryCompleted) return;
+
+        const returnedFromMission = new URLSearchParams(window.location.search).get('mission') === 'la-espiga-complete';
+        const dismissed = readSessionValue('madrid-world-return-seen') === 'true';
+        elements.worldReturn.hidden = !returnedFromMission && dismissed;
+
+        if (!elements.worldReturn.hidden) {
+            elements.status.textContent = 'Madrid heeft je voltooiing onthouden. La Espiga is voltooid en Café El Reloj is zichtbaar geworden.';
+        }
+    };
+
+    const applyRuntimeMedia = (media = {}) => {
+        const map = media.map_background;
+
+        if (map?.kind === 'image' && typeof map.url === 'string') {
+            hub.style.setProperty('--hub-map-image', `url("${map.url}")`);
+        }
     };
 
     const openPreparation = () => {
@@ -387,6 +411,7 @@ if (hub) {
             }
 
             const payload = await response.json();
+            applyRuntimeMedia(payload?.data?.content?.media);
             renderHub(validateHub(payload?.data?.content?.domain_data));
         } catch (error) {
             elements.loading.hidden = true;
@@ -435,7 +460,16 @@ if (hub) {
             sweetTranslation: sweet?.dataset.translation ?? '',
         }));
         elements.status.textContent = 'Je boodschappenkaart is klaar. De deur van La Espiga gaat open.';
-        window.location.assign(hub.dataset.panaderiaRoute);
+        elements.preparation?.close();
+        hub.dataset.transitioning = 'true';
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.setTimeout(() => window.location.assign(hub.dataset.panaderiaRoute), reduceMotion ? 0 : 420);
+    });
+
+    hub.querySelector('[data-hub-world-return-close]')?.addEventListener('click', () => {
+        writeSessionValue('madrid-world-return-seen', 'true');
+        elements.worldReturn.hidden = true;
+        elements.map.focus({ preventScroll: true });
     });
 
     hub.querySelector('[data-hub-retry]')?.addEventListener('click', loadHub);

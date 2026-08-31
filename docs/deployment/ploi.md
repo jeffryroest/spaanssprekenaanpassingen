@@ -64,6 +64,8 @@ Vanaf fase 2E maakt `php artisan migrate --force` ook de accountvoortgangstabell
 
 Vanaf fase 3B4 worden privé-redactiemedia standaard onder `storage/app/private/content-media` opgeslagen. Neem deze map samen met de database op in de Ploi-back-up en controleer dat de sitegebruiker er kan schrijven. Gebruik alleen een andere `CONTENT_STUDIO_MEDIA_DISK` nadat die Laravel-disk duurzaam en privé is ingericht.
 
+Fase 3B5 levert de drie gouden-route-assets mee in de code en installeert ze via `game:install-demo-content` op diezelfde privé-disk. Voer het commando na deployment bewust als bestaande beheerder uit, controleer de nieuwe conceptrevisies in de preview en publiceer ze daarna via de normale releaseflow. De installatie publiceert niets automatisch.
+
 Voer bij de eerste deployment vóór `php artisan migrate --force` eenmaal uit:
 
 ```bash

@@ -44,7 +44,7 @@
         <div class="cs-panel-header flex flex-wrap items-start justify-between gap-4">
             <div>
                 <h2 id="runtime-readiness-title" class="font-bold text-slate-900">Speelbaarheid op productie</h2>
-                <p class="mt-1 text-sm text-slate-500">Deze drie gepubliceerde contracten vormen de huidige spelersroute. Een concept is nooit automatisch live.</p>
+                <p class="mt-1 text-sm text-slate-500">Deze vijf gepubliceerde contracten vormen de huidige spelersroute. Voor de gouden route tellen ook de vereiste scène- en personagemedia mee; een concept is nooit automatisch live.</p>
             </div>
             <span class="status-chip">{{ collect($runtimeReadiness)->where('ready', true)->count() }}/{{ count($runtimeReadiness) }} speelbaar</span>
         </div>
@@ -61,6 +61,9 @@
                                 <span class="rounded-full px-2 py-0.5 text-xs font-bold {{ $item['ready'] ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800' }}">{{ $item['status'] }}</span>
                             </div>
                             <p class="mt-1 text-sm text-slate-500">{{ $item['scope'] }} · <code>{{ $item['slug'] }}</code></p>
+                            @if($item['missing_media_roles'] !== [])
+                                <p class="mt-1 text-xs font-semibold text-amber-700">Ontbrekende mediarollen: {{ implode(', ', $item['missing_media_roles']) }}</p>
+                            @endif
                         </div>
                     </div>
                     @if ($item['content_node'])

@@ -34,6 +34,20 @@
         "self": { "type": "string", "format": "uri" }
       }
     },
+    "mediaAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "url", "mime_type", "width", "height", "alt_text", "transcript"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["image", "audio"] },
+        "url": { "type": "string", "format": "uri" },
+        "mime_type": { "type": "string" },
+        "width": { "type": ["integer", "null"], "minimum": 1 },
+        "height": { "type": ["integer", "null"], "minimum": 1 },
+        "alt_text": { "type": ["string", "null"] },
+        "transcript": { "type": ["string", "null"] }
+      }
+    },
     "identityProperties": {
       "type": "object",
       "required": [
@@ -100,13 +114,18 @@
             "content": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["title", "summary", "body", "metadata", "domain_data"],
+              "required": ["title", "summary", "body", "metadata", "domain_data", "media"],
               "properties": {
                 "title": { "type": ["string", "null"] },
                 "summary": { "type": ["string", "null"] },
                 "body": { "type": ["string", "null"] },
                 "metadata": { "type": "object", "additionalProperties": true },
-                "domain_data": { "type": "object", "additionalProperties": true }
+                "domain_data": { "type": "object", "additionalProperties": true },
+                "media": {
+                  "type": "object",
+                  "propertyNames": { "pattern": "^[a-z0-9_]+$" },
+                  "additionalProperties": { "$ref": "#/$defs/mediaAsset" }
+                }
               }
             }
           }

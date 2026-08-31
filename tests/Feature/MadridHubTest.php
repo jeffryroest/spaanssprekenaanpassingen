@@ -25,6 +25,8 @@ class MadridHubTest extends TestCase
             ->assertSee('data-hub-sound', false)
             ->assertSee('data-hub-arrival', false)
             ->assertSee('data-hub-preparation', false)
+            ->assertSee('data-hub-world-return', false)
+            ->assertSee('data-golden-route-version="3B5"', false)
             ->assertSee('madrid-morning.webp', false);
     }
 

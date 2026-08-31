@@ -34,6 +34,11 @@ final class ContentMediaRoles
                     'kind' => MediaKind::Image,
                     'description' => 'Het neutrale portret van de gesprekspartner.',
                 ],
+                'npc_expression_sheet' => [
+                    'label' => 'NPC-reacties',
+                    'kind' => MediaKind::Image,
+                    'description' => 'Drie gelijke beeldvakken: luisteren, aanmoedigen en succes.',
+                ],
                 'ambient_audio' => [
                     'label' => 'Omgevingsgeluid',
                     'kind' => MediaKind::Audio,

@@ -51,6 +51,8 @@ Het pakket bevat:
 - Café El Reloj met Carmen;
 - Consulta La Luz met Elena.
 
+Vanaf pakket `2026.08.2` bevat het pakket ook drie toegankelijke, rechtenbeschreven gouden-route-assets: de Madrid-wereld, het interieur van La Espiga en Lucía met drie reactiestaten. Een ongewijzigd ouder Madrid- of La Espiga-democoncept zonder media krijgt veilig een nieuwe conceptrevisie. Eigen tekst- of mediakeuzes veroorzaken altijd een conflict en worden nooit overschreven.
+
 Het commando is veilig om opnieuw uit te voeren. Exact gelijke records blijven ongemoeid. Zodra een bestaand record inhoudelijk afwijkt, stopt de volledige installatie met een conflict en wordt niets overschreven.
 
 Als alternatief kan een bestaande beheerder via de omgeving aan de benoemde seeder worden gekoppeld:
@@ -81,7 +83,7 @@ Er wordt geen proefabonnement, testspeler, prijs of recht aangemaakt. Toegang to
 ## Acceptatiecriteria
 
 - Een droge controle schrijft geen content of auditgebeurtenis.
-- Een lege database krijgt vijf coherente conceptrecords.
+- Een lege database krijgt vijf coherente conceptrecords en drie gekoppelde gouden-route-assets.
 - Een tweede installatie maakt geen duplicaten of revisies.
 - Handmatig gewijzigde, gearchiveerde of gepubliceerde afwijkende content wordt nooit overschreven.
 - Gewone eigen content kan door beheerder of hoofdredacteur gemotiveerd worden goedgekeurd.
