@@ -73,8 +73,7 @@ class ContentController extends Controller
         Request $request,
         PlayableContentTemplates $templates,
         ContentMediaRoles $mediaRoles,
-    ): View
-    {
+    ): View {
         Gate::authorize('create', ContentNode::class);
         $validated = $request->validate([
             'template' => ['nullable', 'string', Rule::in(array_keys($templates->all()))],
@@ -160,8 +159,7 @@ class ContentController extends Controller
         UpdateContentRequest $request,
         ContentNode $contentNode,
         UpdateDraftContent $updateDraftContent,
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         $validated = $request->validated();
         $contentNode = $updateDraftContent->handle(
             actor: $request->user(),
@@ -185,8 +183,7 @@ class ContentController extends Controller
         ArchiveContentRequest $request,
         ContentNode $contentNode,
         ArchiveDraftContent $archiveDraftContent,
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         $validated = $request->validated();
         $contentNode = $archiveDraftContent->handle(
             actor: $request->user(),
