@@ -7,6 +7,7 @@ use App\Enums\ContentReleaseStatus;
 use App\Enums\ContentReviewAction;
 use App\Enums\ContentStatus;
 use App\Models\ContentRelease;
+use Illuminate\Support\Facades\Storage;
 
 final class InspectContentRelease
 {
@@ -17,8 +18,11 @@ final class InspectContentRelease
      */
     public function handle(ContentRelease $release): array
     {
-        $release->loadMissing(['items.contentNode', 'items.contentRevision']);
+        $release->loadMissing(['items.contentNode', 'items.contentRevision.mediaAssets']);
         $blockers = [];
+        $warnings = [
+            'Tekstuele herkomst- en licentievelden zijn nog niet volledig gemodelleerd; controleer deze handmatig.',
+        ];
 
         if ($release->status !== ContentReleaseStatus::Draft) {
             $blockers[] = 'Alleen een conceptrelease kan een preflight doorlopen.';
@@ -63,13 +67,37 @@ final class InspectContentRelease
             foreach ($this->reviewableContent->errors($contentNode, $revision) as $error) {
                 $blockers[] = "{$label}: {$error}";
             }
+
+            $mediaSnapshot = data_get($revision->snapshot, 'media', []);
+            $expectedMediaCount = is_array($mediaSnapshot) ? count($mediaSnapshot) : 0;
+            if ($revision->mediaAssets->count() !== $expectedMediaCount) {
+                $blockers[] = "{$label}: een gekoppeld mediabestand ontbreekt of is gearchiveerd.";
+            }
+
+            foreach ($revision->mediaAssets as $asset) {
+                $role = $asset->pivot->role;
+                if (! Storage::disk($asset->disk)->exists($asset->object_key)) {
+                    $blockers[] = "{$label}: het bestand voor {$role} ontbreekt in de opslag.";
+                }
+                if (! $asset->rights_status->isPublishable()) {
+                    $blockers[] = "{$label}: {$role} heeft geen aantoonbaar publicatierecht.";
+                }
+                if ($asset->rights_expires_at?->isBefore(today())) {
+                    $blockers[] = "{$label}: de rechten van {$role} zijn verlopen.";
+                }
+                if (! $asset->hasAccessibilityText()) {
+                    $blockers[] = "{$label}: {$role} mist alt-tekst of transcript.";
+                }
+            }
+
+            if (filled(data_get($revision->snapshot, 'domain_data.scene')) && $expectedMediaCount === 0) {
+                $warnings[] = "{$label}: nog geen scène- of personagemedia gekoppeld.";
+            }
         }
 
         return [
             'blockers' => array_values(array_unique($blockers)),
-            'warnings' => [
-                'Relatie-, media- en licentievelden worden toegevoegd zodra de typespecifieke editors beschikbaar zijn.',
-            ],
+            'warnings' => array_values(array_unique($warnings)),
         ];
     }
 }

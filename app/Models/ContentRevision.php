@@ -6,6 +6,7 @@ use App\Enums\RevisionStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use LogicException;
 
 #[Fillable([
@@ -53,5 +54,13 @@ class ContentRevision extends Model
     public function reviewer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    public function mediaAssets(): BelongsToMany
+    {
+        return $this->belongsToMany(MediaAsset::class, 'content_media')
+            ->withPivot(['content_node_id', 'role', 'sort_order'])
+            ->withTimestamps()
+            ->orderByPivot('sort_order');
     }
 }

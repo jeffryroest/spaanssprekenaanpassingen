@@ -87,4 +87,22 @@ class AuditLog extends Model
             'created_at' => now(),
         ]);
     }
+
+    /** @param array<string, mixed> $after */
+    public static function recordMediaChange(User $actor, string $action, MediaAsset $asset, array $after): self
+    {
+        return self::query()->create([
+            'actor_user_id' => $actor->getKey(),
+            'action' => $action,
+            'subject_type' => MediaAsset::class,
+            'subject_id' => $asset->getKey(),
+            'before_state' => null,
+            'after_state' => [
+                'actor_role' => $actor->content_role?->value,
+                'media' => $after,
+            ],
+            'request_id' => Str::uuid()->toString(),
+            'created_at' => now(),
+        ]);
+    }
 }

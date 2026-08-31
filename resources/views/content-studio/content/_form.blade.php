@@ -10,6 +10,9 @@
         JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
     );
     $selectedContentType = $selectedTemplate['content_type'] ?? null;
+    $selectedMediaIds = $currentRevision?->mediaAssets
+        ?->mapWithKeys(fn ($asset) => [$asset->pivot->role => $asset->getKey()])
+        ->all() ?? [];
 @endphp
 
 @if ($errors->any())
@@ -131,7 +134,7 @@
             <div>
                 <label for="body" class="cs-label">Inhoud <span class="font-normal text-slate-400">(optioneel)</span></label>
                 <textarea id="body" name="body" rows="8" class="cs-field min-h-40 resize-y leading-6 {{ $errors->has('body') ? 'cs-field-error' : '' }}" @error('body') aria-invalid="true" aria-describedby="body-error" @enderror>{{ old('body', $localization?->body ?? ($selectedTemplate['body'] ?? '')) }}</textarea>
-                <p class="cs-help">Voer de volledige leerinhoud in. Typespecifieke editors volgen in een latere fase.</p>
+                <p class="cs-help">Algemene redactionele uitleg; wereld-, NPC- en routevelden beheer je hieronder in de speelcontentbouwer.</p>
                 @error('body')<p id="body-error" class="cs-error">{{ $message }}</p>@enderror
             </div>
         </div>
@@ -142,30 +145,77 @@
             <div class="flex items-start gap-3">
                 <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-amber-50 text-amber-700" aria-hidden="true">{ }</span>
                 <div>
-                    <h2 id="domain-data-title" class="font-bold text-slate-900">Speeldata</h2>
-                    <p class="mt-1 text-sm text-slate-500">De versiegebonden JSON waarmee de wereld of dialoog in de frontend wordt opgebouwd.</p>
+                    <h2 id="domain-data-title" class="font-bold text-slate-900">Speelcontentbouwer</h2>
+                    <p class="mt-1 text-sm text-slate-500">Bewerk wereld, NPC, missie, routes en feedback zonder het contract handmatig te hoeven schrijven.</p>
                 </div>
             </div>
         </div>
 
-        <div class="p-5 sm:p-6">
-            <label for="domain_data" class="cs-label">JSON-contract <span class="font-normal text-slate-400">(optioneel voor niet-speelbare content)</span></label>
-            <textarea
-                id="domain_data"
-                name="domain_data"
-                rows="22"
-                spellcheck="false"
-                class="cs-field min-h-96 resize-y font-mono text-xs leading-5 {{ $errors->has('domain_data') ? 'cs-field-error' : '' }}"
-                aria-describedby="domain-data-help @error('domain_data') domain-data-error @enderror"
-                @error('domain_data') aria-invalid="true" @enderror
-            >{{ old('domain_data', $domainDataJson) }}</textarea>
-            <div id="domain-data-help" class="mt-3 flex flex-col gap-2 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900 sm:flex-row sm:items-start sm:justify-between">
-                <p><strong>Veilige grens:</strong> JSON wordt vóór opslaan gecontroleerd. Bekende wereld- en gesprekscontracten krijgen extra structuurvalidatie.</p>
+        <div class="space-y-5 p-5 sm:p-6">
+            <div data-content-builder-root class="space-y-4" aria-live="polite"></div>
+
+            <details class="rounded-xl border border-slate-200 bg-slate-50" @if($errors->has('domain_data')) open @endif>
+                <summary class="cursor-pointer px-4 py-3 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-brand-500">Geavanceerde JSON bekijken of herstellen</summary>
+                <div class="border-t border-slate-200 p-4">
+                    <label for="domain_data" class="cs-label">Versieerbaar JSON-contract</label>
+                    <textarea
+                        id="domain_data"
+                        name="domain_data"
+                        rows="22"
+                        spellcheck="false"
+                        data-content-builder-source
+                        class="cs-field min-h-96 resize-y font-mono text-xs leading-5 {{ $errors->has('domain_data') ? 'cs-field-error' : '' }}"
+                        aria-describedby="domain-data-help @error('domain_data') domain-data-error @enderror"
+                        @error('domain_data') aria-invalid="true" @enderror
+                    >{{ old('domain_data', $domainDataJson) }}</textarea>
+                    <p class="cs-help">Handmatige wijzigingen worden na het verlaten van dit veld opnieuw in de formulierbouwer geladen.</p>
+                </div>
+            </details>
+
+            <div id="domain-data-help" class="flex flex-col gap-2 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900 sm:flex-row sm:items-start sm:justify-between">
+                <p><strong>Diepe controle:</strong> unieke id’s, kaartposities, startpunt, alle verwijzingen, A0/A1/A2-routes, eindpunten, herstelroute en beloningen worden server-side gecontroleerd.</p>
                 <span class="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-bold text-amber-800">Alleen concept</span>
             </div>
             @error('domain_data')<p id="domain-data-error" class="cs-error">{{ $message }}</p>@enderror
         </div>
     </section>
+
+    @if($mediaRoles !== [])
+        <section class="border-t border-slate-200" aria-labelledby="media-fields-title">
+            <div class="cs-panel-header">
+                <div class="flex items-start gap-3">
+                    <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-violet-50 text-violet-700" aria-hidden="true">
+                        <x-content-studio.icon name="media" />
+                    </span>
+                    <div>
+                        <h2 id="media-fields-title" class="font-bold text-slate-900">Scène- en personagemedia</h2>
+                        <p class="mt-1 text-sm text-slate-500">Koppelingen gelden uitsluitend voor de nieuwe, onveranderlijke revisie.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="grid gap-6 p-5 md:grid-cols-2 sm:p-6">
+                @foreach($mediaRoles as $role => $definition)
+                    @php($roleAssets = $availableMedia->filter(fn ($asset) => $asset->kind === $definition['kind']))
+                    <div>
+                        <label for="media-{{ $role }}" class="cs-label">{{ $definition['label'] }}</label>
+                        <select id="media-{{ $role }}" name="media[{{ $role }}]" class="cs-field @error('media.'.$role) cs-field-error @enderror">
+                            <option value="">Geen medium gekoppeld</option>
+                            @foreach($roleAssets as $asset)
+                                <option value="{{ $asset->getKey() }}" @selected((string) old('media.'.$role, $selectedMediaIds[$role] ?? '') === (string) $asset->getKey())>
+                                    {{ $asset->title }} · {{ $asset->rights_status->label() }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <p class="cs-help">{{ $definition['description'] }}</p>
+                        @error('media.'.$role)<p class="cs-error">{{ $message }}</p>@enderror
+                    </div>
+                @endforeach
+                <div class="md:col-span-2 rounded-xl border border-violet-200 bg-violet-50 p-4 text-sm leading-6 text-violet-900">
+                    Bestand ontbreekt? <a href="{{ route('content-studio.media.index') }}" class="font-bold underline decoration-violet-300 underline-offset-2">Upload het eerst in de mediabibliotheek</a>. Alleen media met geldige rechten en alt-tekst of transcript kunnen worden gepubliceerd.
+                </div>
+            </div>
+        </section>
+    @endif
 
     <div class="flex flex-col-reverse gap-3 border-t border-slate-200 bg-slate-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-end sm:px-6">
         <a href="{{ $editing ? route('content-studio.content.show', $contentNode) : route('content-studio.content.index') }}" class="cs-button-secondary">Annuleren</a>

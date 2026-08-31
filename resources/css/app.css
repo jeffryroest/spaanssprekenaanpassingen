@@ -134,6 +134,17 @@
         @apply mt-2 size-2 shrink-0 rounded-full bg-emerald-500;
     }
 
+    .preview-frame {
+        max-width: 1280px;
+    }
+
+    .preview-world,
+    .preview-dialogue-scene {
+        background-color: #d8c09a;
+        background-position: center;
+        background-size: cover;
+    }
+
     .world-home-body {
         @apply min-h-screen bg-[#f4ead9] text-[#203129] antialiased;
     }

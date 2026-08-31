@@ -31,6 +31,7 @@ const [action, catalog, templates, readiness, request, rule, exampleSource, sche
 ]);
 const example = JSON.parse(exampleSource);
 const schema = JSON.parse(schemaSource);
+const inspector = await read('app/ContentStudio/PlayableContentInspector.php');
 const stepIds = new Set(example.steps.map(({ id }) => id));
 
 assert(example.scene === 'restaurant_text_dialogue' && example.npc.id === 'npc.carmen.santos', 'De restaurantidentiteit of Carmen ontbreekt');
@@ -47,7 +48,7 @@ assert(view.includes('data-restaurant-dialogue') && view.includes('data-scenario
 assert(view.includes("route('game.madrid.restaurant.content'") && view.includes('WebM/Opus'), 'De privécontent- of spreekroute ontbreekt in de restaurantscène');
 assert(action.includes("'stamp.first_madrid_dinner'") && action.includes("'madrid.health.preview'"), 'Restaurantbeloningen of de dag-5-vooruitblik ontbreken');
 assert(templates.includes("'restaurant-el-reloj'") && readiness.includes("'restaurant_text_dialogue'"), 'Content Studio mist de restaurantstarter of runtimecontrole');
-assert(rule.includes("'restaurant_text_dialogue'") && docs.includes('nooit automatisch'), 'De redactionele contract- of publicatiegrens ontbreekt');
+assert(rule.includes('PlayableContentInspector') && inspector.includes("'restaurant_text_dialogue'") && docs.includes('nooit automatisch'), 'De redactionele contract- of publicatiegrens ontbreekt');
 assert(hubView.includes('data-restaurant-route') && hub.includes('restaurantDay?.action_url'), 'Café El Reloj reageert niet op de gepubliceerde dag-3-missie');
 assert(progress.includes('restaurantProgress'), 'Het accountdashboard toont de restaurantvoortgang niet');
 

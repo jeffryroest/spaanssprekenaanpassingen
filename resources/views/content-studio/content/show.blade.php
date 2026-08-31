@@ -36,14 +36,22 @@
             <p class="mt-2 break-all text-sm text-slate-500">#{{ $contentNode->id }} · {{ $contentNode->slug }} · {{ $contentNode->default_locale }}</p>
         </div>
 
-        @can('update', $contentNode)
-            @if ($contentNode->isEditableDraft())
-                <a href="{{ route('content-studio.content.edit', $contentNode) }}" class="cs-button-primary shrink-0">
-                    <x-content-studio.icon name="edit" class="size-4" />
-                    Bewerken
+        <div class="flex flex-wrap gap-3">
+            @if ($previewUrl)
+                <a href="{{ $previewUrl }}" class="cs-button-secondary shrink-0" target="_blank" rel="noopener">
+                    <x-content-studio.icon name="preview" class="size-4" />
+                    Spelpreview
                 </a>
             @endif
-        @endcan
+            @can('update', $contentNode)
+                @if ($contentNode->isEditableDraft())
+                    <a href="{{ route('content-studio.content.edit', $contentNode) }}" class="cs-button-primary shrink-0">
+                        <x-content-studio.icon name="edit" class="size-4" />
+                        Bewerken
+                    </a>
+                @endif
+            @endcan
+        </div>
     </div>
 
     @if ($domainData !== [])
@@ -69,6 +77,30 @@
                 </summary>
                 <pre class="max-h-[42rem] overflow-auto border-t border-slate-200 bg-slate-950 p-5 text-xs leading-5 text-slate-100 sm:p-6"><code>{{ json_encode($domainData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) }}</code></pre>
             </details>
+        </section>
+    @endif
+
+    @if($currentRevision?->mediaAssets->isNotEmpty())
+        <section class="cs-panel mt-6 overflow-hidden" aria-labelledby="linked-media-title">
+            <div class="cs-panel-header">
+                <h2 id="linked-media-title" class="font-bold text-slate-900">Media in deze revisie</h2>
+                <p class="mt-1 text-sm text-slate-500">Versiegebonden scène- en personagemedia</p>
+            </div>
+            <div class="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3 sm:p-6">
+                @foreach($currentRevision->mediaAssets as $asset)
+                    <article class="overflow-hidden rounded-xl border border-slate-200">
+                        @if($asset->kind === App\Enums\MediaKind::Image)
+                            <img src="{{ route('content-studio.media.stream', $asset) }}" alt="{{ $asset->alt_text }}" class="aspect-[16/9] w-full object-cover">
+                        @else
+                            <div class="bg-slate-100 p-4"><audio controls preload="none" class="w-full"><source src="{{ route('content-studio.media.stream', $asset) }}" type="{{ $asset->mime_type }}"></audio></div>
+                        @endif
+                        <div class="p-4">
+                            <p class="text-xs font-black uppercase tracking-wide text-violet-700">{{ str_replace('_', ' ', $asset->pivot->role) }}</p>
+                            <p class="mt-1 font-bold text-slate-900">{{ $asset->title }}</p>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
         </section>
     @endif
 

@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\ContentStudio\PlayableContentInspector;
 use App\Enums\ContentType;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -49,77 +50,8 @@ final class PlayableDomainData implements ValidationRule
             return;
         }
 
-        if (($data['schema_version'] ?? null) !== '1.0.0') {
-            $fail('Een speelbaar contract moet schema_version 1.0.0 gebruiken.');
-
-            return;
+        foreach (app(PlayableContentInspector::class)->inspect($this->contentType, $data)['errors'] as $error) {
+            $fail($error);
         }
-
-        match ($scene) {
-            'madrid_hub' => $this->validateMadridHub($data, $fail),
-            'panaderia_text_dialogue', 'taxi_text_dialogue', 'restaurant_text_dialogue', 'health_text_dialogue' => $this->validateDialogue($data, $scene, $fail),
-            default => $fail("Het speelcontract {$scene} wordt nog niet ondersteund."),
-        };
-    }
-
-    /** @param array<string, mixed> $data */
-    private function validateMadridHub(array $data, Closure $fail): void
-    {
-        if ($this->contentType !== ContentType::Region) {
-            $fail('Het madrid_hub-contract hoort bij contenttype Regio.');
-
-            return;
-        }
-
-        if (! $this->hasKeys($data, ['intro', 'hotspots', 'inspectables'])
-            || ! is_array($data['hotspots'] ?? null)
-            || count($data['hotspots']) < 4
-            || ! is_array($data['inspectables'] ?? null)
-            || count($data['inspectables']) < 3) {
-            $fail('De Madrid-wereld vereist intro, minimaal vier hotspots en drie onderzoekspunten.');
-        }
-    }
-
-    /** @param array<string, mixed> $data */
-    private function validateDialogue(array $data, string $scene, Closure $fail): void
-    {
-        if ($this->contentType !== ContentType::ConversationScenario) {
-            $fail("Het {$scene}-contract hoort bij contenttype Gespreksscenario.");
-
-            return;
-        }
-
-        if (! $this->hasKeys($data, ['npc', 'mission', 'level_branches', 'repair', 'steps', 'completion'])
-            || ! is_array($data['steps'] ?? null)
-            || count($data['steps']) < 7) {
-            $fail('Een speelbaar gesprek vereist NPC-, missie-, niveau-, herstel-, stappen- en beloningsdata met minimaal zeven stappen.');
-
-            return;
-        }
-
-        $requiredBranches = ['A0', 'A1', 'A2'];
-        $branches = is_array($data['level_branches'] ?? null) ? $data['level_branches'] : [];
-
-        if (array_diff($requiredBranches, array_keys($branches)) !== []) {
-            $fail('Een speelbaar gesprek vereist aparte A0-, A1- en A2-paden.');
-        }
-
-        if (in_array($scene, ['taxi_text_dialogue', 'restaurant_text_dialogue', 'health_text_dialogue'], true)
-            && data_get($data, 'runtime_access.visibility') !== 'entitled') {
-            $fail('Een afgeschermde proefweekmissie moet runtime_access.visibility entitled gebruiken.');
-        }
-
-        if ($scene === 'health_text_dialogue'
-            && (data_get($data, 'roleplay.fictional') !== true
-                || ! is_array(data_get($data, 'roleplay.facts'))
-                || count(data_get($data, 'roleplay.facts')) < 4)) {
-            $fail('De gezondheidsmissie vereist een expliciet fictieve rolkaart met minimaal vier feiten.');
-        }
-    }
-
-    /** @param array<string, mixed> $data @param list<string> $keys */
-    private function hasKeys(array $data, array $keys): bool
-    {
-        return array_diff($keys, array_keys($data)) === [];
     }
 }

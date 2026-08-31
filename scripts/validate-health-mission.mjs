@@ -40,6 +40,7 @@ const [
 const example = JSON.parse(exampleSource);
 const hubExample = JSON.parse(hubExampleSource);
 const schema = JSON.parse(schemaSource);
+const inspector = await read('app/ContentStudio/PlayableContentInspector.php');
 const stepIds = new Set(example.steps.map(({ id }) => id));
 
 assert(example.scene === 'health_text_dialogue' && example.npc.id === 'npc.elena.ortiz', 'De consulta-identiteit of Elena ontbreekt');
@@ -60,7 +61,7 @@ assert(privacy.includes('Fictief gezondheidsrollenspel') && privacy.includes('ge
 assert(assessor.includes('geen medische beoordeling, diagnose of advies') && !assessor.includes('in een bakkerij.'), 'De taalbeoordelaar is niet veilig scenario-onafhankelijk');
 assert(action.includes("'stamp.first_consulta_conversation'") && action.includes("'madrid.station.preview'"), 'Consultbeloningen of de stationsvooruitblik ontbreken');
 assert(templates.includes("'consulta-elena'") && readiness.includes("'health_text_dialogue'") && readiness.includes("'madrid.consulta.luz'"), 'Content Studio mist de consultstarter, kaartlocatie of runtimecontrole');
-assert(rule.includes("'health_text_dialogue'") && docs.includes('nooit automatisch'), 'De redactionele contract- of publicatiegrens ontbreekt');
+assert(rule.includes('PlayableContentInspector') && inspector.includes("'health_text_dialogue'") && docs.includes('nooit automatisch'), 'De redactionele contract- of publicatiegrens ontbreekt');
 assert(hubExample.hotspots.some(({ id, kind }) => id === 'madrid.consulta.luz' && kind === 'clinic'), 'Consulta La Luz ontbreekt in de Madrid-starter');
 assert(hubView.includes('data-health-route') && hub.includes('healthDay?.action_url'), 'Consulta La Luz reageert niet op de gepubliceerde dag-5-missie');
 assert(progress.includes('healthProgress') && tests.includes('health_data_persisted'), 'Accountvoortgang of de privacyregressietest ontbreekt');

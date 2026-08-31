@@ -15,4 +15,6 @@ return [
     'review_mode' => env('CONTENT_STUDIO_REVIEW_MODE', 'risk_based'),
 
     'demo_actor_email' => env('CONTENT_STUDIO_DEMO_ACTOR_EMAIL'),
+
+    'media_disk' => env('CONTENT_STUDIO_MEDIA_DISK', 'local'),
 ];

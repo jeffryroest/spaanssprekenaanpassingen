@@ -19,6 +19,7 @@ use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -287,9 +288,6 @@ class TaxiMissionTest extends TestCase
             true,
             flags: JSON_THROW_ON_ERROR,
         );
-        if ($runtimeAccess !== null) {
-            $domainData['runtime_access'] = $runtimeAccess;
-        }
         $editor = User::factory()->create(['content_role' => ContentRole::Editor]);
         $reviewer = User::factory()->create(['content_role' => ContentRole::LanguageReviewer]);
         $publisher = User::factory()->create(['content_role' => ContentRole::EditorInChief]);
@@ -322,6 +320,17 @@ class TaxiMissionTest extends TestCase
             reason: 'Geautomatiseerde taxi-missietest.',
             acknowledgeWarnings: true,
         );
+
+        if ($runtimeAccess !== null) {
+            $revision = $node->revisions()->where('version', 1)->sole();
+            $snapshot = $revision->snapshot;
+            $snapshot['domain_data']['runtime_access'] = $runtimeAccess;
+
+            // Simuleer een defect na release buiten het model om; de runtime moet ook dan dicht blijven.
+            DB::table('content_revisions')
+                ->where('id', $revision->getKey())
+                ->update(['snapshot' => json_encode($snapshot, JSON_THROW_ON_ERROR)]);
+        }
 
         return $node->refresh();
     }

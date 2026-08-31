@@ -37,6 +37,8 @@ class StoreContentRequest extends FormRequest
             'summary' => ['nullable', 'string'],
             'body' => ['nullable', 'string'],
             'domain_data' => ['nullable', 'string', new PlayableDomainData($contentType)],
+            'media' => ['nullable', 'array'],
+            'media.*' => ['nullable', 'integer', 'exists:media_assets,id'],
         ];
     }
 }

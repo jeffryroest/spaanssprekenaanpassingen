@@ -1,6 +1,8 @@
 import './game/madrid-hub';
 import './game/panaderia-recorder';
 import './game/panaderia-dialogue';
+import './content-studio/content-builder';
+import './content-studio/content-preview';
 
 const sidebar = document.querySelector('[data-studio-sidebar]');
 const sidebarOverlay = document.querySelector('[data-sidebar-overlay]');

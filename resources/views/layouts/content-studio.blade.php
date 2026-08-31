@@ -43,6 +43,12 @@
                     <x-content-studio.icon name="catalog" />
                     Contentcatalogus
                 </a>
+                <a href="{{ route('content-studio.media.index') }}"
+                   @if (request()->routeIs('content-studio.media.*')) aria-current="page" @endif
+                   class="cs-nav-link {{ request()->routeIs('content-studio.media.*') ? 'cs-nav-link-active' : '' }}">
+                    <x-content-studio.icon name="media" />
+                    Mediabibliotheek
+                </a>
             </div>
 
             <p class="mt-8 px-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-slate-500">Workflow</p>
@@ -121,6 +127,8 @@
                                         Releases
                                     @elseif (request()->routeIs('content-studio.content.index'))
                                         Contentcatalogus
+                                    @elseif (request()->routeIs('content-studio.media.*'))
+                                        Mediabibliotheek
                                     @elseif (request()->routeIs('content-studio.content.create'))
                                         Nieuw concept
                                     @elseif (request()->routeIs('content-studio.content.edit'))

@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ContentStudio\ContentController;
+use App\Http\Controllers\ContentStudio\ContentPreviewController;
 use App\Http\Controllers\ContentStudio\ContentReleaseController;
 use App\Http\Controllers\ContentStudio\ContentReleaseItemController;
 use App\Http\Controllers\ContentStudio\ContentReleasePublicationController;
 use App\Http\Controllers\ContentStudio\ContentReviewController;
 use App\Http\Controllers\ContentStudio\DashboardController;
+use App\Http\Controllers\ContentStudio\MediaAssetController;
 use App\Http\Controllers\ContentStudio\ReviewQueueController;
 use App\Http\Controllers\Game\CompleteHealthMissionController;
 use App\Http\Controllers\Game\CompletePanaderiaMissionController;
@@ -138,12 +140,22 @@ Route::prefix('content-studio')
             ->whereNumber('contentRelease')
             ->name('releases.cancel');
 
+        Route::get('/media', [MediaAssetController::class, 'index'])->name('media.index');
+        Route::post('/media', [MediaAssetController::class, 'store'])->name('media.store');
+        Route::get('/media/{mediaAsset}/bestand', [MediaAssetController::class, 'stream'])
+            ->whereNumber('mediaAsset')
+            ->name('media.stream');
+
         Route::get('/content', [ContentController::class, 'index'])->name('content.index');
         Route::get('/content/create', [ContentController::class, 'create'])->name('content.create');
         Route::post('/content', [ContentController::class, 'store'])->name('content.store');
         Route::get('/content/{contentNode}', [ContentController::class, 'show'])
             ->whereNumber('contentNode')
             ->name('content.show');
+        Route::get('/content/{contentNode}/preview', ContentPreviewController::class)
+            ->whereNumber('contentNode')
+            ->middleware('signed')
+            ->name('content.preview');
         Route::get('/content/{contentNode}/edit', [ContentController::class, 'edit'])
             ->whereNumber('contentNode')
             ->name('content.edit');

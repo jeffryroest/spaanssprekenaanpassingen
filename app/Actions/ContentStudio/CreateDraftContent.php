@@ -2,6 +2,7 @@
 
 namespace App\Actions\ContentStudio;
 
+use App\ContentStudio\ContentMediaSelection;
 use App\Enums\ContentStatus;
 use App\Enums\ContentType;
 use App\Enums\RevisionStatus;
@@ -15,9 +16,12 @@ use Illuminate\Support\Facades\Validator;
 
 final class CreateDraftContent
 {
+    public function __construct(private readonly ContentMediaSelection $mediaSelection) {}
+
     /**
      * @param  array<string, mixed>  $metadata
      * @param  array<string, mixed>  $domainData
+     * @param  array<string, int|string|null>  $media
      */
     public function handle(
         User $actor,
@@ -29,8 +33,10 @@ final class CreateDraftContent
         ?string $body = null,
         array $metadata = [],
         array $domainData = [],
+        array $media = [],
     ): ContentNode {
         Gate::forUser($actor)->authorize('create', ContentNode::class);
+        $selectedMedia = $this->mediaSelection->resolve($contentType, $media);
 
         $validated = Validator::make([
             'slug' => $slug,
@@ -50,7 +56,7 @@ final class CreateDraftContent
             'domain_data' => ['array', new PlayableDomainData($contentType)],
         ])->validate();
 
-        return DB::transaction(function () use ($actor, $contentType, $validated): ContentNode {
+        return DB::transaction(function () use ($actor, $contentType, $validated, $selectedMedia): ContentNode {
             $contentNode = ContentNode::query()->create([
                 'content_type' => $contentType,
                 'slug' => $validated['slug'],
@@ -70,7 +76,15 @@ final class CreateDraftContent
                 'metadata' => $validated['metadata'],
             ]);
 
-            $contentNode->revisions()->create([
+            $mediaSnapshot = $selectedMedia->map(
+                fn ($asset, string $role): array => [
+                    'role' => $role,
+                    'asset_id' => $asset->getKey(),
+                    'asset_uuid' => $asset->uuid,
+                ],
+            )->values()->all();
+
+            $revision = $contentNode->revisions()->create([
                 'version' => 1,
                 'status' => RevisionStatus::Draft,
                 'snapshot' => [
@@ -85,11 +99,21 @@ final class CreateDraftContent
                         'metadata' => $localization->metadata,
                     ]],
                     'domain_data' => $validated['domain_data'],
+                    'media' => $mediaSnapshot,
                 ],
                 'change_summary' => 'Eerste conceptversie',
                 'created_by' => $actor->getKey(),
                 'created_at' => now(),
             ]);
+
+            $sortOrder = 0;
+            foreach ($selectedMedia as $role => $asset) {
+                $revision->mediaAssets()->attach($asset->getKey(), [
+                    'content_node_id' => $contentNode->getKey(),
+                    'role' => (string) $role,
+                    'sort_order' => $sortOrder++,
+                ]);
+            }
 
             AuditLog::recordContentChange(
                 actor: $actor,
@@ -108,7 +132,7 @@ final class CreateDraftContent
                 ],
             );
 
-            return $contentNode->load(['localizations', 'revisions']);
+            return $contentNode->load(['localizations', 'revisions.mediaAssets']);
         });
     }
 }

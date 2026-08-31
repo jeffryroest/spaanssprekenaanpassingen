@@ -27,10 +27,10 @@ class PublishedConversationTurnResolverTest extends TestCase
     {
         $editor = User::factory()->create(['content_role' => ContentRole::Editor]);
         $domainData = app(PlayableContentTemplates::class)->find('panaderia')['domain_data'];
-        $domainData['repair']['terms'] = ['¿Puede repetir?'];
+        $domainData['repair']['terms'] = ['¿Puede repetir?', 'Más despacio, por favor.'];
         $domainData['mission']['start_step'] = 'greeting';
         $domainData['steps'][0]['id'] = 'greeting';
-        $domainData['steps'][0]['npc_line'] = ['es' => 'Hola, buenos días.'];
+        $domainData['steps'][0]['npc_line'] = ['es' => 'Hola, buenos días.', 'nl' => 'Hallo, goedemorgen.'];
         $domainData['steps'][0]['prompt'] = 'Begroet Lucía.';
         $domainData['steps'][0]['hint'] = 'Zeg buenos días.';
         $domainData['steps'][0]['options'][0]['requirements'] = [['hola', 'buenos días']];
@@ -70,7 +70,7 @@ class PublishedConversationTurnResolverTest extends TestCase
         $this->assertSame('la-espiga-lucia', $context->scenario);
         $this->assertSame(1, $context->contentVersion);
         $this->assertSame('Hola, buenos días.', $context->npcLine);
-        $this->assertSame(['¿Puede repetir?'], $context->repairTerms);
+        $this->assertSame(['¿Puede repetir?', 'Más despacio, por favor.'], $context->repairTerms);
     }
 
     public function test_unknown_step_is_rejected_against_published_content(): void

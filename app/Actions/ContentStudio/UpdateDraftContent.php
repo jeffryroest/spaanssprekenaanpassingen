@@ -2,6 +2,7 @@
 
 namespace App\Actions\ContentStudio;
 
+use App\ContentStudio\ContentMediaSelection;
 use App\Enums\ContentStatus;
 use App\Enums\RevisionStatus;
 use App\Models\AuditLog;
@@ -15,7 +16,9 @@ use Illuminate\Validation\ValidationException;
 
 final class UpdateDraftContent
 {
-    /** @param array<string, mixed> $domainData */
+    public function __construct(private readonly ContentMediaSelection $mediaSelection) {}
+
+    /** @param array<string, mixed> $domainData @param array<string, int|string|null> $media */
     public function handle(
         User $actor,
         ContentNode $contentNode,
@@ -26,8 +29,10 @@ final class UpdateDraftContent
         ?string $summary = null,
         ?string $body = null,
         array $domainData = [],
+        array $media = [],
     ): ContentNode {
         Gate::forUser($actor)->authorize('update', $contentNode);
+        $selectedMedia = $this->mediaSelection->resolve($contentNode->content_type, $media);
 
         $validated = Validator::make([
             'slug' => $slug,
@@ -45,7 +50,7 @@ final class UpdateDraftContent
             'domain_data' => ['array', new PlayableDomainData($contentNode->content_type)],
         ])->validate();
 
-        return DB::transaction(function () use ($actor, $contentNode, $expectedVersion, $validated): ContentNode {
+        return DB::transaction(function () use ($actor, $contentNode, $expectedVersion, $validated, $selectedMedia): ContentNode {
             $lockedNode = ContentNode::query()
                 ->with(['localizations', 'revisions'])
                 ->lockForUpdate()
@@ -89,6 +94,14 @@ final class UpdateDraftContent
                 'body' => $validated['body'],
             ]);
 
+            $mediaSnapshot = $selectedMedia->map(
+                fn ($asset, string $role): array => [
+                    'role' => $role,
+                    'asset_id' => $asset->getKey(),
+                    'asset_uuid' => $asset->uuid,
+                ],
+            )->values()->all();
+
             $snapshot = [
                 'schema_version' => $lockedNode->schema_version,
                 'content_type' => $lockedNode->content_type->value,
@@ -101,9 +114,10 @@ final class UpdateDraftContent
                     'metadata' => $localization->metadata,
                 ]],
                 'domain_data' => $validated['domain_data'],
+                'media' => $mediaSnapshot,
             ];
 
-            $lockedNode->revisions()->create([
+            $revision = $lockedNode->revisions()->create([
                 'version' => $newVersion,
                 'status' => RevisionStatus::Draft,
                 'snapshot' => $snapshot,
@@ -112,7 +126,16 @@ final class UpdateDraftContent
                 'created_at' => now(),
             ]);
 
-            $lockedNode->refresh()->load(['localizations', 'revisions']);
+            $sortOrder = 0;
+            foreach ($selectedMedia as $role => $asset) {
+                $revision->mediaAssets()->attach($asset->getKey(), [
+                    'content_node_id' => $lockedNode->getKey(),
+                    'role' => (string) $role,
+                    'sort_order' => $sortOrder++,
+                ]);
+            }
+
+            $lockedNode->refresh()->load(['localizations', 'revisions.mediaAssets']);
 
             AuditLog::recordContentChange(
                 actor: $actor,
