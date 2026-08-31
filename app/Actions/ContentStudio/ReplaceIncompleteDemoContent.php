@@ -72,7 +72,7 @@ final class ReplaceIncompleteDemoContent
 
             if ($lockedNode->content_type !== $template['content_type']
                 || $lockedNode->slug !== $template['slug']
-                || ! $this->mayReplace($lockedNode, $currentRevision, $localization)) {
+                || $this->mayReplace($lockedNode, $currentRevision, $localization) === false) {
                 throw ValidationException::withMessages([
                     'content' => 'Alleen een ongepubliceerde, onvolledige demoplaceholder zonder media of releasekoppeling kan worden vervangen.',
                 ]);
@@ -182,7 +182,7 @@ final class ReplaceIncompleteDemoContent
         ?ContentLocalization $localization,
     ): bool
     {
-        return ! $contentNode->trashed()
+        return $contentNode->trashed() === false
             && $contentNode->published_at === null
             && in_array($contentNode->status, [
                 ContentStatus::Draft,
