@@ -36,6 +36,7 @@ const [action, catalog, media, templates, readiness, request, rule, exampleSourc
 ]);
 const example = JSON.parse(exampleSource);
 const schema = JSON.parse(schemaSource);
+const progressSchema = JSON.parse(await read('docs/contracts/player-progress-v1.schema.json'));
 const inspector = await read('app/ContentStudio/PlayableContentInspector.php');
 const installer = await read('app/ContentStudio/DemoContentInstaller.php');
 const contentController = await read('app/Http/Controllers/Game/EntitledConversationController.php');
@@ -49,6 +50,7 @@ assert(example.steps.length === 7 && stepIds.size === 7, 'De stationsmissie moet
 assert(['A0', 'A1', 'A2'].every((level) => stepIds.has(example.level_branches[level])), 'Ieder niveau mist een stationscomplicatie');
 assert(example.steps.every((step) => step.choices.length >= 2), 'Iedere stationsbeurt moet optionele voorbeeldsteun bieden');
 assert(schema.properties?.scene?.const === 'station_text_dialogue' && schema.properties?.journey?.properties?.fictional?.const === true, 'Het stationscontract begrenst scène of oefenreis niet');
+assert(progressSchema.$defs?.mission?.properties?.key?.enum?.includes('mission.madrid.station.ticket'), 'Het voortgangscontract accepteert de stationsmissie niet');
 assert(example.runtime_access?.visibility === 'entitled' && schema.properties?.runtime_access?.properties?.entitlement?.const === 'trial_week', 'Stationscontent moet afgeschermde proefweekcontent zijn');
 assert(routes.includes("Route::view('/spelen/madrid/station'") && routes.includes("Route::post('/spelen/madrid/station/voltooien'") && routes.includes('entitled:trial_week'), 'De stationsroutes missen hun proefweekgrens');
 assert(routes.includes("Route::get('/spelen/madrid/station/media/{version}/{role}'") && contentController.includes("$request->route('mediaRouteName')"), 'De privécontent koppelt stationsmedia niet aan de gepubliceerde revisie');
