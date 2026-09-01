@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Billing\StartTrialWeekController;
 use App\Http\Controllers\ContentStudio\ContentController;
 use App\Http\Controllers\ContentStudio\ContentPreviewController;
 use App\Http\Controllers\ContentStudio\ContentReleaseController;
@@ -50,6 +51,9 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 Route::middleware('auth')->group(function (): void {
     Route::get('/proefweek', [TrialWeekController::class, 'show'])
         ->name('trial-week.show');
+    Route::post('/proefweek/start', StartTrialWeekController::class)
+        ->middleware('throttle:trial-activation')
+        ->name('trial-week.start');
     Route::get('/spelen/proefweek/status', [TrialWeekController::class, 'json'])
         ->name('game.trial-week.status');
     Route::get('/mijn-voortgang', [PlayerProgressController::class, 'show'])

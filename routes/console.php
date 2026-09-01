@@ -1,9 +1,12 @@
 <?php
 
 use App\Actions\ContentStudio\AssignContentRole;
+use App\Billing\MollieMonthlyOffer;
 use App\ContentStudio\DemoContentInstaller;
+use App\Enums\BillingInterval;
 use App\Enums\ContentPermission;
 use App\Enums\ContentRole;
+use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -126,3 +129,45 @@ Artisan::command('game:install-demo-content
 
     return Command::SUCCESS;
 })->purpose('Installeer het versiegebonden speelbare demopakket als veilige conceptcontent');
+
+Artisan::command('subscriptions:install-mollie-monthly {--dry-run : Controleer zonder de database te wijzigen}', function () {
+    $offer = app(MollieMonthlyOffer::class);
+    $configuration = $offer->configuration();
+    $existing = SubscriptionPlan::withTrashed()
+        ->where('code', $configuration['code'])
+        ->first();
+
+    if ($existing !== null) {
+        if ($existing->trashed() || ! $offer->matches($existing)) {
+            $this->error('Het bestaande maandplan wijkt af. Er is niets overschreven; controleer het plan handmatig.');
+
+            return Command::FAILURE;
+        }
+
+        $this->info('Het Mollie-maandplan is al exact en actief: € 9,95 per maand.');
+
+        return Command::SUCCESS;
+    }
+
+    if ($this->option('dry-run')) {
+        $this->comment('Controle voltooid: het plan kan als € 9,95 per maand worden geïnstalleerd.');
+
+        return Command::SUCCESS;
+    }
+
+    SubscriptionPlan::query()->create([
+        'code' => $configuration['code'],
+        'name' => $configuration['name'],
+        'billing_interval' => BillingInterval::from($configuration['billing_interval']),
+        'currency' => $configuration['currency'],
+        'amount_minor' => $configuration['amount_minor'],
+        'trial_days' => $configuration['trial_days'],
+        'provider_price_ref' => null,
+        'entitlements' => $configuration['entitlements'],
+        'active' => true,
+    ]);
+
+    $this->info('Het Mollie-maandplan is geïnstalleerd: € 9,95 per maand. Live betaling staat nog los hiervan.');
+
+    return Command::SUCCESS;
+})->purpose('Installeer het goedgekeurde Mollie-maandplan veilig en idempotent');
