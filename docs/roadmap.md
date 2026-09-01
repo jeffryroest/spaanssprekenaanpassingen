@@ -45,7 +45,8 @@
 - **3B5 — visuele gouden route (gerealiseerd):** gereviewde scène- en personage-assets via de runtime, drie zichtbare Lucía-reacties, tastbare beloningspresentatie, veranderde Madrid-hub en één volledig geteste Madrid → La Espiga-spelersreis.
 - **3B5.1 — veilige productieactivatie (gerealiseerd):** expliciete reconciliatie van onvolledige, nooit gepubliceerde demoplaceholders naar een nieuwe conceptrevisie, met behoud van revisie-, review- en auditgeschiedenis en een harde blokkade voor echte of releasegebonden content.
 - **3B6 — station (gerealiseerd):** fictieve treinreis regelen met Mateo via de auteurvriendelijke Content Studio, drie niveaupaden, spreken/tekst, gereviewde stationsmedia en duurzame dag-6-beloningen.
-- **3C — persoonlijke continuïteit:** gespreide herhaling en minimaal, spelrelevant NPC-geheugen.
+- **3C1 — persoonlijke herhaling (gerealiseerd):** speelbare dag-4-kaartensessie uit werkelijk voltooide, nog gepubliceerde routes, transparante intervalplanning en een privacybewuste, idempotente dagbeloning.
+- **3C2 — minimaal NPC-geheugen:** spelrelevante terugkeerherkenning uit bestaande structurele missievoortgang, zonder vrije gespreksinhoud te bewaren.
 - **3D — conversie:** proefactivatie, paywall, provider-events en abonnement na expliciete besluiten over prijs en voorwaarden.
 
 **Beslispoort:** retentie, spreken en conversie zijn meetbaar.

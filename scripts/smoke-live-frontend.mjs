@@ -31,11 +31,11 @@ const [cssResponse, jsResponse, hubResponse, sceneResponse, luciaResponse, stati
 ]);
 const [css, js] = await Promise.all([cssResponse.text(), jsResponse.text()]);
 
-if (!cssResponse.ok || !css.includes('.world-home-body') || !css.includes('.hub-world-return') || !css.includes('.bakery-lucia-frame') || !css.includes('.station-journey-card')) {
+if (!cssResponse.ok || !css.includes('.world-home-body') || !css.includes('.hub-world-return') || !css.includes('.bakery-lucia-frame') || !css.includes('.station-journey-card') || !css.includes('.review-stage')) {
   throw new Error('De live CSS is verouderd of onvolledig.');
 }
 
-if (!jsResponse.ok || !js.includes('madrid-mission-preparation') || !js.includes('npc_expression_sheet') || !js.includes('data-journey-card') || !js.includes('la-espiga-complete')) {
+if (!jsResponse.ok || !js.includes('madrid-mission-preparation') || !js.includes('npc_expression_sheet') || !js.includes('data-journey-card') || !js.includes('data-review-rating') || !js.includes('la-espiga-complete')) {
   throw new Error('De live JavaScript is verouderd of onvolledig.');
 }
 

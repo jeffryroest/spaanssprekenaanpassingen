@@ -25,7 +25,7 @@ Deze fase activeert **geen** proefperiode, prijs, checkout of betaalprovider. Da
 | `cancelled` | Tot exclusief het effectieve periode-einde |
 | `paused` / `expired` | Geen toegang |
 
-Een proefweek gebruikt het recht `trial_week`. Tijdens `trialing` wordt maximaal de huidige kalenderdag van de proefperiode ontsloten. Een actief abonnement kan alle dagen bereiken. Ongepubliceerde missies blijven altijd `planned`, ook als het account er recht op heeft.
+Een proefweek gebruikt het recht `trial_week`. Tijdens `trialing` wordt maximaal de huidige kalenderdag van de proefperiode ontsloten. Een actief abonnement kan alle dagen bereiken. Ongepubliceerde missies blijven altijd `planned`, ook als het account er recht op heeft. Dag 4 is een ingebouwde persoonlijke herhalingsroute: die wordt vanaf de juiste toegangsdag beschikbaar en stelt uitsluitend reeds gespeelde, nog gepubliceerde broncontent samen.
 
 ## Privacy en veiligheid
 
@@ -40,5 +40,6 @@ De migratie verwijdert eerst `subscriptions` en daarna `subscription_plans`. Er 
 ## Vervolg binnen fase 3
 
 1. **3B6 — station (gerealiseerd):** als gereviewde Content Studio-content met fictieve oefenreis en versiegebonden media.
-2. **3C — persoonlijke continuïteit:** gespreide herhaling en minimaal NPC-geheugen.
-3. **3D — conversie:** proefactivatie, paywall, provider-webhooks en abonnement na expliciete besluiten over prijs en voorwaarden.
+2. **3C1 — persoonlijke herhaling (gerealiseerd):** maximaal vijf vervallen of nieuwe kaarten op dag 4, zonder persoonlijke antwoordopslag.
+3. **3C2 — minimaal NPC-geheugen:** terugkeerherkenning uit structurele voortgang.
+4. **3D — conversie:** proefactivatie, paywall, provider-webhooks en abonnement na expliciete besluiten over prijs en voorwaarden.

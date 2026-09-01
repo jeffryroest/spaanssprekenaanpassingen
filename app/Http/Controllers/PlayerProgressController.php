@@ -29,6 +29,11 @@ class PlayerProgressController extends Controller
                 user: $request->user(),
                 missionKey: PlayerProgressSnapshot::STATION_MISSION_KEY,
             ),
+            'reviewProgress' => $snapshot->forUser(
+                user: $request->user(),
+                missionKey: PlayerProgressSnapshot::PERSONAL_REVIEW_MISSION_KEY,
+                spokenGoalTarget: 3,
+            ),
         ]);
     }
 

@@ -26,6 +26,7 @@ Antwoorden, transcripties, audio, rubricfeedback, door de client berekende valut
 | `mission_attempts` | controleerbare voltooihistorie plus minimale route-evidence | append-only |
 | `game_ledger` | iedere valutamutatie en saldo erna | append-only, unieke idempotency key |
 | `user_rewards` | stempel, verzamelitem, badge en ontgrendelingen | onveranderlijk, uniek per reward key |
+| `user_practice_items` | volgende herhaaldatum en interval per structurele kaart-id | snelle projectie, uniek per gebruiker en kaart |
 
 De canonieke architectuur voorziet later typespecifieke `missions`, `mission_steps`, `item_definitions` en `user_inventory`. Die tabellen zijn nog niet gemigreerd. Deze vertical slice verwijst daarom aantoonbaar naar de gebruikte gepubliceerde `conversation_scenario` en versie. `user_rewards` is de tijdelijke runtimeprojectie voor zowel items als niet-itembeloningen; de latere typespecifieke migratie moet de sleutels behouden en backfillbaar zijn.
 
@@ -48,6 +49,8 @@ De canonieke architectuur voorziet later typespecifieke `missions`, `mission_ste
 ## Privacy
 
 Accountopslag bevat stap-id's, bron (`speech`, `typed_assist`, `choice_assist`), hulpindicator, afgeleide states, valuta en beloningssleutels. Ruwe audio, antwoordtekst, transcript, confidence, correcties en AI-feedback worden niet in deze voortgangstabellen opgeslagen of teruggegeven.
+
+Vanaf fase 3C1 bewaart de persoonlijke herhaling daarnaast een gehashte kaart-id, bronmissie/-revisie, stap-id, zelfbeoordeling, interval en volgende datum. De vluchtige spreek- of tekstpoging wordt ook daar niet opgeslagen. Dagelijkse herhalingsbeloningen gebruiken unieke ledgerkeys per gebruiker, datum en valuta.
 
 ## Acceptatiecriteria
 
