@@ -14,7 +14,7 @@ Deze tussenfase maakt de bestaande technische vertical slice herkenbaar speelbaa
 5. gesprek met Lucía via spreken of tekst;
 6. beloning en zichtbare ontgrendeling in de hub.
 
-De taxi, het restaurant, het fictieve gezondheidsrollenspel en de stationsmissie gebruiken inmiddels deze afgeschermde spelerslaag. De slotmissie en persoonlijke herhaling blijven de volgende uitbreidingen.
+De taxi, het restaurant, de persoonlijke dag-4-herhaling, het fictieve gezondheidsrollenspel en de stationsmissie gebruiken inmiddels deze afgeschermde spelerslaag. De slotmissie en minimaal NPC-geheugen blijven de volgende uitbreidingen.
 
 ## Content Studio
 
@@ -56,6 +56,7 @@ Het dashboard toont per vereist runtimecontract of het ontbreekt, in concept/rev
 - Een gast kan vanaf `/` via Madrid de volledige La Espiga-dialoog bereiken en afronden.
 - Een gebruiker met `trial_week`-recht kan de taximissie blijven spelen.
 - Een gebruiker met `trial_week`-recht kan dag 3 starten zodra `restaurant-el-reloj` is gereviewd en in productie gepubliceerd.
+- Een gebruiker met `trial_week`-recht kan dag 4 spelen met maximaal vijf kaarten uit eigen voltooide, nog gepubliceerde routes.
 - Een gebruiker met `trial_week`-recht kan dag 5 starten zodra `consulta-elena` is gereviewd en in productie gepubliceerd.
 - Een gebruiker met `trial_week`-recht kan dag 6 starten zodra `estacion-mateo` met beide vereiste mediarollen is gereviewd en in productie gepubliceerd.
 - Ontbrekende productiecontent toont een herstelbare fout en nooit een eindeloze laadstatus.

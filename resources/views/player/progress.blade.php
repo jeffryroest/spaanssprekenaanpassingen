@@ -167,6 +167,29 @@
             </div>
         </section>
 
+        <section class="mt-6 rounded-3xl border border-[#a9472b]/15 bg-[#fff8eb] p-6 shadow-sm sm:p-8" aria-labelledby="review-progress-title">
+            <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.15em] text-[#a9472b]">Dag 4 · Mi repaso</p>
+                    <h2 id="review-progress-title" class="mt-2 text-2xl font-black">Mijn persoonlijke herhaling</h2>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-[#76685f]">Haal maximaal vijf zinnen uit gespeelde missies terug uit je geheugen. Moeilijke kaarten verschijnen eerder opnieuw.</p>
+                </div>
+                <span class="w-fit rounded-full px-3 py-1 text-xs font-black {{ $reviewProgress['mission']['status'] === 'completed' ? 'bg-[#f2dfc6] text-[#8b4729]' : 'bg-[#efe4d5] text-[#7b6558]' }}">
+                    {{ $reviewProgress['mission']['status'] === 'completed' ? 'Vandaag geoefend' : 'Nog te spelen' }}
+                </span>
+            </div>
+
+            <dl class="mt-6 grid gap-3 sm:grid-cols-3">
+                <div class="rounded-2xl bg-[#f3e8d9] p-4"><dt class="text-xs font-bold text-[#806e63]">Sessies</dt><dd class="mt-1 text-xl font-black">{{ $reviewProgress['mission']['completion_count'] }}</dd></div>
+                <div class="rounded-2xl bg-[#f3e8d9] p-4"><dt class="text-xs font-bold text-[#806e63]">Dagscore</dt><dd class="mt-1 text-xl font-black">{{ $reviewProgress['mission']['best_xp'] }} XP</dd></div>
+                <div class="rounded-2xl bg-[#f3e8d9] p-4"><dt class="text-xs font-bold text-[#806e63]">Gesproken</dt><dd class="mt-1 text-xl font-black">{{ min($reviewProgress['mission']['best_spoken_turns'], $reviewProgress['mission']['spoken_goal_target']) }}/{{ $reviewProgress['mission']['spoken_goal_target'] }}</dd></div>
+            </dl>
+
+            <a href="{{ route('game.madrid.review') }}" class="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl bg-[#a9472b] px-5 text-sm font-black text-white hover:bg-[#913b25] focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2">
+                {{ $reviewProgress['mission']['status'] === 'completed' ? 'Bekijk wat nu aan de beurt is' : 'Open dag 4' }}
+            </a>
+        </section>
+
         <section class="mt-6 rounded-3xl border border-[#315d47]/15 bg-[#f8fbf4] p-6 shadow-sm sm:p-8" aria-labelledby="health-progress-title">
             <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
                 <div>
@@ -223,7 +246,7 @@
             </div>
         </section>
 
-        <p class="mt-8 text-center text-xs leading-5 text-[#8a7b72]">Voor voortgang bewaren we alleen missiestappen, invoerbron, hulpgebruik en beloningsmutaties — geen opname, antwoord, transcript, gezondheids- of reisgegevens of AI-feedback.</p>
+        <p class="mt-8 text-center text-xs leading-5 text-[#8a7b72]">Voor voortgang bewaren we alleen missiestappen, invoerbron, hulpgebruik, herhalingsplanning en beloningsmutaties — geen opname, oefenantwoord, transcript, gezondheids- of reisgegevens of AI-feedback.</p>
     </main>
 </body>
 </html>

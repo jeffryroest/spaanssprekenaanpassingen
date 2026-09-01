@@ -48,7 +48,7 @@ final class TrialWeekCatalog
             ['day' => 1, 'mission_key' => 'mission.madrid.panaderia.breakfast', 'title_es' => 'La panadería', 'title_nl' => 'Bestel je ontbijt', 'setting' => 'La Espiga · Lucía', 'route' => 'game.madrid.panaderia', 'conversation_slug' => null, 'expected_scene' => null],
             ['day' => 2, 'mission_key' => 'mission.madrid.taxi.ride', 'title_es' => 'En taxi', 'title_nl' => 'Vertel waar je heen wilt', 'setting' => 'Madrid · Diego', 'route' => 'game.madrid.taxi', 'conversation_slug' => 'taxi-diego', 'expected_scene' => 'taxi_text_dialogue'],
             ['day' => 3, 'mission_key' => 'mission.madrid.restaurant.order', 'title_es' => 'En el restaurante', 'title_nl' => 'Vraag een tafel en bestel', 'setting' => 'Café El Reloj · Carmen', 'route' => 'game.madrid.restaurant', 'conversation_slug' => 'restaurant-el-reloj', 'expected_scene' => 'restaurant_text_dialogue'],
-            ['day' => 4, 'mission_key' => 'mission.madrid.review.personal', 'title_es' => 'Mi repaso', 'title_nl' => 'Persoonlijke herhaling', 'setting' => 'Woorden en zinnen op maat', 'route' => 'trial-week.show', 'conversation_slug' => null, 'expected_scene' => null],
+            ['day' => 4, 'mission_key' => 'mission.madrid.review.personal', 'title_es' => 'Mi repaso', 'title_nl' => 'Persoonlijke herhaling', 'setting' => 'Woorden en zinnen op maat', 'route' => 'game.madrid.review', 'conversation_slug' => null, 'expected_scene' => null],
             ['day' => 5, 'mission_key' => 'mission.madrid.health.appointment', 'title_es' => 'En la consulta', 'title_nl' => 'Leg een fictieve klacht uit', 'setting' => 'Consulta La Luz · Elena', 'route' => 'game.madrid.health', 'conversation_slug' => 'consulta-elena', 'expected_scene' => 'health_text_dialogue'],
             ['day' => 6, 'mission_key' => 'mission.madrid.station.ticket', 'title_es' => 'En la estación', 'title_nl' => 'Regel je treinreis', 'setting' => 'Estación del Centro · Mateo', 'route' => 'game.madrid.station', 'conversation_slug' => 'estacion-mateo', 'expected_scene' => 'station_text_dialogue'],
             ['day' => 7, 'mission_key' => 'mission.madrid.week.final', 'title_es' => 'El reto final', 'title_nl' => 'Rond je proefweek af', 'setting' => 'Madrid · slotmissie', 'route' => 'trial-week.show', 'conversation_slug' => null, 'expected_scene' => null],
@@ -58,7 +58,7 @@ final class TrialWeekCatalog
     /** @param array<string, mixed> $day */
     private function contentState(array $day): string
     {
-        if ($day['day'] === 1) {
+        if (in_array($day['day'], [1, 4], true)) {
             return 'published';
         }
 

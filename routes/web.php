@@ -12,11 +12,13 @@ use App\Http\Controllers\ContentStudio\MediaAssetController;
 use App\Http\Controllers\ContentStudio\ReviewQueueController;
 use App\Http\Controllers\Game\CompleteHealthMissionController;
 use App\Http\Controllers\Game\CompletePanaderiaMissionController;
+use App\Http\Controllers\Game\CompletePersonalReviewController;
 use App\Http\Controllers\Game\CompleteRestaurantMissionController;
 use App\Http\Controllers\Game\CompleteStationMissionController;
 use App\Http\Controllers\Game\CompleteTaxiMissionController;
 use App\Http\Controllers\Game\EntitledConversationController;
 use App\Http\Controllers\Game\EntitledConversationMediaController;
+use App\Http\Controllers\Game\PersonalReviewController;
 use App\Http\Controllers\Game\SpeechTranscriptionController;
 use App\Http\Controllers\Game\TurnFeedbackController;
 use App\Http\Controllers\PlayerProgressController;
@@ -91,6 +93,19 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/spelen/madrid/restaurant/voltooien', CompleteRestaurantMissionController::class)
         ->middleware(['entitled:trial_week', 'throttle:mission-completions'])
         ->name('game.madrid.restaurant.complete');
+
+    Route::get('/spelen/madrid/herhaling', [PersonalReviewController::class, 'show'])
+        ->middleware('entitled:trial_week')
+        ->name('game.madrid.review');
+    Route::get('/spelen/madrid/herhaling/deck', [PersonalReviewController::class, 'json'])
+        ->middleware(['entitled:trial_week', 'throttle:120,1'])
+        ->name('game.madrid.review.deck');
+    Route::post('/spelen/madrid/herhaling/transcriptie', SpeechTranscriptionController::class)
+        ->middleware(['entitled:trial_week', 'throttle:speech-transcriptions'])
+        ->name('game.madrid.review.transcription');
+    Route::post('/spelen/madrid/herhaling/voltooien', CompletePersonalReviewController::class)
+        ->middleware(['entitled:trial_week', 'throttle:mission-completions'])
+        ->name('game.madrid.review.complete');
 
     Route::view('/spelen/madrid/gezondheid', 'game.health')
         ->middleware('entitled:trial_week')
