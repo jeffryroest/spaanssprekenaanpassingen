@@ -252,6 +252,28 @@ if (source && root) {
             }, { multiline: true, wide: true, rows: 5, help: 'Eén regel per detail: label Spaans | label Nederlands | waarde Spaans | waarde Nederlands.' });
         }
 
+        if (data.scene === 'final_text_dialogue') {
+            const memory = data.memory ??= { returning_greeting: {}, first_greeting: {}, recap_sources: [] };
+            memory.returning_greeting ??= {};
+            memory.first_greeting ??= {};
+            memory.recap_sources ??= [];
+            const memoryBody = section('NPC-herkenning', 'Alleen voltooide missie-id’s mogen de terugkeer en terugblik bepalen. Vrije spelersinvoer is nooit een geheugenbron.', true);
+            textField(memoryBody, 'Terugkerende NPC-id', memory.returning_npc_id, (value) => memory.returning_npc_id = value, { readonly: true });
+            textField(memoryBody, 'Bronmissie', memory.source_mission_key, (value) => memory.source_mission_key = value, { readonly: true });
+            textField(memoryBody, 'Begroeting terugkeer · Spaans', memory.returning_greeting.es, (value) => memory.returning_greeting.es = value, { multiline: true, lang: 'es' });
+            textField(memoryBody, 'Begroeting terugkeer · Nederlands', memory.returning_greeting.nl, (value) => memory.returning_greeting.nl = value, { multiline: true });
+            textField(memoryBody, 'Begroeting eerste bezoek · Spaans', memory.first_greeting.es, (value) => memory.first_greeting.es = value, { multiline: true, lang: 'es' });
+            textField(memoryBody, 'Begroeting eerste bezoek · Nederlands', memory.first_greeting.nl, (value) => memory.first_greeting.nl = value, { multiline: true });
+            textField(memoryBody, 'Privacytoelichting', memory.privacy_notice, (value) => memory.privacy_notice = value, { multiline: true, wide: true });
+            textField(memoryBody, 'Terugblikbronnen', memory.recap_sources.map((source) => `${source.id ?? ''} | ${source.mission_key ?? ''} | ${source.label?.es ?? ''} | ${source.label?.nl ?? ''}`).join('\n'), (value) => {
+                memory.recap_sources = value.split('\n').map((line) => line.split('|').map((part) => part.trim())).filter((parts) => parts[0]).map(([id, missionKey, labelEs, labelNl]) => ({
+                    id,
+                    mission_key: missionKey ?? '',
+                    label: { es: labelEs ?? '', nl: labelNl ?? '' },
+                }));
+            }, { multiline: true, wide: true, rows: 6, help: 'Eén regel per ontmoeting: NPC-id | missie-id | label Spaans | label Nederlands.' });
+        }
+
         const access = section('Toegang en niveauroutes', 'Koppel ieder niveau aan een bestaande vertakkingsstap.');
         data.runtime_access ??= {};
         const isPublic = data.scene === 'panaderia_text_dialogue';

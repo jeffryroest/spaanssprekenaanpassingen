@@ -53,14 +53,14 @@ class DemoContentInstallerTest extends TestCase
             '--actor' => $administrator->email,
         ])->assertSuccessful();
 
-        $this->assertDatabaseCount('content_nodes', 6);
-        $this->assertDatabaseCount('content_revisions', 6);
+        $this->assertDatabaseCount('content_nodes', 7);
+        $this->assertDatabaseCount('content_revisions', 7);
         $this->assertDatabaseCount('media_assets', 5);
-        $this->assertDatabaseCount('content_media', 5);
-        $this->assertDatabaseCount('audit_logs', 11);
-        $this->assertSame(6, ContentNode::query()->where('status', ContentStatus::Draft->value)->count());
+        $this->assertDatabaseCount('content_media', 7);
+        $this->assertDatabaseCount('audit_logs', 12);
+        $this->assertSame(7, ContentNode::query()->where('status', ContentStatus::Draft->value)->count());
 
-        foreach (['madrid', 'la-espiga-lucia', 'taxi-diego', 'restaurant-el-reloj', 'consulta-elena', 'estacion-mateo'] as $slug) {
+        foreach (['madrid', 'la-espiga-lucia', 'taxi-diego', 'restaurant-el-reloj', 'consulta-elena', 'estacion-mateo', 'madrid-final-lucia'] as $slug) {
             $this->assertDatabaseHas('content_nodes', ['slug' => $slug]);
         }
 
@@ -68,11 +68,11 @@ class DemoContentInstallerTest extends TestCase
             '--actor' => $administrator->email,
         ])->assertSuccessful();
 
-        $this->assertDatabaseCount('content_nodes', 6);
-        $this->assertDatabaseCount('content_revisions', 6);
+        $this->assertDatabaseCount('content_nodes', 7);
+        $this->assertDatabaseCount('content_revisions', 7);
         $this->assertDatabaseCount('media_assets', 5);
-        $this->assertDatabaseCount('content_media', 5);
-        $this->assertDatabaseCount('audit_logs', 11);
+        $this->assertDatabaseCount('content_media', 7);
+        $this->assertDatabaseCount('audit_logs', 12);
     }
 
     public function test_installer_safely_upgrades_an_untouched_older_madrid_demo_with_visual_media(): void
@@ -100,7 +100,7 @@ class DemoContentInstallerTest extends TestCase
             ['map_background'],
             $madrid->revisions()->where('version', 2)->firstOrFail()->mediaAssets()->get()->pluck('pivot.role')->all(),
         );
-        $this->assertDatabaseCount('content_nodes', 6);
+        $this->assertDatabaseCount('content_nodes', 7);
         $this->assertDatabaseCount('media_assets', 5);
     }
 
@@ -129,7 +129,7 @@ class DemoContentInstallerTest extends TestCase
 
         $this->assertSame('Handmatig aangepaste samenvatting.', $contentNode->fresh()->defaultLocalization()->summary);
         $this->assertSame(2, $contentNode->fresh()->current_version);
-        $this->assertDatabaseCount('content_nodes', 6);
+        $this->assertDatabaseCount('content_nodes', 7);
     }
 
     public function test_administrator_can_explicitly_replace_incomplete_unpublished_review_placeholders(): void
@@ -185,10 +185,10 @@ class DemoContentInstallerTest extends TestCase
             '--confirm' => 'OVERSCHRIJVEN',
         ])->assertSuccessful();
 
-        $this->assertDatabaseCount('content_nodes', 6);
-        $this->assertDatabaseCount('content_revisions', 8);
+        $this->assertDatabaseCount('content_nodes', 7);
+        $this->assertDatabaseCount('content_revisions', 9);
         $this->assertDatabaseCount('media_assets', 5);
-        $this->assertDatabaseCount('content_media', 5);
+        $this->assertDatabaseCount('content_media', 7);
 
         foreach ([
             'madrid' => 'madrid_hub',
@@ -305,7 +305,7 @@ class DemoContentInstallerTest extends TestCase
 
         $this->seed(PlayableDemoContentSeeder::class);
 
-        $this->assertDatabaseCount('content_nodes', 6);
+        $this->assertDatabaseCount('content_nodes', 7);
     }
 
     public function test_default_seeder_does_not_create_a_fixed_test_account_or_content_without_configuration(): void

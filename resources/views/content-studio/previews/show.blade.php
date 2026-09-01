@@ -129,6 +129,19 @@
                                     </section>
                                 @endif
 
+                                @if($domainData['scene'] === 'final_text_dialogue')
+                                    <section class="mt-5 rounded-2xl border border-[#8b3d2b]/20 bg-[#fff3df] p-4" aria-labelledby="preview-memory-title">
+                                        <p class="text-xs font-black uppercase tracking-[0.14em] text-[#8b3d2b]">Structureel NPC-geheugen</p>
+                                        <h3 id="preview-memory-title" class="mt-2 font-black text-[#572a22]" lang="es">{{ data_get($domainData, 'memory.returning_greeting.es') }}</h3>
+                                        <ul class="mt-3 grid gap-2 sm:grid-cols-2">
+                                            @foreach(data_get($domainData, 'memory.recap_sources', []) as $source)
+                                                <li class="rounded-xl bg-white p-3 text-sm font-bold text-[#735945]">{{ data_get($source, 'label.nl') }}</li>
+                                            @endforeach
+                                        </ul>
+                                        <p class="mt-3 text-xs leading-5 text-[#735945]">{{ data_get($domainData, 'memory.privacy_notice') }}</p>
+                                    </section>
+                                @endif
+
                                 <div data-preview-step class="mt-6" aria-live="polite"></div>
                                 <div class="mt-5">
                                     <label for="preview-answer" class="block text-sm font-black text-[#283d35]">Simuleer een spelersantwoord</label>

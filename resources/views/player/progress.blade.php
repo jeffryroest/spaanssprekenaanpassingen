@@ -246,6 +246,32 @@
             </div>
         </section>
 
+        <section class="mt-6 rounded-3xl border border-[#a9472b]/20 bg-[#fff8e9] p-6 shadow-sm sm:p-8" aria-labelledby="final-progress-title">
+            <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.15em] text-[#a9472b]">Dag 7 · Madrid · Terug bij La Espiga</p>
+                    <h2 id="final-progress-title" class="mt-2 text-2xl font-black">El reto final</h2>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-[#76685f]">Blik met Lucía terug op je week, los nog één wijziging op en kies je volgende doel in het Spaans.</p>
+                </div>
+                <span class="w-fit rounded-full px-3 py-1 text-xs font-black {{ $finalProgress['mission']['status'] === 'completed' ? 'bg-[#f1dcb1] text-[#8b3d2b]' : 'bg-[#efe4d5] text-[#7b6558]' }}">
+                    {{ $finalProgress['mission']['status'] === 'completed' ? 'Proefweek voltooid' : 'Nog te spelen' }}
+                </span>
+            </div>
+            <dl class="mt-6 grid gap-3 sm:grid-cols-3">
+                <div class="rounded-2xl bg-[#f3e8d9] p-4"><dt class="text-xs font-bold text-[#806e63]">Voltooiingen</dt><dd class="mt-1 text-xl font-black">{{ $finalProgress['mission']['completion_count'] }}</dd></div>
+                <div class="rounded-2xl bg-[#f3e8d9] p-4"><dt class="text-xs font-bold text-[#806e63]">Beste score</dt><dd class="mt-1 text-xl font-black">{{ $finalProgress['mission']['best_xp'] }} XP</dd></div>
+                <div class="rounded-2xl bg-[#f3e8d9] p-4"><dt class="text-xs font-bold text-[#806e63]">Gesproken</dt><dd class="mt-1 text-xl font-black">{{ min($finalProgress['mission']['best_spoken_turns'], $finalProgress['mission']['spoken_goal_target']) }}/{{ $finalProgress['mission']['spoken_goal_target'] }}</dd></div>
+            </dl>
+            <div class="mt-5 flex flex-wrap items-center gap-3">
+                <a href="{{ route('game.madrid.final') }}" class="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#a9472b] px-5 text-sm font-black text-white hover:bg-[#913b25] focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2">
+                    {{ $finalProgress['mission']['status'] === 'completed' ? 'Speel de finale opnieuw' : 'Open dag 7' }}
+                </a>
+                @foreach ($finalProgress['rewards'] as $reward)
+                    <span class="rounded-full border border-[#a9472b]/10 bg-white px-3 py-2 text-xs font-bold text-[#6f5f56]">{{ $reward['title']['nl'] }}</span>
+                @endforeach
+            </div>
+        </section>
+
         <p class="mt-8 text-center text-xs leading-5 text-[#8a7b72]">Voor voortgang bewaren we alleen missiestappen, invoerbron, hulpgebruik, herhalingsplanning en beloningsmutaties — geen opname, oefenantwoord, transcript, gezondheids- of reisgegevens of AI-feedback.</p>
     </main>
 </body>

@@ -51,8 +51,9 @@ Het pakket bevat:
 - Café El Reloj met Carmen;
 - Consulta La Luz met Elena;
 - Estación del Centro met Mateo.
+- slotmissie in La Espiga met Lucía en structureel NPC-geheugen.
 
-Vanaf pakket `2026.08.3` bevat het pakket vijf toegankelijke, rechtenbeschreven spelassets: de Madrid-wereld, het interieur van La Espiga, Lucía met drie reactiestaten, Estación del Centro en Mateo met drie reactiestaten. Een ongewijzigd ouder Madrid- of La Espiga-democoncept zonder media krijgt veilig een nieuwe conceptrevisie. De stationsstarter wordt als afzonderlijk concept toegevoegd; eigen tekst- of mediakeuzes veroorzaken altijd een conflict en worden nooit overschreven.
+Vanaf pakket `2026.09.1` bevat het pakket zeven conceptrecords en vijf toegankelijke, rechtenbeschreven spelassets: de Madrid-wereld, het interieur van La Espiga, Lucía met drie reactiestaten, Estación del Centro en Mateo met drie reactiestaten. De finale hergebruikt bewust de gereviewde La Espiga- en Lucía-assets. Een ongewijzigd ouder Madrid- of La Espiga-democoncept zonder media krijgt veilig een nieuwe conceptrevisie. Nieuwe starters worden als afzonderlijke concepten toegevoegd; eigen tekst- of mediakeuzes veroorzaken altijd een conflict en worden nooit overschreven.
 
 Het commando is veilig om opnieuw uit te voeren. Exact gelijke records blijven ongemoeid. Zodra een bestaand record inhoudelijk afwijkt, stopt de volledige installatie met een conflict en wordt niets overschreven.
 
@@ -90,12 +91,12 @@ Installatie maakt uitsluitend conceptrevisies. Daarna blijven de normale stappen
 5. doorloop de preflight;
 6. bevestig bewust met `PUBLICEREN`.
 
-Er wordt geen proefabonnement, testspeler, prijs of recht aangemaakt. Toegang tot taxi, restaurant en gezondheid blijft via het bestaande `trial_week`-recht lopen.
+Er wordt geen proefabonnement, testspeler, prijs of recht aangemaakt. Toegang tot taxi, restaurant, gezondheid, station en finale blijft via het bestaande `trial_week`-recht lopen.
 
 ## Acceptatiecriteria
 
 - Een droge controle schrijft geen content of auditgebeurtenis.
-- Een lege database krijgt vijf coherente conceptrecords en drie gekoppelde gouden-route-assets.
+- Een lege database krijgt zeven coherente conceptrecords en vijf gedeelde gouden-route-assets.
 - Een tweede installatie maakt geen duplicaten of revisies.
 - Handmatig gewijzigde, gearchiveerde of gepubliceerde afwijkende content wordt nooit overschreven.
 - Alleen een beheerder kan met een dubbele expliciete bevestiging een aantoonbaar onvolledige en nooit gepubliceerde placeholder als nieuwe conceptrevisie vervangen.

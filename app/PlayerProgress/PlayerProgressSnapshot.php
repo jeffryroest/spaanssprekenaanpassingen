@@ -22,6 +22,8 @@ final class PlayerProgressSnapshot
 
     public const PERSONAL_REVIEW_MISSION_KEY = 'mission.madrid.review.personal';
 
+    public const FINAL_MISSION_KEY = 'mission.madrid.week.final';
+
     /**
      * @return array<string, mixed>
      */

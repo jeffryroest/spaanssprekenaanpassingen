@@ -183,6 +183,85 @@
 }
 
 @layer components {
+    .final-body {
+        background: linear-gradient(150deg, #542d25 0%, #a74c34 38%, #f0c875 100%);
+    }
+
+    .final-memory {
+        @apply mx-auto mt-5 max-w-7xl rounded-[1.75rem] border border-[#803727]/20 bg-[#fffaf0] p-5 shadow-lg shadow-[#5b291f]/10 sm:p-6;
+    }
+
+    .final-memory-heading {
+        @apply flex flex-wrap items-center gap-3;
+    }
+
+    .final-memory-heading > span {
+        @apply grid size-12 shrink-0 place-items-center rounded-2xl bg-[#8b3d2b] text-2xl font-black text-[#f6d77f];
+    }
+
+    .final-memory-heading > div {
+        @apply min-w-0 flex-1;
+    }
+
+    .final-memory-heading h2 {
+        @apply mt-1 text-xl font-black text-[#572a22];
+    }
+
+    .final-memory-heading > strong {
+        @apply rounded-full bg-[#f4dfb0] px-3 py-1 text-xs font-black text-[#733529];
+    }
+
+    .final-memory > p {
+        @apply mt-4 font-serif text-lg font-bold italic leading-7 text-[#713324];
+    }
+
+    .final-memory > ul {
+        @apply mt-4 grid list-none gap-2 p-0 sm:grid-cols-2 lg:grid-cols-5;
+    }
+
+    .final-memory > ul li {
+        @apply grid grid-cols-[auto_1fr] items-center gap-x-2 rounded-2xl border border-[#8b3d2b]/10 bg-[#f4ead4] px-3 py-3 text-[#7c6b5f];
+    }
+
+    .final-memory > ul li.is-met {
+        @apply border-[#3e7355]/25 bg-[#e8f1e5] text-[#315d47];
+    }
+
+    .final-memory > ul li > span {
+        @apply row-span-2 font-black;
+    }
+
+    .final-memory > ul small {
+        @apply text-[0.67rem] font-semibold;
+    }
+
+    .final-memory details {
+        @apply mt-4 rounded-xl bg-[#f8efd9] px-4 py-3 text-xs leading-5 text-[#735945];
+    }
+
+    .final-memory summary {
+        @apply cursor-pointer font-black;
+    }
+
+    .final-memory details p {
+        @apply mt-2;
+    }
+
+    .final-scene {
+        @apply min-h-[31rem] lg:min-h-[46rem];
+    }
+
+    .final-body .bakery-progress-track > span {
+        @apply from-[#a6472f] to-[#e5b44b];
+    }
+
+    .final-body .bakery-stamp {
+        @apply border-[#9e422c] text-[#9e422c];
+        box-shadow: inset 0 0 0 4px #fff9ed, inset 0 0 0 6px #9e422c;
+    }
+}
+
+@layer components {
     .cs-skip-link {
         @apply fixed left-4 top-4 z-[100] -translate-y-24 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-studio-950 shadow-lg transition focus:translate-y-0 focus:outline-none focus:ring-2 focus:ring-brand-500;
     }

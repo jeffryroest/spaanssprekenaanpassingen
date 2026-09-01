@@ -62,7 +62,7 @@ assert(view.includes("route('game.madrid.station.content'") && view.includes('We
 assert(action.includes("'stamp.first_madrid_train_ticket'") && action.includes("'madrid.week_final.preview'"), 'Stationsbeloningen of de slotvooruitblik ontbreken');
 assert(templates.includes("'estacion-mateo'") && readiness.includes("'station_text_dialogue'") && readiness.includes("'npc_expression_sheet'"), 'Content Studio mist de stationsstarter of mediacontrole');
 assert(rule.includes('PlayableContentInspector') && inspector.includes("'station_text_dialogue'") && builder.includes('Fictieve oefenreis') && preview.includes('journey.details'), 'De auteurvriendelijke stationsbouwer of preview ontbreekt');
-assert(media.includes("'madrid_station_hall'") && media.includes("'mateo_station_expressions'") && installer.includes("2026.08.3"), 'Het demopakket mist de versiegebonden stationsmedia');
+assert(media.includes("'madrid_station_hall'") && media.includes("'mateo_station_expressions'") && installer.includes('PACKAGE_VERSION'), 'Het demopakket mist de versiegebonden stationsmedia');
 assert(progress.includes('stationProgress') && css.includes('.station-journey-card') && css.includes('.station-mateo-frame'), 'Voortgang of visuele stationsstijl ontbreekt');
 assert(docs.includes('nooit automatisch') && docs.includes('geen actuele dienstregeling'), 'De redactionele of fictieve reisgrens ontbreekt in de documentatie');
 
