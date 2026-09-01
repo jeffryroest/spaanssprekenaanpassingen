@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'mollie' => [
+        'enabled' => (bool) env('MOLLIE_BILLING_ENABLED', false),
+        'api_key' => env('MOLLIE_API_KEY'),
+        'base_url' => env('MOLLIE_BASE_URL', 'https://api.mollie.com/v2'),
+        'connect_timeout' => (int) env('MOLLIE_CONNECT_TIMEOUT', 3),
+        'timeout' => (int) env('MOLLIE_TIMEOUT', 8),
+    ],
+
 ];

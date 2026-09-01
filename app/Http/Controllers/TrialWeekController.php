@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Access\EntitlementService;
 use App\Access\TrialWeekCatalog;
+use App\Billing\MollieMonthlyOffer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -14,12 +15,14 @@ final class TrialWeekController extends Controller
         Request $request,
         EntitlementService $entitlements,
         TrialWeekCatalog $catalog,
+        MollieMonthlyOffer $offer,
     ): View {
         $snapshot = $entitlements->snapshotFor($request->user());
 
         return view('player.trial-week', [
             'access' => $snapshot->toArray(),
             'days' => $catalog->forUser($request->user(), $snapshot),
+            'offer' => $offer->presentation(),
         ]);
     }
 

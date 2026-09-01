@@ -2,7 +2,11 @@
 
 use App\Http\Controllers\Api\V1\PublishedContentController;
 use App\Http\Controllers\Api\V1\PublishedMediaController;
+use App\Http\Controllers\Billing\MollieWebhookController;
 use Illuminate\Support\Facades\Route;
+
+Route::post('/billing/mollie/webhook', MollieWebhookController::class)
+    ->name('billing.mollie.webhook');
 
 Route::prefix('v1')
     ->name('api.v1.')

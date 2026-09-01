@@ -6,6 +6,7 @@ use App\Enums\SubscriptionStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use InvalidArgumentException;
 
 #[Fillable([
@@ -64,5 +65,10 @@ class Subscription extends Model
     public function plan(): BelongsTo
     {
         return $this->belongsTo(SubscriptionPlan::class, 'subscription_plan_id')->withTrashed();
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(SubscriptionEvent::class);
     }
 }

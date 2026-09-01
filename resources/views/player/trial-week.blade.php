@@ -35,8 +35,8 @@
             'past_due' => ['label' => 'Betaling openstaand', 'title' => 'Controleer je toegang', 'tone' => 'bg-[#fff0cc] text-[#7b5615]', 'description' => 'De toegangsservice past de ingestelde grace-policy server-side toe. Er worden hier geen betaalgegevens getoond.'],
             'paused' => ['label' => 'Gepauzeerd', 'title' => 'Je extra missiedagen zijn gepauzeerd', 'tone' => 'bg-[#efe4d5] text-[#705c4f]', 'description' => 'De openbare voorbeeldmissie blijft speelbaar.'],
             'cancelled' => ['label' => 'Opgezegd', 'title' => $access['access_active'] ? 'Toegang tot het periode-einde' : 'Je extra toegang is beëindigd', 'tone' => 'bg-[#efe4d5] text-[#705c4f]', 'description' => 'De server gebruikt het effectieve periode-einde en niet alleen het statuslabel.'],
-            'expired' => ['label' => 'Verlopen', 'title' => 'Je extra toegang is verlopen', 'tone' => 'bg-[#f3dddd] text-[#8a3838]', 'description' => 'De openbare eerste missie blijft beschikbaar. Een betaalroute volgt pas na het productbesluit over prijs en voorwaarden.'],
-            default => ['label' => 'Nog niet actief', 'title' => 'Begin met de openbare voorbeeldmissie', 'tone' => 'bg-[#efe4d5] text-[#705c4f]', 'description' => 'Automatische proefactivatie en betaling staan bewust nog uit. Je kunt La Espiga wel direct spelen.'],
+            'expired' => ['label' => 'Verlopen', 'title' => 'Je extra toegang is verlopen', 'tone' => 'bg-[#f3dddd] text-[#8a3838]', 'description' => 'De openbare eerste missie blijft beschikbaar. Het maandaanbod staat hieronder; live afrekenen wordt apart geactiveerd.'],
+            default => ['label' => 'Nog niet actief', 'title' => 'Begin met de openbare voorbeeldmissie', 'tone' => 'bg-[#efe4d5] text-[#705c4f]', 'description' => 'Je kunt La Espiga direct spelen en de proefweek starten zodra de gecontroleerde activatieschakelaar aanstaat.'],
         };
     @endphp
 
@@ -59,10 +59,37 @@
                 <h2 id="access-title" class="mt-4 text-xl font-black">{{ $status['title'] }}</h2>
                 <p class="mt-2 text-sm leading-6 text-[#76685f]">{{ $status['description'] }}</p>
                 @if ($access['valid_until'])
-                    <p class="mt-4 text-xs font-bold text-[#8a776c]">Geldig tot <time datetime="{{ $access['valid_until'] }}">{{ CarbonCarbonImmutable::parse($access['valid_until'])->format('d-m-Y H:i') }}</time></p>
+                    <p class="mt-4 text-xs font-bold text-[#8a776c]">Geldig tot <time datetime="{{ $access['valid_until'] }}">{{ \Carbon\CarbonImmutable::parse($access['valid_until'])->format('d-m-Y H:i') }}</time></p>
                 @endif
             </aside>
         </section>
+
+        @if (! $access['access_active'])
+            <section class="mt-8 grid gap-6 rounded-3xl border border-[#a9472b]/20 bg-[#fff4e8] p-6 shadow-sm sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center" aria-labelledby="conversion-title" data-subscription-offer>
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.15em] text-[#a9472b]">Verder spreken</p>
+                    <h2 id="conversion-title" class="mt-2 text-2xl font-black text-[#302722]">{{ $offer['name'] }}</h2>
+                    <p class="mt-3 max-w-2xl text-sm leading-6 text-[#6f5e54]">Krijg toegang tot alle gepubliceerde missiedagen. De betaling loopt straks via {{ $offer['provider'] }}; providerreferenties en betaalgegevens verschijnen nooit in je spelstatus.</p>
+                </div>
+
+                <div class="min-w-64 rounded-2xl border border-[#493429]/10 bg-white/80 p-5">
+                    <p class="text-3xl font-black text-[#302722]">{{ $offer['price_label'] }}</p>
+                    <p class="mt-1 text-sm font-bold text-[#7a6b62]">{{ $offer['interval_label'] }}</p>
+
+                    @if ($access['state'] === 'none' && $offer['trial_activation_available'])
+                        <form method="POST" action="{{ route('trial-week.start') }}" class="mt-5">
+                            @csrf
+                            <button type="submit" class="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#a9472b] px-5 text-sm font-black text-white hover:bg-[#913b25] focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2">Start {{ $offer['trial_days'] }} dagen proefweek</button>
+                        </form>
+                        <p class="mt-3 text-xs leading-5 text-[#7a6b62]">Deze stap start alleen je proefweek en schrijft niets af.</p>
+                    @elseif ($access['state'] === 'none')
+                        <span class="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#493429]/10 bg-[#f4eee6] px-5 text-center text-sm font-bold text-[#78685e]" aria-disabled="true">Proefactivatie wordt voorbereid</span>
+                    @else
+                        <span class="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#493429]/10 bg-[#f4eee6] px-5 text-center text-sm font-bold text-[#78685e]" aria-disabled="true">Afrekenen via Mollie wordt voorbereid</span>
+                    @endif
+                </div>
+            </section>
+        @endif
 
         <section class="mt-10" aria-labelledby="days-title">
             <div class="flex flex-wrap items-end justify-between gap-4">
@@ -109,7 +136,7 @@
 
         <aside class="mt-8 rounded-3xl border border-[#315d47]/15 bg-[#edf4e9] p-6 text-sm leading-6 text-[#4f6656] sm:p-8" aria-labelledby="safe-access-title">
             <h2 id="safe-access-title" class="font-black text-[#315d47]">Veilige toegangsgrens</h2>
-            <p class="mt-2">Rechten worden altijd server-side berekend uit de nieuwste geldige abonnementsprojectie. Deze pagina bevat geen kaartgegevens, providerreferenties, transcripties, audio of AI-feedback. Prijs, proefvoorwaarden en live betaling worden pas toegevoegd na jouw expliciete productbesluit.</p>
+            <p class="mt-2">Rechten worden altijd server-side berekend uit de nieuwste geldige abonnementsprojectie. Deze pagina bevat geen kaartgegevens, providerreferenties, transcripties, audio of AI-feedback. Live betaling blijft uit totdat de resterende abonnementsvoorwaarden expliciet zijn bevestigd.</p>
         </aside>
     </main>
 </body>
