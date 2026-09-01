@@ -13,6 +13,7 @@ use App\Http\Controllers\ContentStudio\ReviewQueueController;
 use App\Http\Controllers\Game\CompleteHealthMissionController;
 use App\Http\Controllers\Game\CompletePanaderiaMissionController;
 use App\Http\Controllers\Game\CompleteRestaurantMissionController;
+use App\Http\Controllers\Game\CompleteStationMissionController;
 use App\Http\Controllers\Game\CompleteTaxiMissionController;
 use App\Http\Controllers\Game\EntitledConversationController;
 use App\Http\Controllers\Game\SpeechTranscriptionController;
@@ -107,6 +108,24 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/spelen/madrid/gezondheid/voltooien', CompleteHealthMissionController::class)
         ->middleware(['entitled:trial_week', 'throttle:mission-completions'])
         ->name('game.madrid.health.complete');
+
+    Route::view('/spelen/madrid/station', 'game.station')
+        ->middleware('entitled:trial_week')
+        ->name('game.madrid.station');
+    Route::get('/spelen/madrid/station/content', EntitledConversationController::class)
+        ->defaults('scenarioSlug', 'station-nuria')
+        ->defaults('requiredEntitlement', 'trial_week')
+        ->middleware(['entitled:trial_week', 'throttle:120,1'])
+        ->name('game.madrid.station.content');
+    Route::post('/spelen/madrid/station/transcriptie', SpeechTranscriptionController::class)
+        ->middleware(['entitled:trial_week', 'throttle:speech-transcriptions'])
+        ->name('game.madrid.station.transcription');
+    Route::post('/spelen/madrid/station/feedback', TurnFeedbackController::class)
+        ->middleware(['entitled:trial_week', 'throttle:turn-feedback'])
+        ->name('game.madrid.station.feedback');
+    Route::post('/spelen/madrid/station/voltooien', CompleteStationMissionController::class)
+        ->middleware(['entitled:trial_week', 'throttle:mission-completions'])
+        ->name('game.madrid.station.complete');
 });
 
 Route::prefix('content-studio')

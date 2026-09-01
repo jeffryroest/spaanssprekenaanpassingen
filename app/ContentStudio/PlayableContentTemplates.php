@@ -62,6 +62,16 @@ final class PlayableContentTemplates
                 summary: 'Vertakkend rollenspel om een klacht uit te leggen en om schriftelijke uitleg te vragen.',
                 exampleFile: 'health-dialogue-domain-data.json',
             ),
+            'station' => $this->template(
+                key: 'station',
+                label: 'Stationsgesprek',
+                description: 'De afgeschermde proefweekmissie met Nuria aan de kaartverkoop van Atocha.',
+                contentType: ContentType::ConversationScenario,
+                slug: 'station-nuria',
+                title: 'En la estación · Nuria',
+                summary: 'Vertakkend gesprek om een retourticket naar Toledo te regelen.',
+                exampleFile: 'station-dialogue-domain-data.json',
+            ),
         ];
     }
 

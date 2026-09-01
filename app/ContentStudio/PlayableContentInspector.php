@@ -37,7 +37,8 @@ final class PlayableContentInspector
             'panaderia_text_dialogue',
             'taxi_text_dialogue',
             'restaurant_text_dialogue',
-            'health_text_dialogue' => $this->inspectDialogue($contentType, $data, $scene, $errors, $warnings),
+            'health_text_dialogue',
+            'station_text_dialogue' => $this->inspectDialogue($contentType, $data, $scene, $errors, $warnings),
             default => $this->unsupportedScene($scene, $errors),
         };
 
@@ -172,6 +173,7 @@ final class PlayableContentInspector
             'taxi_text_dialogue' => 'mission.madrid.taxi.ride',
             'restaurant_text_dialogue' => 'mission.madrid.restaurant.order',
             'health_text_dialogue' => 'mission.madrid.health.appointment',
+            'station_text_dialogue' => 'mission.madrid.station.ticket',
         ];
         if (($mission['id'] ?? null) !== $expectedMissionIds[$scene]) {
             $errors[] = "Het {$scene}-contract vereist missie-id {$expectedMissionIds[$scene]}.";
@@ -185,7 +187,7 @@ final class PlayableContentInspector
             $errors[] = 'De eerste bakkerijmissie moet openbaar bereikbaar blijven.';
         }
 
-        if (in_array($scene, ['taxi_text_dialogue', 'restaurant_text_dialogue', 'health_text_dialogue'], true)
+        if (in_array($scene, ['taxi_text_dialogue', 'restaurant_text_dialogue', 'health_text_dialogue', 'station_text_dialogue'], true)
             && (data_get($data, 'runtime_access.visibility') !== 'entitled'
                 || data_get($data, 'runtime_access.entitlement') !== 'trial_week')) {
             $errors[] = 'Een afgeschermde proefweekmissie moet het recht trial_week vereisen.';

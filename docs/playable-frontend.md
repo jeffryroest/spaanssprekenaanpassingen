@@ -14,11 +14,11 @@ Deze tussenfase maakt de bestaande technische vertical slice herkenbaar speelbaa
 5. gesprek met Lucía via spreken of tekst;
 6. beloning en zichtbare ontgrendeling in de hub.
 
-De taxi, het restaurant en het fictieve gezondheidsrollenspel gebruiken inmiddels deze afgeschermde spelerslaag; het station blijft de volgende uitbreiding.
+De taxi, het restaurant, het fictieve gezondheidsrollenspel en het station gebruiken inmiddels deze afgeschermde spelerslaag.
 
 ## Content Studio
 
-De contenteditor bevat nu een versiegebonden veld `domain_data`. Ingevoerde JSON wordt altijd syntactisch gecontroleerd. De bekende contracten `madrid_hub`, `panaderia_text_dialogue`, `taxi_text_dialogue`, `restaurant_text_dialogue` en `health_text_dialogue` krijgen extra structuurvalidatie.
+De contenteditor bevat nu een versiegebonden veld `domain_data`. Ingevoerde JSON wordt altijd syntactisch gecontroleerd. De bekende contracten `madrid_hub`, `panaderia_text_dialogue`, `taxi_text_dialogue`, `restaurant_text_dialogue`, `health_text_dialogue` en `station_text_dialogue` krijgen extra structuurvalidatie.
 
 Vijf startertemplates vullen een nieuw concept in:
 
@@ -28,6 +28,7 @@ Vijf startertemplates vullen een nieuw concept in:
 | La Espiga-gesprek | Gespreksscenario | `la-espiga-lucia` | publiek |
 | Taxigesprek | Gespreksscenario | `taxi-diego` | recht `trial_week` |
 | Restaurantgesprek | Gespreksscenario | `restaurant-el-reloj` | recht `trial_week` |
+| Stationsgesprek | Gespreksscenario | `station-nuria` | recht `trial_week` |
 | Consultrollenspel | Gespreksscenario | `consulta-elena` | recht `trial_week` + fictieve rolkaart |
 
 Een starter schrijft niets naar de database totdat een editor het formulier opslaat. Opslaan maakt alleen een conceptrevisie. De bestaande vier-ogenreview, releasepreflight en expliciete productiebevestiging blijven ongewijzigd.

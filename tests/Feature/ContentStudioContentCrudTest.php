@@ -117,6 +117,19 @@ class ContentStudioContentCrudTest extends TestCase
         $this->assertDatabaseCount('content_nodes', 0);
     }
 
+    public function test_station_template_prefills_nurias_private_dialogue_as_draft_only(): void
+    {
+        $this->actingAs($this->editor())
+            ->get(route('content-studio.content.create', ['template' => 'station']))
+            ->assertOk()
+            ->assertSee('station_text_dialogue')
+            ->assertSee('npc.nuria.martin')
+            ->assertSee('value="station-nuria"', false)
+            ->assertSee('Alleen concept');
+
+        $this->assertDatabaseCount('content_nodes', 0);
+    }
+
     public function test_playable_domain_data_is_validated_and_saved_in_the_revision(): void
     {
         $editor = $this->editor();
