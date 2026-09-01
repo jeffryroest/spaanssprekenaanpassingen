@@ -18,6 +18,8 @@ final class PlayerProgressSnapshot
 
     public const HEALTH_MISSION_KEY = 'mission.madrid.health.appointment';
 
+    public const STATION_MISSION_KEY = 'mission.madrid.station.ticket';
+
     /**
      * @return array<string, mixed>
      */

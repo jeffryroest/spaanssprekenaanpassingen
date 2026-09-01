@@ -25,6 +25,10 @@ class PlayerProgressController extends Controller
                 user: $request->user(),
                 missionKey: PlayerProgressSnapshot::HEALTH_MISSION_KEY,
             ),
+            'stationProgress' => $snapshot->forUser(
+                user: $request->user(),
+                missionKey: PlayerProgressSnapshot::STATION_MISSION_KEY,
+            ),
         ]);
     }
 

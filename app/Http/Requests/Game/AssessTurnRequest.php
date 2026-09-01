@@ -21,6 +21,7 @@ class AssessTurnRequest extends FormRequest
             $this->routeIs('game.madrid.taxi.feedback') => 'taxi-diego',
             $this->routeIs('game.madrid.restaurant.feedback') => 'restaurant-el-reloj',
             $this->routeIs('game.madrid.health.feedback') => 'consulta-elena',
+            $this->routeIs('game.madrid.station.feedback') => 'estacion-mateo',
             default => 'la-espiga-lucia',
         };
 

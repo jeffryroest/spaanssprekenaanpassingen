@@ -39,12 +39,12 @@
 - **3B1 — taxi (gerealiseerd):** vijf actieve beurten met Diego, drie niveaupaden, spreken/tekst, productiecontent en duurzame accountbeloningen.
 - **3B1.5 — speelbare frontend en visuele wereldlaag (gerealiseerd):** spelersgerichte startpagina, geïllustreerde Madrid-wereld, aankomst en missievoorbereiding, zichtbare wereldreactie, Content Studio-starters en productie-assetcontrole.
 - **3B2 — restaurant (gerealiseerd):** vijf actieve beurten met Carmen in Café El Reloj, drie niveaupaden, spreken/tekst, visuele restaurantscène, productiecontent en duurzame accountbeloningen.
-- **3B2.5 — demo-ready Content Studio (gerealiseerd):** risicogestuurde zelfgoedkeuring voor gewone content, onafhankelijke review voor gevoelige content, veilige reviewintrekking, inhoudelijke speelbaarheidscontrole en een idempotent conceptpakket met vijf voorbeeldrecords.
+- **3B2.5 — demo-ready Content Studio (gerealiseerd):** risicogestuurde zelfgoedkeuring voor gewone content, onafhankelijke review voor gevoelige content, veilige reviewintrekking, inhoudelijke speelbaarheidscontrole en een uitbreidbaar idempotent conceptpakket; fase 3B6 bevat zes voorbeeldrecords.
 - **3B3 — gezondheid (gerealiseerd):** fictieve rolkaart, vijf actieve beurten met Elena, drie niveaupaden, gevoelige lokale tekstredactie, taalfeedback zonder medische beoordeling en duurzame dag-5-beloningen.
 - **3B4 — speelcontentbouwer en preview (gerealiseerd):** typespecifieke wereld-, NPC- en gesprekseditor, diepe routevalidatie, privémediabeheer en een voortgangsvrije spelpreview.
 - **3B5 — visuele gouden route (gerealiseerd):** gereviewde scène- en personage-assets via de runtime, drie zichtbare Lucía-reacties, tastbare beloningspresentatie, veranderde Madrid-hub en één volledig geteste Madrid → La Espiga-spelersreis.
 - **3B5.1 — veilige productieactivatie (gerealiseerd):** expliciete reconciliatie van onvolledige, nooit gepubliceerde demoplaceholders naar een nieuwe conceptrevisie, met behoud van revisie-, review- en auditgeschiedenis en een harde blokkade voor echte of releasegebonden content.
-- **3B6 — station:** treinreis regelen via de dan werkelijk auteurvriendelijke en visuele Content Studio- en gespreksmotor.
+- **3B6 — station (gerealiseerd):** fictieve treinreis regelen met Mateo via de auteurvriendelijke Content Studio, drie niveaupaden, spreken/tekst, gereviewde stationsmedia en duurzame dag-6-beloningen.
 - **3C — persoonlijke continuïteit:** gespreide herhaling en minimaal, spelrelevant NPC-geheugen.
 - **3D — conversie:** proefactivatie, paywall, provider-events en abonnement na expliciete besluiten over prijs en voorwaarden.
 

@@ -195,7 +195,35 @@
             </div>
         </section>
 
-        <p class="mt-8 text-center text-xs leading-5 text-[#8a7b72]">Voor voortgang bewaren we alleen missiestappen, invoerbron, hulpgebruik en beloningsmutaties — geen opname, antwoord, transcript, gezondheidsinformatie of AI-feedback.</p>
+        <section class="mt-6 rounded-3xl border border-[#1e5868]/15 bg-[#f5f9f7] p-6 shadow-sm sm:p-8" aria-labelledby="station-progress-title">
+            <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.15em] text-[#1e5868]">Dag 6 · Madrid · Estación del Centro</p>
+                    <h2 id="station-progress-title" class="mt-2 text-2xl font-black">Mijn eerste treinkaartje</h2>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-[#627169]">Regel met Mateo een fictieve treinreis, reageer op een wijziging en controleer prijs, tijd en perron.</p>
+                </div>
+                <span class="w-fit rounded-full px-3 py-1 text-xs font-black {{ $stationProgress['mission']['status'] === 'completed' ? 'bg-[#dcebe9] text-[#1e5868]' : 'bg-[#e7eeec] text-[#627169]' }}">
+                    {{ $stationProgress['mission']['status'] === 'completed' ? 'Voltooid' : 'Nog te spelen' }}
+                </span>
+            </div>
+
+            <dl class="mt-6 grid gap-3 sm:grid-cols-3">
+                <div class="rounded-2xl bg-[#e2eeeb] p-4"><dt class="text-xs font-bold text-[#627169]">Voltooiingen</dt><dd class="mt-1 text-xl font-black">{{ $stationProgress['mission']['completion_count'] }}</dd></div>
+                <div class="rounded-2xl bg-[#e2eeeb] p-4"><dt class="text-xs font-bold text-[#627169]">Beste score</dt><dd class="mt-1 text-xl font-black">{{ $stationProgress['mission']['best_xp'] }} XP</dd></div>
+                <div class="rounded-2xl bg-[#e2eeeb] p-4"><dt class="text-xs font-bold text-[#627169]">Gesproken</dt><dd class="mt-1 text-xl font-black">{{ min($stationProgress['mission']['best_spoken_turns'], $stationProgress['mission']['spoken_goal_target']) }}/{{ $stationProgress['mission']['spoken_goal_target'] }}</dd></div>
+            </dl>
+
+            <div class="mt-5 flex flex-wrap items-center gap-3">
+                <a href="{{ route('game.madrid.station') }}" class="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#1e5868] px-5 text-sm font-black text-white hover:bg-[#174754] focus:outline-none focus:ring-2 focus:ring-[#3e7b86] focus:ring-offset-2">
+                    {{ $stationProgress['mission']['status'] === 'completed' ? 'Speel de stationsmissie opnieuw' : 'Open dag 6' }}
+                </a>
+                @foreach ($stationProgress['rewards'] as $reward)
+                    <span class="rounded-full border border-[#1e5868]/10 bg-white px-3 py-2 text-xs font-bold text-[#53675b]">{{ $reward['title']['nl'] }}</span>
+                @endforeach
+            </div>
+        </section>
+
+        <p class="mt-8 text-center text-xs leading-5 text-[#8a7b72]">Voor voortgang bewaren we alleen missiestappen, invoerbron, hulpgebruik en beloningsmutaties — geen opname, antwoord, transcript, gezondheids- of reisgegevens of AI-feedback.</p>
     </main>
 </body>
 </html>

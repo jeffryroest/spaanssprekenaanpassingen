@@ -1043,9 +1043,12 @@
         @apply block h-full w-auto max-w-none transition-transform duration-300;
     }
 
-    .bakery-lucia-frame[data-lucia-state='listening'] img { transform: translateX(0); }
-    .bakery-lucia-frame[data-lucia-state='encouraging'] img { transform: translateX(-33.333333%); }
-    .bakery-lucia-frame[data-lucia-state='success'] img { transform: translateX(-66.666667%); }
+    .bakery-lucia-frame[data-lucia-state='listening'] img,
+    .bakery-lucia-frame[data-npc-state='listening'] img { transform: translateX(0); }
+    .bakery-lucia-frame[data-lucia-state='encouraging'] img,
+    .bakery-lucia-frame[data-npc-state='encouraging'] img { transform: translateX(-33.333333%); }
+    .bakery-lucia-frame[data-lucia-state='success'] img,
+    .bakery-lucia-frame[data-npc-state='success'] img { transform: translateX(-66.666667%); }
 
     .bakery-lucia-reaction {
         @apply absolute inset-x-3 bottom-3 rounded-full bg-[#172c36]/90 px-3 py-2 text-center text-[0.65rem] font-black uppercase tracking-[0.1em] text-[#ffe2a0] shadow-lg backdrop-blur;
@@ -1802,6 +1805,121 @@
 @keyframes restaurant-candle-glow {
     0%, 100% { transform: translateX(-50%) rotate(-2deg) scale(1); }
     50% { transform: translateX(-50%) rotate(3deg) scale(1.08); }
+}
+
+@layer components {
+    .station-body {
+        background: linear-gradient(150deg, #162c36 0%, #315563 34%, #ead5aa 100%);
+    }
+
+    .station-journey-card {
+        @apply mx-auto mt-5 max-w-7xl rounded-[1.75rem] border border-[#1e4654]/20 bg-[#fffaf0] p-5 shadow-lg shadow-[#172c36]/10 sm:p-6;
+    }
+
+    .station-journey-heading {
+        @apply flex items-center gap-3;
+    }
+
+    .station-journey-heading > span {
+        @apply grid size-12 shrink-0 place-items-center rounded-2xl bg-[#173b49] text-2xl font-black text-[#f3bd55];
+    }
+
+    .station-journey-heading h2 {
+        @apply mt-1 text-xl font-black text-[#172c36];
+    }
+
+    .station-journey-card dl {
+        @apply mt-5 grid gap-3 sm:grid-cols-3;
+    }
+
+    .station-journey-card dl > div {
+        @apply rounded-2xl border border-[#173b49]/10 bg-[#edf3f1] p-4;
+    }
+
+    .station-journey-card dt {
+        @apply text-[0.65rem] font-black uppercase tracking-[0.13em] text-[#687b79];
+    }
+
+    .station-journey-card dd strong,
+    .station-journey-card dd span {
+        @apply block;
+    }
+
+    .station-journey-card dd strong {
+        @apply mt-2 font-serif text-lg font-black text-[#173b49];
+    }
+
+    .station-journey-card dd span {
+        @apply mt-1 text-xs font-semibold text-[#6b7975];
+    }
+
+    .station-journey-notice {
+        @apply mt-4 rounded-xl bg-[#fff0c9] px-4 py-3 text-xs leading-5 text-[#73532c];
+    }
+
+    .station-scene {
+        @apply min-h-[31rem] bg-[#d7c29b] lg:min-h-[46rem];
+    }
+
+    .station-scene-art {
+        background-image: var(--bakery-scene-image, url('/images/game/madrid-station-hall.webp'));
+        background-position: 58% center;
+    }
+
+    .station-scene-light {
+        background:
+            linear-gradient(180deg, rgb(16 37 45 / 5%) 42%, rgb(11 30 38 / 42%) 100%),
+            linear-gradient(90deg, rgb(255 220 154 / 8%), transparent 60%);
+    }
+
+    .station-board {
+        @apply absolute right-[6%] top-[8%] z-10 grid w-[42%] gap-1 rounded-xl border-4 border-[#d9ae58] bg-[#132f3a]/92 p-3 shadow-2xl;
+    }
+
+    .station-board span {
+        @apply block h-1.5 rounded-full bg-[#f4d17c]/70;
+    }
+
+    .station-board span:nth-child(2) { @apply w-4/5; }
+    .station-board span:nth-child(3) { @apply w-2/3; }
+
+    .station-mateo-frame {
+        @apply bottom-[13%] left-[48%] w-[min(52%,18rem)] rounded-[42%_42%_12%_12%] border-[#f5ddb1]/90 bg-[#f8ead3];
+        aspect-ratio: 0.66;
+    }
+
+    .station-npc-card {
+        @apply border-[#173b49]/15 bg-[#fffaf0]/95;
+    }
+
+    .station-avatar {
+        @apply bg-[#173b49] text-[#f3bd55];
+    }
+
+    .station-body .bakery-dialogue-column,
+    .station-body .bakery-conversation {
+        @apply bg-[#fffaf0];
+    }
+
+    .station-body .bakery-recorder,
+    .station-body .bakery-spoken-goal,
+    .station-body .bakery-account-sync {
+        @apply bg-[#edf3f1];
+    }
+
+    .station-body .bakery-progress-track > span {
+        @apply from-[#1e5868] to-[#e4a940];
+    }
+
+    .station-complete-mateo {
+        @apply border-[#ead3a4] bg-[#f8ead3];
+        aspect-ratio: 0.66;
+    }
+
+    .station-body .bakery-stamp {
+        @apply border-[#1e5868] text-[#1e5868];
+        box-shadow: inset 0 0 0 4px #fff9ed, inset 0 0 0 6px #1e5868;
+    }
 }
 
 @layer components {

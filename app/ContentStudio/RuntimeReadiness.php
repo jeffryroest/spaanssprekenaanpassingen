@@ -42,6 +42,15 @@ final class RuntimeReadiness
             $this->item('Taxi met Diego', ContentType::ConversationScenario, 'taxi-diego', 'taxi_text_dialogue', 'Proefweek · recht vereist', false),
             $this->item('Café El Reloj met Carmen', ContentType::ConversationScenario, 'restaurant-el-reloj', 'restaurant_text_dialogue', 'Proefweek · recht vereist', false),
             $this->item('Consulta La Luz met Elena', ContentType::ConversationScenario, 'consulta-elena', 'health_text_dialogue', 'Proefweek · fictief rollenspel · recht vereist', false),
+            $this->item(
+                'Estación del Centro met Mateo',
+                ContentType::ConversationScenario,
+                'estacion-mateo',
+                'station_text_dialogue',
+                'Proefweek · fictieve reis · recht vereist',
+                false,
+                requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
+            ),
         ];
     }
 
@@ -94,6 +103,7 @@ final class RuntimeReadiness
                 'taxi-diego' => 'taxi',
                 'restaurant-el-reloj' => 'restaurant',
                 'consulta-elena' => 'health',
+                'estacion-mateo' => 'station',
             },
         ];
     }

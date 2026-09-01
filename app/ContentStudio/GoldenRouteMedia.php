@@ -40,6 +40,20 @@ final class GoldenRouteMedia
                 'description' => 'Karakterblad met luisteren, aanmoedigen en het vieren van de geslaagde bestelling.',
                 'alt_text' => 'Lucía, de bakker, luistert aandachtig, moedigt de speler aan en overhandigt daarna een broodzak.',
             ],
+            'madrid_station_hall' => [
+                'path' => resource_path('game-assets/golden-route/madrid-station-hall.webp'),
+                'original_name' => 'madrid-station-hall.webp',
+                'title' => 'Estación del Centro',
+                'description' => 'Brede stationshal voor het dag-6-gesprek met Mateo.',
+                'alt_text' => 'Een warme geïllustreerde Madrileense stationshal met loket, glazen dak en doorgang naar de perrons.',
+            ],
+            'mateo_station_expressions' => [
+                'path' => resource_path('game-assets/golden-route/mateo-station-expressions.webp'),
+                'original_name' => 'mateo-station-expressions.webp',
+                'title' => 'Mateo · drie reacties',
+                'description' => 'Karakterblad met luisteren, uitleggen en de overdracht van het fictieve treinkaartje.',
+                'alt_text' => 'Stationsmedewerker Mateo luistert aandachtig, legt een keuze uit en overhandigt daarna een treinkaartje.',
+            ],
         ];
     }
 
@@ -51,6 +65,10 @@ final class GoldenRouteMedia
             'panaderia' => [
                 'scene_background' => 'la_espiga_interior',
                 'npc_expression_sheet' => 'lucia_expressions',
+            ],
+            'station' => [
+                'scene_background' => 'madrid_station_hall',
+                'npc_expression_sheet' => 'mateo_station_expressions',
             ],
             default => [],
         };
@@ -95,7 +113,7 @@ final class GoldenRouteMedia
                 altText: $definition['alt_text'],
                 transcript: null,
                 rightsStatus: MediaRightsStatus::Owned,
-                sourceName: 'Spaansspreken.nl fase 3B5',
+                sourceName: 'Spaansspreken.nl eigen spelillustraties',
                 creatorName: 'OpenAI ImageGen onder productregie',
                 licenseName: null,
                 rightsExpiresAt: null,

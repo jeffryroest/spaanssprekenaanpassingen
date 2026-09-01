@@ -24,8 +24,8 @@ if (dialogueRoot) {
         accountSyncMessage: dialogueRoot.querySelector('[data-account-sync-message]'),
         accountBalances: dialogueRoot.querySelector('[data-account-balances]'),
         accountSyncRetry: dialogueRoot.querySelector('[data-account-sync-retry]'),
-        luciaFrame: dialogueRoot.querySelector('[data-lucia-state]'),
-        luciaSheets: dialogueRoot.querySelectorAll('[data-lucia-expression-sheet], [data-lucia-expression-sheet-complete]'),
+        npcFrame: dialogueRoot.querySelector('[data-npc-state], [data-lucia-state]'),
+        npcSheets: dialogueRoot.querySelectorAll('[data-npc-expression-sheet], [data-npc-expression-sheet-complete], [data-lucia-expression-sheet], [data-lucia-expression-sheet-complete]'),
     };
     let content;
     let state = emptyState();
@@ -103,6 +103,7 @@ if (dialogueRoot) {
         setText('[data-npc-role-es]', data.npc.role.es);
         setText('[data-npc-role-nl]', data.npc.role.nl);
         hydrateRoleplay(data.roleplay);
+        hydrateJourney(data.journey);
     };
 
     const applyRuntimeMedia = (media = {}) => {
@@ -114,22 +115,23 @@ if (dialogueRoot) {
         }
 
         if (expressions?.kind === 'image' && typeof expressions.url === 'string') {
-            elements.luciaSheets.forEach((image) => {
+            elements.npcSheets.forEach((image) => {
                 image.src = expressions.url;
             });
         }
     };
 
-    const setLuciaState = (state) => {
-        if (!elements.luciaFrame) return;
+    const setNpcState = (state) => {
+        if (!elements.npcFrame) return;
 
         const labels = {
-            listening: 'Lucía luistert',
-            encouraging: 'Lucía moedigt je aan',
-            success: 'Lucía viert je bestelling',
+            listening: `${npcName} luistert`,
+            encouraging: `${npcName} moedigt je aan`,
+            success: `${npcName} viert je resultaat`,
         };
-        elements.luciaFrame.dataset.luciaState = state;
-        setText('[data-lucia-reaction]', labels[state] ?? labels.listening);
+        elements.npcFrame.dataset.npcState = state;
+        elements.npcFrame.dataset.luciaState = state;
+        setText('[data-npc-reaction], [data-lucia-reaction]', labels[state] ?? labels.listening);
     };
 
     const hydrateRoleplay = (roleplay) => {
@@ -156,6 +158,35 @@ if (dialogueRoot) {
             item.append(spanish, dutch);
 
             return item;
+        }));
+        card.hidden = false;
+    };
+
+    const hydrateJourney = (journey) => {
+        const card = dialogueRoot.querySelector('[data-journey-card]');
+        if (!card) return;
+
+        if (journey?.fictional !== true || !Array.isArray(journey.details) || journey.details.length < 3) {
+            card.hidden = true;
+            return;
+        }
+
+        setText('[data-journey-title]', journey.title?.nl);
+        setText('[data-journey-notice]', journey.notice);
+        const details = card.querySelector('[data-journey-details]');
+        details.replaceChildren(...journey.details.map((detail) => {
+            const row = document.createElement('div');
+            const label = document.createElement('dt');
+            const value = document.createElement('dd');
+            const spanish = document.createElement('strong');
+            const dutch = document.createElement('span');
+            label.textContent = detail.label?.nl ?? '';
+            spanish.lang = 'es';
+            spanish.textContent = detail.value?.es ?? '';
+            dutch.textContent = detail.value?.nl ?? '';
+            value.append(spanish, dutch);
+            row.append(label, value);
+            return row;
         }));
         card.hidden = false;
     };
@@ -202,7 +233,7 @@ if (dialogueRoot) {
         updateProgress();
         renderHistory();
         document.dispatchEvent(new CustomEvent('scenario:turn-changed'));
-        setLuciaState('listening');
+        setNpcState('listening');
     };
 
     const renderChoices = (choices) => {
@@ -263,7 +294,7 @@ if (dialogueRoot) {
 
         if (!option) {
             showFeedback(step.fallback, false);
-            setLuciaState('encouraging');
+            setNpcState('encouraging');
             elements.status.textContent = `${npcName} heeft nog niet genoeg informatie. Bekijk de gerichte tip en probeer opnieuw.`;
             return;
         }
@@ -302,7 +333,7 @@ if (dialogueRoot) {
         showFeedbackLoading();
         updateProgress();
         renderHistory();
-        setLuciaState('encouraging');
+        setNpcState('encouraging');
 
         isEvaluating = true;
         elements.submitButton.disabled = true;
@@ -470,7 +501,7 @@ if (dialogueRoot) {
         state.completionKey ||= createCompletionKey();
         elements.stage.hidden = true;
         elements.complete.hidden = false;
-        setLuciaState('success');
+        setNpcState('success');
         document.dispatchEvent(new CustomEvent('scenario:turn-changed'));
         const farewell = state.states.includes('used_politeness')
             ? content.completion.polite_farewell
