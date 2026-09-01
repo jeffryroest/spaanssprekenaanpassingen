@@ -26,7 +26,10 @@ return new class extends Migration
 
             $table->unique(['user_id', 'practice_key']);
             $table->index(['user_id', 'due_at']);
-            $table->index(['source_content_node_id', 'source_content_version']);
+            $table->index(
+                ['source_content_node_id', 'source_content_version'],
+                'practice_source_version_index',
+            );
         });
     }
 

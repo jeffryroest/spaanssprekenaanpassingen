@@ -38,6 +38,7 @@ assert(deck.includes('latestAttempts') && deck.includes("$sourceType === 'speech
 assert(action.includes("'personal_review'") && action.includes('awardedToday') && action.includes('ledgerKey') && action.includes("$rating === 'again'"), 'De intervalplanner of dagelijkse ledgergrens ontbreekt');
 assert(request.includes("'answer' => ['prohibited']") && request.includes("'cards.*.transcript' => ['prohibited']"), 'Persoonlijke inhoud wordt niet hard afgewezen');
 assert(migration.includes("Schema::create('user_practice_items'") && migration.includes("unique(['user_id', 'practice_key'])"), 'De snelle herhalingsprojectie of unieke grens ontbreekt');
+assert(migration.includes("'practice_source_version_index'"), 'De samengestelde bronindex heeft geen MySQL-veilige expliciete naam');
 assert(model.includes("'due_at' => 'immutable_datetime'"), 'De vervaldatum wordt niet veilig gecast');
 assert(routes.includes("Route::get('/spelen/madrid/herhaling'") && routes.includes("Route::post('/spelen/madrid/herhaling/voltooien'") && routes.includes('entitled:trial_week'), 'De dag-4-routes missen hun proefweekgrens');
 assert(catalog.includes("'route' => 'game.madrid.review'") && catalog.includes("[1, 4]"), 'Dag 4 is niet als ingebouwde herhalingsmissie ontsloten');
