@@ -242,7 +242,7 @@ Een transcriptieconfidence is geen uitspraakscore. Bij lage confidence vraagt he
 
 ## 9. Proefperiode en abonnementen
 
-`subscription_plans` beschrijft prijs, valuta, interval, proefduur en rechten. `subscriptions` is de lokale toegangsprojectie en bevat providerreferenties, periode en status. `subscription_events` is de idempotente webhook-inbox. Voor klassieke Mollie-callbacks vormt een hash van de via Mollie geverifieerde financiële toestand de `provider_event_ref`, omdat de callback zelf alleen een payment-ID bevat.
+`subscription_plans` beschrijft prijs, valuta, interval, proefduur en rechten. `subscription_orders` is de ordersnapshot met besteller, toestemming, bedrag en status van de eerste betaling; betaalmiddelgegevens horen daar niet in. `subscriptions` is de lokale toegangsprojectie en bevat providerreferenties, periode en status. `subscription_events` is de idempotente webhook-inbox. Voor klassieke Mollie-callbacks vormt een hash van de via Mollie geverifieerde financiële toestand de `provider_event_ref`, omdat de callback zelf alleen een payment-ID bevat.
 
 Toegangsbeslissingen verlopen via één `EntitlementService`:
 

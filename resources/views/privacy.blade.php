@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Technische privacy-uitleg voor spraakoefeningen op Spaansspreken.nl.">
+    <meta name="description" content="Technische privacy-uitleg voor spraakoefeningen, accountvoortgang en betalingen op Spaansspreken.nl.">
     <title>Privacybeleid · Spaansspreken.nl</title>
     @vite(['resources/css/app.css'])
 </head>
@@ -12,8 +12,8 @@
         <a href="{{ route('game.madrid') }}" class="text-sm font-semibold text-orange-300 underline underline-offset-4">← Terug naar Madrid</a>
 
         <p class="mt-10 text-sm font-bold uppercase tracking-[0.18em] text-orange-300">Spaansspreken.nl</p>
-        <h1 class="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl">Privacy bij spraakoefeningen</h1>
-        <p class="mt-5 text-lg leading-8 text-stone-300">Deze pagina beschrijft wat de huidige speelbare versie technisch met je opname en transcript doet.</p>
+        <h1 class="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl">Privacy bij spelen en betalen</h1>
+        <p class="mt-5 text-lg leading-8 text-stone-300">Deze pagina beschrijft welke gegevens de huidige speelbare versie technisch verwerkt.</p>
 
         <section id="spraakopnamen" class="mt-10 rounded-3xl border border-white/10 bg-white/[0.06] p-6 sm:p-8">
             <h2 class="text-2xl font-bold text-white">Spraakopnamen</h2>
@@ -43,6 +43,13 @@
             <p class="mt-4 leading-7 text-stone-300">Als je bent ingelogd, bewaren we na een voltooide missie de gebruikte gepubliceerde contentversie, stap-id's, invoerbron, hulpgebruik, afgeleide missiestates, XP/Confianza/Valentía en unieke beloningssleutels. Zo blijven je resultaat en ontgrendelingen na opnieuw inloggen beschikbaar.</p>
             <p class="mt-4 leading-7 text-stone-300">De voortgangsopslag bevat geen ruwe opname, antwoordtekst, transcript, transcript-confidence, spelercorrectie, AI-feedback of gezondheidsinformatie. Die inhoud wordt ook niet in het accountdashboard teruggegeven.</p>
             <p class="mt-4 leading-7 text-stone-300">Voor persoonlijke herhaling bewaren we daarnaast een gehashte kaart-id, bronmissie en -versie, stap-id, invoerbron, hulpgebruik, jouw keuze ‘nog eens/moeilijk/goed/makkelijk’ en de volgende oefendatum. Je Spaanse oefenantwoord wordt vóór het wisselen van kaart uit de pagina verwijderd en niet meegestuurd in het opslagverzoek.</p>
+        </section>
+
+        <section id="betalingen" class="mt-6 rounded-3xl border border-white/10 bg-white/[0.06] p-6 sm:p-8">
+            <h2 class="text-2xl font-bold text-white">Bestellingen en betalingen</h2>
+            <p class="mt-4 leading-7 text-stone-300">Bij een bestelling bewaren we je voornaam, achternaam, e-mailadres, het gekozen aanbod, bedrag en valuta, de versie en het moment van je toestemming, de betaalstatus en technische Mollie-referenties. Daarmee kunnen we je betaling aan je account koppelen, toegang activeren en de status van je abonnement tonen.</p>
+            <p class="mt-4 leading-7 text-stone-300">De daadwerkelijke betaling wordt door Mollie verwerkt. Spaansspreken.nl bewaart geen kaartnummer, bankrekeningnummer of andere betaalmiddelgegevens. Vrije Mollie-omschrijvingen en Mollie-klantmetadata worden niet in webhooklogs of spelstatus opgeslagen.</p>
+            <p class="mt-4 leading-7 text-stone-300">Je abonnement en bestelregistratie blijven bij je account beschikbaar voor betaaladministratie en ondersteuning. De definitieve bewaartermijnen en juridische grondslagen worden vóór de gesloten bèta in de bredere privacy- en retentiereview vastgesteld.</p>
         </section>
 
         <p class="mt-8 text-sm leading-6 text-stone-400">Een bredere juridische privacy- en retentiereview staat gepland vóór de gesloten bèta. Deze technische uitleg wordt bijgewerkt wanneer de gegevensverwerking verandert.</p>

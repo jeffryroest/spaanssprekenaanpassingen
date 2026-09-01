@@ -4,7 +4,7 @@
 
 Fase 3A legt één server-side toegangsmodel onder de geplande proefweek. De speler ziet zeven missiedagen; La Espiga blijft de openbare voorbeeldmissie. Nieuwe missies worden pas startbaar wanneer zowel het accountrecht als een productiepublicatie aanwezig is.
 
-Fase 3A activeerde **geen** proefperiode, prijs, checkout of betaalprovider. Dat waren menselijke beslispoorten volgens `AGENTS.md`. In fase 3D1 zijn Mollie en € 9,95 per maand goedgekeurd; ADR-005 beschrijft welke commerciële voorwaarden nog openstaan.
+Fase 3A activeerde **geen** proefperiode, prijs, checkout of betaalprovider. Dat waren menselijke beslispoorten volgens `AGENTS.md`. In fase 3D1 zijn Mollie en € 9,95 per maand goedgekeurd; in 3D2 volgden de expliciete eerste betaling, maandelijkse verlenging en opzegging per periode-einde. ADR-005 beschrijft welke uitzonderingsvoorwaarden nog openstaan.
 
 ## Opgeleverde grens
 
@@ -33,7 +33,7 @@ Spelerresponses bevatten alleen status, rechten, plannaam/-code en geldigheidsmo
 
 Plan- en abonnementsrecords worden niet automatisch geseed. Daardoor kan een deployment geen onbedoelde prijs of proefvoorwaarde activeren. De latere providerintegratie moet webhooks via een idempotente inbox verwerken en mag geen netwerkcall binnen een databasetransactie uitvoeren.
 
-Fase 3D1 houdt dit principe in stand. Het goedgekeurde plan wordt alleen door `subscriptions:install-mollie-monthly` geïnstalleerd. Proefactivatie en Mollie-statusverificatie hebben losse, standaard uitgeschakelde omgevingsschakelaars. De klassieke Mollie-callback wordt eerst buiten een transactie via de Payments API geverifieerd; alleen de gesaneerde toestand komt in `subscription_events`.
+Fase 3D1–3D2 houdt dit principe in stand. Het goedgekeurde plan wordt alleen door `subscriptions:install-mollie-monthly` geïnstalleerd. Proefactivatie, Mollie-statusverificatie en checkout hebben losse, standaard uitgeschakelde omgevingsschakelaars. De klassieke Mollie-callback en returnroute worden eerst buiten een transactie via de Payments API geverifieerd; alleen de gesaneerde toestand komt in `subscription_events`. De doelgebonden `subscription_orders`-tabel bevat de besteller en status van de eerste betaling, maar nooit kaart- of bankgegevens.
 
 ## Terugrol
 
@@ -45,4 +45,5 @@ De migratie verwijdert eerst `subscriptions` en daarna `subscription_plans`. Er 
 2. **3C1 — persoonlijke herhaling (gerealiseerd):** maximaal vijf vervallen of nieuwe kaarten op dag 4, zonder persoonlijke antwoordopslag.
 3. **3C2 — minimaal NPC-geheugen:** terugkeerherkenning uit structurele voortgang.
 4. **3D1 — conversiefundament (gerealiseerd):** aanbod, proefactivatie, paywall en geverifieerde provider-eventinbox.
-5. **3D2 — checkout:** mandate, terugkerende betaling, opzegging en eventprojectie na de resterende voorwaarden.
+5. **3D2 — checkoutkern (gerealiseerd):** mandate, terugkerende betaling, opzegging per periode-einde en eventprojectie.
+6. **3D3 — betaalherstel:** expliciet beleid en routes voor refunds, chargebacks, betaalachterstand, facturen/btw en bewaartermijnen.

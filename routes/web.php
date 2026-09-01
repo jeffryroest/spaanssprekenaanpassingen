@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Billing\CancelMollieSubscriptionController;
+use App\Http\Controllers\Billing\MollieReturnController;
+use App\Http\Controllers\Billing\StartMollieCheckoutController;
 use App\Http\Controllers\Billing\StartTrialWeekController;
 use App\Http\Controllers\ContentStudio\ContentController;
 use App\Http\Controllers\ContentStudio\ContentPreviewController;
@@ -54,6 +57,14 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/proefweek/start', StartTrialWeekController::class)
         ->middleware('throttle:trial-activation')
         ->name('trial-week.start');
+    Route::post('/abonnement/mollie/start', StartMollieCheckoutController::class)
+        ->middleware('throttle:billing-checkout')
+        ->name('billing.mollie.start');
+    Route::get('/abonnement/bestelling/{subscriptionOrder}', MollieReturnController::class)
+        ->name('billing.mollie.return');
+    Route::post('/abonnement/opzeggen', CancelMollieSubscriptionController::class)
+        ->middleware('throttle:billing-cancellation')
+        ->name('billing.mollie.cancel');
     Route::get('/spelen/proefweek/status', [TrialWeekController::class, 'json'])
         ->name('game.trial-week.status');
     Route::get('/mijn-voortgang', [PlayerProgressController::class, 'show'])

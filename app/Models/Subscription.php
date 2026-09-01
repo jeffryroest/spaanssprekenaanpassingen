@@ -71,4 +71,9 @@ class Subscription extends Model
     {
         return $this->hasMany(SubscriptionEvent::class);
     }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(SubscriptionOrder::class);
+    }
 }

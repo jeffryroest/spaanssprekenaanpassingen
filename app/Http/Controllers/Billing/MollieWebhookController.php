@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Billing;
 
 use App\Billing\Exceptions\BillingProviderUnavailable;
 use App\Billing\MollieApiClient;
-use App\Billing\ProviderWebhookInbox;
+use App\Billing\ProcessMolliePayment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +15,7 @@ final class MollieWebhookController extends Controller
     public function __invoke(
         Request $request,
         MollieApiClient $mollie,
-        ProviderWebhookInbox $inbox,
+        ProcessMolliePayment $processor,
     ): Response {
         $paymentId = $request->input('id');
 
@@ -34,7 +34,11 @@ final class MollieWebhookController extends Controller
         }
 
         if ($snapshot !== null) {
-            $inbox->record($snapshot);
+            try {
+                $processor->handle($snapshot);
+            } catch (BillingProviderUnavailable) {
+                return response('', 503);
+            }
         }
 
         return response('', 200);
