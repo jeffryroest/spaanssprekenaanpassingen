@@ -93,8 +93,11 @@ final class PersonalReviewDeck
             return [];
         }
 
-        $steps = collect($domainData['steps'] ?? [])->filter('is_array')->keyBy('id');
-        $turns = collect($attempt->evidence['turns'] ?? [])->filter('is_array');
+        $steps = collect($domainData['steps'] ?? [])
+            ->filter(fn (mixed $step): bool => is_array($step))
+            ->keyBy('id');
+        $turns = collect($attempt->evidence['turns'] ?? [])
+            ->filter(fn (mixed $turn): bool => is_array($turn));
 
         return $turns->map(function (array $turn) use ($attempt, $releaseItem, $source, $steps, $scheduled): ?array {
             $stepId = is_string($turn['step_id'] ?? null) ? $turn['step_id'] : null;

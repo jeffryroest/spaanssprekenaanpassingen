@@ -35,6 +35,7 @@ const app = await read('resources/js/app.js');
 assert(schema.properties?.data?.properties?.cards?.maxItems === 5, 'Het herhalingscontract begrenst de kaarten niet op vijf');
 assert(schema.properties?.meta?.properties?.answer_persisted?.const === false, 'Het privacycontract verbiedt antwoordopslag niet');
 assert(deck.includes('latestAttempts') && deck.includes("$sourceType === 'speech'") && deck.includes('isFuture()'), 'De persoonlijke selectie of vervaldatum ontbreekt');
+assert(!deck.includes("filter('is_array')"), 'Collection-filters mogen is_array niet als twee-argumentcallback aanroepen');
 assert(action.includes("'personal_review'") && action.includes('awardedToday') && action.includes('ledgerKey') && action.includes("$rating === 'again'"), 'De intervalplanner of dagelijkse ledgergrens ontbreekt');
 assert(request.includes("'answer' => ['prohibited']") && request.includes("'cards.*.transcript' => ['prohibited']"), 'Persoonlijke inhoud wordt niet hard afgewezen');
 assert(migration.includes("Schema::create('user_practice_items'") && migration.includes("unique(['user_id', 'practice_key'])"), 'De snelle herhalingsprojectie of unieke grens ontbreekt');
