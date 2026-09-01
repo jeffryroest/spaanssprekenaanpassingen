@@ -130,6 +130,20 @@ class ContentStudioContentCrudTest extends TestCase
         $this->assertDatabaseCount('content_nodes', 0);
     }
 
+    public function test_final_template_prefills_lucias_private_memory_dialogue_as_draft_only(): void
+    {
+        $this->actingAs($this->editor())
+            ->get(route('content-studio.content.create', ['template' => 'final']))
+            ->assertOk()
+            ->assertSee('final_text_dialogue')
+            ->assertSee('npc.lucia.martin')
+            ->assertSee('recap_sources')
+            ->assertSee('value="madrid-final-lucia"', false)
+            ->assertSee('Alleen concept');
+
+        $this->assertDatabaseCount('content_nodes', 0);
+    }
+
     public function test_playable_domain_data_is_validated_and_saved_in_the_revision(): void
     {
         $editor = $this->editor();

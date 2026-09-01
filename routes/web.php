@@ -10,6 +10,7 @@ use App\Http\Controllers\ContentStudio\ContentReviewController;
 use App\Http\Controllers\ContentStudio\DashboardController;
 use App\Http\Controllers\ContentStudio\MediaAssetController;
 use App\Http\Controllers\ContentStudio\ReviewQueueController;
+use App\Http\Controllers\Game\CompleteFinalMissionController;
 use App\Http\Controllers\Game\CompleteHealthMissionController;
 use App\Http\Controllers\Game\CompletePanaderiaMissionController;
 use App\Http\Controllers\Game\CompletePersonalReviewController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Game\CompleteStationMissionController;
 use App\Http\Controllers\Game\CompleteTaxiMissionController;
 use App\Http\Controllers\Game\EntitledConversationController;
 use App\Http\Controllers\Game\EntitledConversationMediaController;
+use App\Http\Controllers\Game\FinalMissionController;
 use App\Http\Controllers\Game\PersonalReviewController;
 use App\Http\Controllers\Game\SpeechTranscriptionController;
 use App\Http\Controllers\Game\TurnFeedbackController;
@@ -150,6 +152,32 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/spelen/madrid/station/voltooien', CompleteStationMissionController::class)
         ->middleware(['entitled:trial_week', 'throttle:mission-completions'])
         ->name('game.madrid.station.complete');
+
+    Route::get('/spelen/madrid/finale', FinalMissionController::class)
+        ->middleware('entitled:trial_week')
+        ->name('game.madrid.final');
+    Route::get('/spelen/madrid/finale/content', EntitledConversationController::class)
+        ->defaults('scenarioSlug', 'madrid-final-lucia')
+        ->defaults('requiredEntitlement', 'trial_week')
+        ->defaults('mediaRouteName', 'game.madrid.final.media')
+        ->middleware(['entitled:trial_week', 'throttle:120,1'])
+        ->name('game.madrid.final.content');
+    Route::get('/spelen/madrid/finale/media/{version}/{role}', EntitledConversationMediaController::class)
+        ->defaults('scenarioSlug', 'madrid-final-lucia')
+        ->defaults('requiredEntitlement', 'trial_week')
+        ->whereNumber('version')
+        ->where('role', '[a-z0-9_]+')
+        ->middleware(['entitled:trial_week', 'throttle:120,1'])
+        ->name('game.madrid.final.media');
+    Route::post('/spelen/madrid/finale/transcriptie', SpeechTranscriptionController::class)
+        ->middleware(['entitled:trial_week', 'throttle:speech-transcriptions'])
+        ->name('game.madrid.final.transcription');
+    Route::post('/spelen/madrid/finale/feedback', TurnFeedbackController::class)
+        ->middleware(['entitled:trial_week', 'throttle:turn-feedback'])
+        ->name('game.madrid.final.feedback');
+    Route::post('/spelen/madrid/finale/voltooien', CompleteFinalMissionController::class)
+        ->middleware(['entitled:trial_week', 'throttle:mission-completions'])
+        ->name('game.madrid.final.complete');
 });
 
 Route::prefix('content-studio')

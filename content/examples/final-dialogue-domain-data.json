@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.0.0",
+  "scene": "final_text_dialogue",
+  "runtime_access": {
+    "visibility": "entitled",
+    "entitlement": "trial_week"
+  },
+  "npc": {
+    "id": "npc.lucia.martin",
+    "name": "Lucía Martín",
+    "role": { "es": "panadera y anfitriona", "nl": "bakker en gastvrouw" },
+    "description": "Warm, aandachtig en vertrouwd. Lucía ontvangt de speler opnieuw in La Espiga en laat de speler de proefweek in eigen Spaanse woorden afronden."
+  },
+  "mission": {
+    "id": "mission.madrid.week.final",
+    "title": { "es": "El reto final", "nl": "De slotmissie" },
+    "objective": "Keer terug naar Lucía, vertel over je week, los een wijziging in je bestelling op, kies je volgende Spaanse doel en rond zelfstandig af.",
+    "start_step": "turn.return_greeting",
+    "required_text_turns": 5
+  },
+  "memory": {
+    "returning_npc_id": "npc.lucia.martin",
+    "source_mission_key": "mission.madrid.panaderia.breakfast",
+    "returning_greeting": {
+      "es": "¡Qué alegría verte otra vez! Me acuerdo de tu primer pedido.",
+      "nl": "Wat fijn je weer te zien! Ik herinner me je eerste bestelling."
+    },
+    "first_greeting": {
+      "es": "¡Bienvenido a La Espiga! Hoy cerramos tu semana en Madrid.",
+      "nl": "Welkom bij La Espiga! Vandaag ronden we je week in Madrid af."
+    },
+    "privacy_notice": "NPC-herkenning gebruikt uitsluitend welke missies je hebt voltooid en bewaart geen vrije antwoorden, transcripties, audio of feedback.",
+    "recap_sources": [
+      { "id": "npc.lucia.martin", "mission_key": "mission.madrid.panaderia.breakfast", "label": { "es": "Tu primer pedido con Lucía", "nl": "Je eerste bestelling bij Lucía" } },
+      { "id": "npc.diego.ruiz", "mission_key": "mission.madrid.taxi.ride", "label": { "es": "Tu viaje con Diego", "nl": "Je rit met Diego" } },
+      { "id": "npc.carmen.santos", "mission_key": "mission.madrid.restaurant.order", "label": { "es": "Tu mesa con Carmen", "nl": "Je tafel bij Carmen" } },
+      { "id": "npc.elena.ortiz", "mission_key": "mission.madrid.health.appointment", "label": { "es": "Tu conversación con Elena", "nl": "Je gesprek met Elena" } },
+      { "id": "npc.mateo.alvarez", "mission_key": "mission.madrid.station.ticket", "label": { "es": "Tu billete con Mateo", "nl": "Je kaartje bij Mateo" } }
+    ]
+  },
+  "level_branches": {
+    "A0": "branch.choose_drink",
+    "A1": "branch.accept_alternative",
+    "A2": "branch.explain_preference"
+  },
+  "repair": {
+    "terms": ["puedes repetir", "mas despacio", "no entiendo", "como se dice", "quiero decir", "un momento"],
+    "npc_response": {
+      "es": "Claro. Tómate tu tiempo; seguimos hablando.",
+      "nl": "Natuurlijk. Neem je tijd; we praten gewoon verder."
+    },
+    "feedback": {
+      "strength": "Sterk: je houdt het gesprek zelf op gang.",
+      "focus": "Een herstelzin gebruiken is zelfstandige communicatie, geen mislukking."
+    }
+  },
+  "steps": [
+    {
+      "id": "turn.return_greeting",
+      "turn": 1,
+      "npc_line": { "es": "Hola, qué alegría verte en La Espiga. ¿Cómo estás?", "nl": "Hallo, wat fijn je in La Espiga te zien. Hoe gaat het?" },
+      "prompt": "Begroet Lucía en zeg dat je blij bent terug te zijn.",
+      "placeholder": "Hola, Lucía. Estoy muy bien y me alegra volver.",
+      "hint": "Me alegra volver betekent: ik ben blij om terug te zijn.",
+      "choices": ["Hola, Lucía. Estoy muy bien y me alegra volver.", "Buenos días. Estoy contento de estar otra vez aquí."],
+      "options": [
+        {
+          "id": "greet_and_return",
+          "requirements": [["hola", "buenos dias", "buenos días"], ["volver", "otra vez", "regresar", "contento", "contenta", "alegra"]],
+          "npc_response": { "es": "Yo también me alegro. Cuéntame algo de tu semana.", "nl": "Ik ben ook blij. Vertel me iets over je week." },
+          "feedback": { "strength": "Je begroette Lucía en maakte de terugkeer persoonlijk.", "focus": "Me alegra volver is een compacte, natuurlijke openingszin." },
+          "states": ["lucia_greeted", "return_acknowledged"],
+          "next": "turn.share_week"
+        }
+      ],
+      "fallback": { "strength": "Je reageert op Lucía's begroeting.", "focus": "Gebruik hola en volver of otra vez om je terugkeer duidelijk te maken." }
+    },
+    {
+      "id": "turn.share_week",
+      "turn": 2,
+      "npc_line": { "es": "¿Qué fue lo mejor de tu semana en Madrid?", "nl": "Wat was het leukste van je week in Madrid?" },
+      "prompt": "Noem één ontmoeting of activiteit en vertel waarom die je bijbleef.",
+      "placeholder": "Me gustó hablar con Mateo porque pude organizar mi viaje.",
+      "hint": "Me gustó… porque… helpt je een ervaring en reden te verbinden.",
+      "choices": ["Me gustó hablar con Mateo porque pude organizar mi viaje.", "Lo mejor fue pedir en el restaurante porque hablé con confianza."],
+      "options": [
+        {
+          "id": "share_memory",
+          "requirements": [["gusto", "gustó", "mejor", "encanto", "encantó"], ["porque", "cuando", "pude"]],
+          "npc_response": { "es": "¡Qué bien! Has usado el español en muchos lugares. Ahora preparemos algo para celebrar.", "nl": "Wat goed! Je hebt op veel plekken Spaans gebruikt. Laten we nu iets klaarmaken om dat te vieren." },
+          "feedback": { "strength": "Je vertelde een ervaring én gaf er een reden bij.", "focus": "Me gustó… porque… is bruikbaar voor elke persoonlijke terugblik." },
+          "states": ["week_reflected", "experience_explained"],
+          "next": "@complication"
+        }
+      ],
+      "fallback": { "strength": "Je probeert je week samen te vatten.", "focus": "Noem me gustó of lo mejor en voeg porque toe voor je reden." }
+    },
+    {
+      "id": "branch.choose_drink",
+      "turn": 3,
+      "npc_line": { "es": "Para celebrar, ¿prefieres zumo o café?", "nl": "Wil je om het te vieren liever sap of koffie?" },
+      "prompt": "Kies sap of koffie en bestel beleefd.",
+      "placeholder": "Prefiero un café, por favor.",
+      "hint": "Prefiero… por favor is genoeg om duidelijk te kiezen.",
+      "choices": ["Prefiero un café, por favor.", "Un zumo, por favor."],
+      "options": [
+        {
+          "id": "choose_celebration_drink",
+          "requirements": [["cafe", "café", "zumo"]],
+          "npc_response": { "es": "Perfecto. Lo preparo ahora mismo.", "nl": "Prima. Ik maak het meteen klaar." },
+          "feedback": { "strength": "Je maakte snel een duidelijke keuze.", "focus": "Prefiero is een veilige manier om je voorkeur te geven." },
+          "states": ["complication_resolved", "drink_selected"],
+          "next": "turn.plan_next_stop"
+        }
+      ],
+      "fallback": { "strength": "Je begrijpt dat Lucía een drankje aanbiedt.", "focus": "Noem café of zumo om je keuze af te ronden." }
+    },
+    {
+      "id": "branch.accept_alternative",
+      "turn": 3,
+      "npc_line": { "es": "No queda tarta de limón. Tengo tarta de naranja. ¿Te parece bien?", "nl": "Er is geen citroentaart meer. Ik heb sinaasappeltaart. Is dat goed?" },
+      "prompt": "Accepteer het alternatief en herhaal wat je kiest.",
+      "placeholder": "Sí, me parece bien. Tomo la tarta de naranja.",
+      "hint": "Me parece bien betekent: dat is prima voor mij.",
+      "choices": ["Sí, me parece bien. Tomo la tarta de naranja.", "De acuerdo, la de naranja, por favor."],
+      "options": [
+        {
+          "id": "accept_orange_cake",
+          "requirements": [["naranja"], ["parece bien", "de acuerdo", "tomo", "quiero"]],
+          "npc_response": { "es": "Muy bien. Una porción de tarta de naranja.", "nl": "Prima. Een stuk sinaasappeltaart." },
+          "feedback": { "strength": "Je paste je bestelling soepel aan.", "focus": "Me parece bien accepteert een alternatief vriendelijk en helder." },
+          "states": ["complication_resolved", "alternative_accepted"],
+          "next": "turn.plan_next_stop"
+        }
+      ],
+      "fallback": { "strength": "Je reageert op het aangeboden alternatief.", "focus": "Noem naranja en me parece bien of de acuerdo." }
+    },
+    {
+      "id": "branch.explain_preference",
+      "turn": 3,
+      "npc_line": { "es": "Puedo preparar algo dulce o salado. ¿Qué prefieres y por qué?", "nl": "Ik kan iets zoets of hartigs klaarmaken. Wat heeft je voorkeur en waarom?" },
+      "prompt": "Kies zoet of hartig en motiveer je voorkeur.",
+      "placeholder": "Prefiero algo salado porque ya he comido algo dulce.",
+      "hint": "Prefiero… porque… maakt je keuze en reden in één beurt duidelijk.",
+      "choices": ["Prefiero algo salado porque ya he comido algo dulce.", "Quiero algo dulce porque hoy estamos celebrando."],
+      "options": [
+        {
+          "id": "explain_food_preference",
+          "requirements": [["dulce", "salado", "salada"], ["porque", "prefiero"]],
+          "npc_response": { "es": "Buena elección. Gracias por explicarlo tan claramente.", "nl": "Goede keuze. Bedankt dat je het zo duidelijk uitlegt." },
+          "feedback": { "strength": "Je motiveerde zelfstandig een persoonlijke voorkeur.", "focus": "Prefiero… porque… helpt je ook buiten deze missie om keuzes te bespreken." },
+          "states": ["complication_resolved", "preference_explained"],
+          "next": "turn.plan_next_stop"
+        }
+      ],
+      "fallback": { "strength": "Je probeert een keuze tussen zoet en hartig te maken.", "focus": "Gebruik dulce of salado en voeg porque toe voor je reden." }
+    },
+    {
+      "id": "turn.plan_next_stop",
+      "turn": 4,
+      "npc_line": { "es": "Después de esta semana, ¿qué quieres hacer con tu español?", "nl": "Wat wil je na deze week met je Spaans doen?" },
+      "prompt": "Vertel wat je hierna wilt oefenen of waar je Spaans wilt gebruiken.",
+      "placeholder": "Quiero seguir practicando para hablar con más confianza cuando viaje.",
+      "hint": "Quiero seguir… betekent: ik wil doorgaan met…",
+      "choices": ["Quiero seguir practicando para hablar con más confianza cuando viaje.", "Quiero aprender más español y visitar otra ciudad."],
+      "options": [
+        {
+          "id": "set_next_goal",
+          "requirements": [["quiero", "voy a", "me gustaria", "me gustaría"], ["practicar", "aprender", "hablar", "viajar", "visitar"]],
+          "npc_response": { "es": "Ese es un buen próximo paso. Ya sabes cómo seguir hablando aunque algo cambie.", "nl": "Dat is een goede volgende stap. Je weet nu hoe je doorpraat als iets verandert." },
+          "feedback": { "strength": "Je formuleerde een concreet persoonlijk vervolgdoel.", "focus": "Quiero seguir… maakt van een wens een helder plan." },
+          "states": ["next_goal_set", "free_practice_intention"],
+          "next": "turn.confirm_order"
+        }
+      ],
+      "fallback": { "strength": "Je denkt vooruit over je Spaans.", "focus": "Begin met quiero en noem practicar, hablar, viajar of aprender." }
+    },
+    {
+      "id": "turn.confirm_order",
+      "turn": 5,
+      "npc_line": { "es": "Aquí tienes. Son ocho euros. ¿Quieres pagar con tarjeta?", "nl": "Alsjeblieft. Het is acht euro. Wil je met de kaart betalen?" },
+      "prompt": "Bevestig de prijs, betaalwijze en bedank Lucía voor de week.",
+      "placeholder": "Sí, ocho euros. Pago con tarjeta. Muchas gracias por esta semana, Lucía.",
+      "hint": "Combineer het bedrag, pago con tarjeta en gracias.",
+      "choices": ["Sí, ocho euros. Pago con tarjeta. Muchas gracias por esta semana, Lucía.", "De acuerdo. Con tarjeta, por favor. Gracias por todo."],
+      "options": [
+        {
+          "id": "confirm_and_close_week",
+          "requirements": [["ocho", "8", "de acuerdo"], ["tarjeta"], ["gracias"]],
+          "npc_response": { "es": "Gracias a ti. La puerta de La Espiga siempre estará abierta. ¡Hasta pronto!", "nl": "Jij bedankt. De deur van La Espiga staat altijd voor je open. Tot snel!" },
+          "feedback": { "strength": "Je controleerde de praktische details en sloot persoonlijk af.", "focus": "Door prijs, betaalwijze en dank te combineren, rond je het gesprek zelfstandig af." },
+          "states": ["price_confirmed", "payment_confirmed", "madrid_week_closed", "conversation_completed"],
+          "next": "@complete"
+        }
+      ],
+      "fallback": { "strength": "Je rondt je laatste gesprek met Lucía af.", "focus": "Noem ocho, tarjeta en gracias om alle afsluitdetails te bevestigen." }
+    }
+  ],
+  "completion": {
+    "polite_farewell": {
+      "es": "Muchas gracias por esta semana. ¡Hasta pronto!",
+      "nl": "Heel erg bedankt voor deze week. Tot snel!"
+    },
+    "default_farewell": {
+      "es": "Gracias por todo. ¡Hasta pronto!",
+      "nl": "Bedankt voor alles. Tot snel!"
+    },
+    "rewards": {
+      "xp": 160,
+      "confianza": 1,
+      "valentia": 1,
+      "stamp": { "es": "Una semana en Madrid", "nl": "Een week in Madrid" },
+      "collectible": { "es": "Postal de Madrid", "nl": "Madridkaart" },
+      "repair_badge": { "es": "Sigo hablando", "nl": "Ik blijf praten" }
+    }
+  }
+}

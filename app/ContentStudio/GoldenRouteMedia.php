@@ -66,6 +66,10 @@ final class GoldenRouteMedia
                 'scene_background' => 'la_espiga_interior',
                 'npc_expression_sheet' => 'lucia_expressions',
             ],
+            'final' => [
+                'scene_background' => 'la_espiga_interior',
+                'npc_expression_sheet' => 'lucia_expressions',
+            ],
             'station' => [
                 'scene_background' => 'madrid_station_hall',
                 'npc_expression_sheet' => 'mateo_station_expressions',

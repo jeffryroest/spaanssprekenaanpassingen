@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 
 final class DemoContentInstaller
 {
-    public const PACKAGE_VERSION = '2026.08.3';
+    public const PACKAGE_VERSION = '2026.09.1';
 
     public function __construct(
         private readonly PlayableContentTemplates $templates,

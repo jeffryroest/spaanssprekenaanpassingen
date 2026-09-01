@@ -14,13 +14,13 @@ Deze tussenfase maakt de bestaande technische vertical slice herkenbaar speelbaa
 5. gesprek met Lucía via spreken of tekst;
 6. beloning en zichtbare ontgrendeling in de hub.
 
-De taxi, het restaurant, de persoonlijke dag-4-herhaling, het fictieve gezondheidsrollenspel en de stationsmissie gebruiken inmiddels deze afgeschermde spelerslaag. De slotmissie en minimaal NPC-geheugen blijven de volgende uitbreidingen.
+De taxi, het restaurant, de persoonlijke dag-4-herhaling, het fictieve gezondheidsrollenspel, de stationsmissie en de dag-7-finale gebruiken inmiddels deze afgeschermde spelerslaag. De finale herkent eerdere ontmoetingen alleen via voltooide missiestatus.
 
 ## Content Studio
 
-De contenteditor bevat nu een versiegebonden veld `domain_data`. Ingevoerde JSON wordt altijd syntactisch gecontroleerd. De bekende contracten `madrid_hub`, `panaderia_text_dialogue`, `taxi_text_dialogue`, `restaurant_text_dialogue`, `health_text_dialogue` en `station_text_dialogue` krijgen extra structuurvalidatie.
+De contenteditor bevat nu een versiegebonden veld `domain_data`. Ingevoerde JSON wordt altijd syntactisch gecontroleerd. De bekende contracten `madrid_hub`, `panaderia_text_dialogue`, `taxi_text_dialogue`, `restaurant_text_dialogue`, `health_text_dialogue`, `station_text_dialogue` en `final_text_dialogue` krijgen extra structuurvalidatie.
 
-Zes startertemplates vullen een nieuw concept in:
+Zeven startertemplates vullen een nieuw concept in:
 
 | Starter | Contenttype | Slug | Runtimegrens |
 |---|---|---|---|
@@ -30,6 +30,7 @@ Zes startertemplates vullen een nieuw concept in:
 | Restaurantgesprek | Gespreksscenario | `restaurant-el-reloj` | recht `trial_week` |
 | Consultrollenspel | Gespreksscenario | `consulta-elena` | recht `trial_week` + fictieve rolkaart |
 | Stationsgesprek | Gespreksscenario | `estacion-mateo` | recht `trial_week` + fictieve oefenreis |
+| Slotgesprek | Gespreksscenario | `madrid-final-lucia` | recht `trial_week` + structureel NPC-geheugen |
 
 Een starter schrijft niets naar de database totdat een editor het formulier opslaat. Opslaan maakt alleen een conceptrevisie. De bestaande vier-ogenreview, releasepreflight en expliciete productiebevestiging blijven ongewijzigd.
 
@@ -59,6 +60,8 @@ Het dashboard toont per vereist runtimecontract of het ontbreekt, in concept/rev
 - Een gebruiker met `trial_week`-recht kan dag 4 spelen met maximaal vijf kaarten uit eigen voltooide, nog gepubliceerde routes.
 - Een gebruiker met `trial_week`-recht kan dag 5 starten zodra `consulta-elena` is gereviewd en in productie gepubliceerd.
 - Een gebruiker met `trial_week`-recht kan dag 6 starten zodra `estacion-mateo` met beide vereiste mediarollen is gereviewd en in productie gepubliceerd.
+- Een gebruiker met `trial_week`-recht kan dag 7 starten zodra `madrid-final-lucia` met beide gedeelde mediarollen is gereviewd en in productie gepubliceerd.
+- NPC-herkenning gebruikt geen antwoorden, audio, transcripties of feedback als geheugen.
 - Ontbrekende productiecontent toont een herstelbare fout en nooit een eindeloze laadstatus.
 - De publieke pagina’s bevatten geen frameworks of fasenummers.
 - Interactie is toetsenbordbedienbaar, heeft tekstalternatieven en respecteert reduced motion.

@@ -38,7 +38,8 @@ final class PlayableContentInspector
             'taxi_text_dialogue',
             'restaurant_text_dialogue',
             'health_text_dialogue',
-            'station_text_dialogue' => $this->inspectDialogue($contentType, $data, $scene, $errors, $warnings),
+            'station_text_dialogue',
+            'final_text_dialogue' => $this->inspectDialogue($contentType, $data, $scene, $errors, $warnings),
             default => $this->unsupportedScene($scene, $errors),
         };
 
@@ -174,6 +175,7 @@ final class PlayableContentInspector
             'restaurant_text_dialogue' => 'mission.madrid.restaurant.order',
             'health_text_dialogue' => 'mission.madrid.health.appointment',
             'station_text_dialogue' => 'mission.madrid.station.ticket',
+            'final_text_dialogue' => 'mission.madrid.week.final',
         ];
         if (($mission['id'] ?? null) !== $expectedMissionIds[$scene]) {
             $errors[] = "Het {$scene}-contract vereist missie-id {$expectedMissionIds[$scene]}.";
@@ -187,7 +189,7 @@ final class PlayableContentInspector
             $errors[] = 'De eerste bakkerijmissie moet openbaar bereikbaar blijven.';
         }
 
-        if (in_array($scene, ['taxi_text_dialogue', 'restaurant_text_dialogue', 'health_text_dialogue', 'station_text_dialogue'], true)
+        if (in_array($scene, ['taxi_text_dialogue', 'restaurant_text_dialogue', 'health_text_dialogue', 'station_text_dialogue', 'final_text_dialogue'], true)
             && (data_get($data, 'runtime_access.visibility') !== 'entitled'
                 || data_get($data, 'runtime_access.entitlement') !== 'trial_week')) {
             $errors[] = 'Een afgeschermde proefweekmissie moet het recht trial_week vereisen.';
@@ -356,6 +358,37 @@ final class PlayableContentInspector
                 }
                 $this->requireTranslation($detail['label'] ?? null, 'Reisdetail '.($index + 1).' · label', $errors);
                 $this->requireTranslation($detail['value'] ?? null, 'Reisdetail '.($index + 1).' · waarde', $errors);
+            }
+        }
+
+        if ($scene === 'final_text_dialogue') {
+            $memory = is_array($data['memory'] ?? null) ? $data['memory'] : [];
+            if (($memory['returning_npc_id'] ?? null) !== 'npc.lucia.martin'
+                || ($memory['source_mission_key'] ?? null) !== 'mission.madrid.panaderia.breakfast') {
+                $errors[] = 'De slotmissie moet Lucía koppelen aan de voltooide bakkerijmissie.';
+            }
+            foreach (['returning_greeting', 'first_greeting'] as $field) {
+                $this->requireTranslation($memory[$field] ?? null, "NPC-geheugen · {$field}", $errors);
+            }
+            $this->requireString($memory, 'privacy_notice', 'NPC-geheugen · privacytoelichting', $errors);
+            $sources = is_array($memory['recap_sources'] ?? null) ? $memory['recap_sources'] : [];
+            if (count($sources) < 5) {
+                $errors[] = 'De slotmissie vereist minimaal vijf structurele terugblikken.';
+            }
+            $this->inspectUniqueIds($sources, 'Terugblikbron', $errors);
+            $missionKeys = [];
+            foreach ($sources as $index => $source) {
+                if (! is_array($source)) {
+                    $errors[] = 'Iedere terugblikbron moet een object zijn.';
+
+                    continue;
+                }
+                $this->requireString($source, 'mission_key', 'Terugblikbron '.($index + 1).' · missie', $errors);
+                $this->requireTranslation($source['label'] ?? null, 'Terugblikbron '.($index + 1).' · label', $errors);
+                if (in_array($source['mission_key'] ?? null, $missionKeys, true)) {
+                    $errors[] = 'Iedere terugblikbron moet een unieke missie gebruiken.';
+                }
+                $missionKeys[] = $source['mission_key'] ?? null;
             }
         }
 

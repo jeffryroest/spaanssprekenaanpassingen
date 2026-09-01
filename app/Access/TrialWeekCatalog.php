@@ -51,7 +51,7 @@ final class TrialWeekCatalog
             ['day' => 4, 'mission_key' => 'mission.madrid.review.personal', 'title_es' => 'Mi repaso', 'title_nl' => 'Persoonlijke herhaling', 'setting' => 'Woorden en zinnen op maat', 'route' => 'game.madrid.review', 'conversation_slug' => null, 'expected_scene' => null],
             ['day' => 5, 'mission_key' => 'mission.madrid.health.appointment', 'title_es' => 'En la consulta', 'title_nl' => 'Leg een fictieve klacht uit', 'setting' => 'Consulta La Luz · Elena', 'route' => 'game.madrid.health', 'conversation_slug' => 'consulta-elena', 'expected_scene' => 'health_text_dialogue'],
             ['day' => 6, 'mission_key' => 'mission.madrid.station.ticket', 'title_es' => 'En la estación', 'title_nl' => 'Regel je treinreis', 'setting' => 'Estación del Centro · Mateo', 'route' => 'game.madrid.station', 'conversation_slug' => 'estacion-mateo', 'expected_scene' => 'station_text_dialogue'],
-            ['day' => 7, 'mission_key' => 'mission.madrid.week.final', 'title_es' => 'El reto final', 'title_nl' => 'Rond je proefweek af', 'setting' => 'Madrid · slotmissie', 'route' => 'trial-week.show', 'conversation_slug' => null, 'expected_scene' => null],
+            ['day' => 7, 'mission_key' => 'mission.madrid.week.final', 'title_es' => 'El reto final', 'title_nl' => 'Rond je proefweek af', 'setting' => 'La Espiga · Lucía', 'route' => 'game.madrid.final', 'conversation_slug' => 'madrid-final-lucia', 'expected_scene' => 'final_text_dialogue'],
         ];
     }
 

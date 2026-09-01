@@ -51,6 +51,15 @@ final class RuntimeReadiness
                 false,
                 requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
             ),
+            $this->item(
+                'Slotmissie met Lucía',
+                ContentType::ConversationScenario,
+                'madrid-final-lucia',
+                'final_text_dialogue',
+                'Proefweek · structureel NPC-geheugen · recht vereist',
+                false,
+                requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
+            ),
         ];
     }
 
@@ -104,6 +113,7 @@ final class RuntimeReadiness
                 'restaurant-el-reloj' => 'restaurant',
                 'consulta-elena' => 'health',
                 'estacion-mateo' => 'station',
+                'madrid-final-lucia' => 'final',
             },
         ];
     }

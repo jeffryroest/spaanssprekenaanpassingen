@@ -72,6 +72,16 @@ final class PlayableContentTemplates
                 summary: 'Vertakkend gesprek om een fictieve treinreis te regelen en vertrekdetails te controleren.',
                 exampleFile: 'station-dialogue-domain-data.json',
             ),
+            'final' => $this->template(
+                key: 'final',
+                label: 'Slotgesprek met herinnering',
+                description: 'De afgeschermde dag-7-finale waarin Lucía eerdere voltooide ontmoetingen herkent.',
+                contentType: ContentType::ConversationScenario,
+                slug: 'madrid-final-lucia',
+                title: 'El reto final · Lucía',
+                summary: 'Vertakkend slotgesprek dat de proefweek afrondt zonder vrije antwoorden als NPC-geheugen op te slaan.',
+                exampleFile: 'final-dialogue-domain-data.json',
+            ),
         ];
     }
 

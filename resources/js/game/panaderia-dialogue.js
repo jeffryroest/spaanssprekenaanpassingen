@@ -104,6 +104,7 @@ if (dialogueRoot) {
         setText('[data-npc-role-nl]', data.npc.role.nl);
         hydrateRoleplay(data.roleplay);
         hydrateJourney(data.journey);
+        hydrateMemory(data.memory);
     };
 
     const applyRuntimeMedia = (media = {}) => {
@@ -189,6 +190,17 @@ if (dialogueRoot) {
             return row;
         }));
         card.hidden = false;
+    };
+
+    const hydrateMemory = (memory) => {
+        const card = dialogueRoot.querySelector('[data-npc-memory]');
+        if (!card) return;
+
+        const returning = dialogueRoot.dataset.memoryReturning === 'true';
+        const greeting = returning ? memory?.returning_greeting : memory?.first_greeting;
+        if (typeof greeting?.es === 'string') setText('[data-memory-greeting-es]', greeting.es);
+        if (typeof greeting?.nl === 'string') setText('[data-memory-greeting-nl]', greeting.nl);
+        if (typeof memory?.privacy_notice === 'string') setText('[data-memory-privacy]', memory.privacy_notice);
     };
 
     const startLevel = (level) => {
@@ -639,7 +651,7 @@ if (dialogueRoot) {
     };
 
     const applyTranslationVisibility = () => {
-        dialogueRoot.querySelectorAll('[data-npc-line-nl], [data-farewell-nl]').forEach((element) => {
+        dialogueRoot.querySelectorAll('[data-npc-line-nl], [data-farewell-nl], [data-memory-greeting-nl]').forEach((element) => {
             element.hidden = !translationVisible;
         });
     };

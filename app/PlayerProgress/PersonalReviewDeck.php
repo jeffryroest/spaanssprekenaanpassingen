@@ -21,6 +21,7 @@ final class PersonalReviewDeck
         'mission.madrid.restaurant.order' => ['slug' => 'restaurant-el-reloj', 'scene' => 'restaurant_text_dialogue', 'setting' => 'Café El Reloj · Carmen'],
         'mission.madrid.health.appointment' => ['slug' => 'consulta-elena', 'scene' => 'health_text_dialogue', 'setting' => 'Consulta La Luz · Elena'],
         'mission.madrid.station.ticket' => ['slug' => 'estacion-mateo', 'scene' => 'station_text_dialogue', 'setting' => 'Estación del Centro · Mateo'],
+        'mission.madrid.week.final' => ['slug' => 'madrid-final-lucia', 'scene' => 'final_text_dialogue', 'setting' => 'La Espiga · Lucía'],
     ];
 
     public function __construct(
