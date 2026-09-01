@@ -113,6 +113,22 @@
                                     </details>
                                 @endif
 
+                                @if($domainData['scene'] === 'station_text_dialogue')
+                                    <section class="mt-5 rounded-2xl border border-[#1e5868]/20 bg-[#edf3f1] p-4" aria-labelledby="preview-journey-title">
+                                        <p class="text-xs font-black uppercase tracking-[0.14em] text-[#1e5868]">Fictieve oefenreis</p>
+                                        <h3 id="preview-journey-title" class="mt-2 font-black text-[#172c36]">{{ data_get($domainData, 'journey.title.nl') }}</h3>
+                                        <dl class="mt-3 grid gap-2 sm:grid-cols-3">
+                                            @foreach(data_get($domainData, 'journey.details', []) as $detail)
+                                                <div class="rounded-xl bg-white p-3">
+                                                    <dt class="text-[0.65rem] font-black uppercase tracking-wide text-[#70807c]">{{ data_get($detail, 'label.nl') }}</dt>
+                                                    <dd class="mt-1 text-sm font-black text-[#173b49]" lang="es">{{ data_get($detail, 'value.es') }}</dd>
+                                                </div>
+                                            @endforeach
+                                        </dl>
+                                        <p class="mt-3 text-xs leading-5 text-[#6e735f]">{{ data_get($domainData, 'journey.notice') }}</p>
+                                    </section>
+                                @endif
+
                                 <div data-preview-step class="mt-6" aria-live="polite"></div>
                                 <div class="mt-5">
                                     <label for="preview-answer" class="block text-sm font-black text-[#283d35]">Simuleer een spelersantwoord</label>

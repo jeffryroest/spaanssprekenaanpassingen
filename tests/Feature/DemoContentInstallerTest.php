@@ -55,12 +55,12 @@ class DemoContentInstallerTest extends TestCase
 
         $this->assertDatabaseCount('content_nodes', 6);
         $this->assertDatabaseCount('content_revisions', 6);
-        $this->assertDatabaseCount('media_assets', 3);
-        $this->assertDatabaseCount('content_media', 3);
-        $this->assertDatabaseCount('audit_logs', 9);
+        $this->assertDatabaseCount('media_assets', 5);
+        $this->assertDatabaseCount('content_media', 5);
+        $this->assertDatabaseCount('audit_logs', 11);
         $this->assertSame(6, ContentNode::query()->where('status', ContentStatus::Draft->value)->count());
 
-        foreach (['madrid', 'la-espiga-lucia', 'taxi-diego', 'restaurant-el-reloj', 'consulta-elena', 'station-nuria'] as $slug) {
+        foreach (['madrid', 'la-espiga-lucia', 'taxi-diego', 'restaurant-el-reloj', 'consulta-elena', 'estacion-mateo'] as $slug) {
             $this->assertDatabaseHas('content_nodes', ['slug' => $slug]);
         }
 
@@ -70,9 +70,9 @@ class DemoContentInstallerTest extends TestCase
 
         $this->assertDatabaseCount('content_nodes', 6);
         $this->assertDatabaseCount('content_revisions', 6);
-        $this->assertDatabaseCount('media_assets', 3);
-        $this->assertDatabaseCount('content_media', 3);
-        $this->assertDatabaseCount('audit_logs', 9);
+        $this->assertDatabaseCount('media_assets', 5);
+        $this->assertDatabaseCount('content_media', 5);
+        $this->assertDatabaseCount('audit_logs', 11);
     }
 
     public function test_installer_safely_upgrades_an_untouched_older_madrid_demo_with_visual_media(): void
@@ -101,7 +101,7 @@ class DemoContentInstallerTest extends TestCase
             $madrid->revisions()->where('version', 2)->firstOrFail()->mediaAssets()->get()->pluck('pivot.role')->all(),
         );
         $this->assertDatabaseCount('content_nodes', 6);
-        $this->assertDatabaseCount('media_assets', 3);
+        $this->assertDatabaseCount('media_assets', 5);
     }
 
     public function test_installer_never_overwrites_existing_edited_content(): void
@@ -187,8 +187,8 @@ class DemoContentInstallerTest extends TestCase
 
         $this->assertDatabaseCount('content_nodes', 6);
         $this->assertDatabaseCount('content_revisions', 8);
-        $this->assertDatabaseCount('media_assets', 3);
-        $this->assertDatabaseCount('content_media', 3);
+        $this->assertDatabaseCount('media_assets', 5);
+        $this->assertDatabaseCount('content_media', 5);
 
         foreach ([
             'madrid' => 'madrid_hub',

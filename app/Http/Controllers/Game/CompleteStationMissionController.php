@@ -41,6 +41,7 @@ final class CompleteStationMissionController extends Controller
                 'audio_persisted' => false,
                 'transcript_persisted' => false,
                 'feedback_persisted' => false,
+                'travel_data_persisted' => false,
             ],
         ]);
     }

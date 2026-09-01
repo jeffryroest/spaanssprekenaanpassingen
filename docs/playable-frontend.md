@@ -14,13 +14,13 @@ Deze tussenfase maakt de bestaande technische vertical slice herkenbaar speelbaa
 5. gesprek met Lucía via spreken of tekst;
 6. beloning en zichtbare ontgrendeling in de hub.
 
-De taxi, het restaurant, het fictieve gezondheidsrollenspel en het station gebruiken inmiddels deze afgeschermde spelerslaag.
+De taxi, het restaurant, het fictieve gezondheidsrollenspel en de stationsmissie gebruiken inmiddels deze afgeschermde spelerslaag. De slotmissie en persoonlijke herhaling blijven de volgende uitbreidingen.
 
 ## Content Studio
 
 De contenteditor bevat nu een versiegebonden veld `domain_data`. Ingevoerde JSON wordt altijd syntactisch gecontroleerd. De bekende contracten `madrid_hub`, `panaderia_text_dialogue`, `taxi_text_dialogue`, `restaurant_text_dialogue`, `health_text_dialogue` en `station_text_dialogue` krijgen extra structuurvalidatie.
 
-Vijf startertemplates vullen een nieuw concept in:
+Zes startertemplates vullen een nieuw concept in:
 
 | Starter | Contenttype | Slug | Runtimegrens |
 |---|---|---|---|
@@ -28,8 +28,8 @@ Vijf startertemplates vullen een nieuw concept in:
 | La Espiga-gesprek | Gespreksscenario | `la-espiga-lucia` | publiek |
 | Taxigesprek | Gespreksscenario | `taxi-diego` | recht `trial_week` |
 | Restaurantgesprek | Gespreksscenario | `restaurant-el-reloj` | recht `trial_week` |
-| Stationsgesprek | Gespreksscenario | `station-nuria` | recht `trial_week` |
 | Consultrollenspel | Gespreksscenario | `consulta-elena` | recht `trial_week` + fictieve rolkaart |
+| Stationsgesprek | Gespreksscenario | `estacion-mateo` | recht `trial_week` + fictieve oefenreis |
 
 Een starter schrijft niets naar de database totdat een editor het formulier opslaat. Opslaan maakt alleen een conceptrevisie. De bestaande vier-ogenreview, releasepreflight en expliciete productiebevestiging blijven ongewijzigd.
 
@@ -57,6 +57,7 @@ Het dashboard toont per vereist runtimecontract of het ontbreekt, in concept/rev
 - Een gebruiker met `trial_week`-recht kan de taximissie blijven spelen.
 - Een gebruiker met `trial_week`-recht kan dag 3 starten zodra `restaurant-el-reloj` is gereviewd en in productie gepubliceerd.
 - Een gebruiker met `trial_week`-recht kan dag 5 starten zodra `consulta-elena` is gereviewd en in productie gepubliceerd.
+- Een gebruiker met `trial_week`-recht kan dag 6 starten zodra `estacion-mateo` met beide vereiste mediarollen is gereviewd en in productie gepubliceerd.
 - Ontbrekende productiecontent toont een herstelbare fout en nooit een eindeloze laadstatus.
 - De publieke pagina’s bevatten geen frameworks of fasenummers.
 - Interactie is toetsenbordbedienbaar, heeft tekstalternatieven en respecteert reduced motion.

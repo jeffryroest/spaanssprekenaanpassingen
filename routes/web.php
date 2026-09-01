@@ -16,6 +16,7 @@ use App\Http\Controllers\Game\CompleteRestaurantMissionController;
 use App\Http\Controllers\Game\CompleteStationMissionController;
 use App\Http\Controllers\Game\CompleteTaxiMissionController;
 use App\Http\Controllers\Game\EntitledConversationController;
+use App\Http\Controllers\Game\EntitledConversationMediaController;
 use App\Http\Controllers\Game\SpeechTranscriptionController;
 use App\Http\Controllers\Game\TurnFeedbackController;
 use App\Http\Controllers\PlayerProgressController;
@@ -113,10 +114,18 @@ Route::middleware('auth')->group(function (): void {
         ->middleware('entitled:trial_week')
         ->name('game.madrid.station');
     Route::get('/spelen/madrid/station/content', EntitledConversationController::class)
-        ->defaults('scenarioSlug', 'station-nuria')
+        ->defaults('scenarioSlug', 'estacion-mateo')
         ->defaults('requiredEntitlement', 'trial_week')
+        ->defaults('mediaRouteName', 'game.madrid.station.media')
         ->middleware(['entitled:trial_week', 'throttle:120,1'])
         ->name('game.madrid.station.content');
+    Route::get('/spelen/madrid/station/media/{version}/{role}', EntitledConversationMediaController::class)
+        ->defaults('scenarioSlug', 'estacion-mateo')
+        ->defaults('requiredEntitlement', 'trial_week')
+        ->whereNumber('version')
+        ->where('role', '[a-z0-9_]+')
+        ->middleware(['entitled:trial_week', 'throttle:120,1'])
+        ->name('game.madrid.station.media');
     Route::post('/spelen/madrid/station/transcriptie', SpeechTranscriptionController::class)
         ->middleware(['entitled:trial_week', 'throttle:speech-transcriptions'])
         ->name('game.madrid.station.transcription');

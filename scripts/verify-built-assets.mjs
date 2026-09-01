@@ -21,6 +21,8 @@ const checks = [
   [css.includes('.hub-preparation-dialog'), 'De Madrid-voorbereidingslaag ontbreekt in de productie-CSS.'],
   [css.includes('.bakery-body'), 'De dialoogstijlen ontbreken in de productie-CSS.'],
   [css.includes('.health-role-card'), 'De fictieve consulta- en rolkaartstijlen ontbreken in de productie-CSS.'],
+  [css.includes('.station-journey-card'), 'De fictieve oefenreis- en stationsstijlen ontbreken in de productie-CSS.'],
+  [css.includes('.station-mateo-frame'), 'De visuele Mateo-reacties ontbreken in de productie-CSS.'],
   [css.includes('.hub-world-return'), 'De zichtbare Madrid-wereldreactie ontbreekt in de productie-CSS.'],
   [css.includes('.bakery-lucia-frame'), 'De visuele Lucía-reacties ontbreken in de productie-CSS.'],
   [js.includes('madrid-mission-preparation'), 'De Madrid-voorbereidingslogica ontbreekt in de productie-JavaScript.'],
@@ -29,6 +31,7 @@ const checks = [
   [js.includes('data-content-builder-source'), 'De speelcontentbouwer ontbreekt in de productie-JavaScript.'],
   [js.includes('data-preview-submit'), 'De voortgangsvrije preview ontbreekt in de productie-JavaScript.'],
   [js.includes('npc_expression_sheet'), 'De revisiegebonden personagemedia ontbreken in de productie-JavaScript.'],
+  [js.includes('data-journey-card'), 'De auteurvriendelijke oefenreiskaart ontbreekt in de productie-JavaScript.'],
   [js.includes('la-espiga-complete'), 'De gouden-route-terugkeer ontbreekt in de productie-JavaScript.'],
 ];
 
@@ -36,4 +39,4 @@ for (const [passes, message] of checks) {
   if (!passes) throw new Error(message);
 }
 
-console.log(`Productie-assets geldig: ${cssEntry.file} en ${jsEntry.file} bevatten de speelbare gouden route van fase 3B5.`);
+console.log(`Productie-assets geldig: ${cssEntry.file} en ${jsEntry.file} bevatten de gouden route en de visuele stationsmissie van fase 3B6.`);

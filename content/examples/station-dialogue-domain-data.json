@@ -6,32 +6,42 @@
     "entitlement": "trial_week"
   },
   "npc": {
-    "id": "npc.nuria.martin",
-    "name": "Nuria Martín",
-    "role": { "es": "agente de venta", "nl": "baliemedewerker" },
-    "description": "Rustig, duidelijk en professioneel. Nuria helpt reizigers aan de kaartverkoop van Atocha en reageert als stationsmedewerker, niet als docent."
+    "id": "npc.mateo.alvarez",
+    "name": "Mateo Álvarez",
+    "role": { "es": "empleado de estación", "nl": "stationsmedewerker" },
+    "description": "Rustig, praktisch en vriendelijk. Mateo helpt de reiziger een fictieve treinreis te regelen zonder de rol van docent over te nemen."
   },
   "mission": {
     "id": "mission.madrid.station.ticket",
     "title": { "es": "Mi primer billete", "nl": "Mijn eerste treinkaartje" },
-    "objective": "Vraag een retourticket naar Toledo, kies een vertrektijd, reageer op een wijziging en rond de aankoop af.",
+    "objective": "Vraag een fictief kaartje naar Toledo, kies heen of retour, los een wijziging op, vraag naar prijs en betaalwijze en controleer tijd en perron.",
     "start_step": "turn.request_ticket",
     "required_text_turns": 5
   },
+  "journey": {
+    "fictional": true,
+    "title": { "es": "Tu viaje de práctica", "nl": "Jouw oefenreis" },
+    "notice": "Dit is een fictieve taalopdracht en geen actuele dienstregeling of boeking.",
+    "details": [
+      { "label": { "es": "Destino", "nl": "Bestemming" }, "value": { "es": "Toledo", "nl": "Toledo" } },
+      { "label": { "es": "Ida", "nl": "Heenreis" }, "value": { "es": "mañana por la mañana", "nl": "morgen in de ochtend" } },
+      { "label": { "es": "Vuelta", "nl": "Terugreis" }, "value": { "es": "el domingo", "nl": "zondag" } }
+    ]
+  },
   "level_branches": {
-    "A0": "branch.confirm_return",
-    "A1": "branch.later_train",
-    "A2": "branch.flexible_fare"
+    "A0": "branch.choose_time",
+    "A1": "branch.accept_later_train",
+    "A2": "branch.compare_connections"
   },
   "repair": {
     "terms": ["puede repetir", "repita por favor", "mas despacio", "no entiendo", "que significa", "quiero decir"],
     "npc_response": {
-      "es": "Claro. Se lo explico otra vez y más despacio.",
-      "nl": "Natuurlijk. Ik leg het nog een keer en wat langzamer uit."
+      "es": "Claro. Se lo explico de otra manera y más despacio.",
+      "nl": "Natuurlijk. Ik leg het anders en wat langzamer uit."
     },
     "feedback": {
-      "strength": "Sterk: je zorgt zelf dat de reisinformatie duidelijk wordt.",
-      "focus": "Om herhaling of uitleg vragen is een belangrijke reisvaardigheid."
+      "strength": "Sterk: je vraagt zelf om de informatie die je nodig hebt.",
+      "focus": "Om herhaling vragen houdt een echt reisgesprek veilig op gang."
     }
   },
   "steps": [
@@ -39,159 +49,159 @@
       "id": "turn.request_ticket",
       "turn": 1,
       "npc_line": { "es": "Buenos días. ¿En qué puedo ayudarle?", "nl": "Goedemorgen. Waarmee kan ik u helpen?" },
-      "prompt": "Begroet Nuria en vraag om een retourticket naar Toledo voor morgen.",
-      "placeholder": "Buenos días. Quiero un billete de ida y vuelta a Toledo para mañana.",
-      "hint": "Ida y vuelta betekent heen en terug; para mañana betekent voor morgen.",
-      "choices": ["Buenos días. Quiero un billete de ida y vuelta a Toledo para mañana.", "Hola. Un billete de ida y vuelta a Toledo para mañana, por favor."],
+      "prompt": "Begroet Mateo en vraag om een kaartje naar Toledo voor morgenochtend.",
+      "placeholder": "Buenos días. Quisiera un billete a Toledo para mañana por la mañana.",
+      "hint": "Quisiera un billete a… is een beleefde manier om een kaartje te vragen.",
+      "choices": ["Buenos días. Quisiera un billete a Toledo para mañana por la mañana.", "Hola. Un billete para Toledo mañana por la mañana, por favor."],
       "options": [
         {
-          "id": "return_ticket_toledo",
-          "requirements": [["buenos dias", "hola", "buenas"], ["billete", "ticket"], ["toledo"], ["manana"]],
-          "npc_response": { "es": "Muy bien. ¿A qué hora quiere salir?", "nl": "Prima. Hoe laat wilt u vertrekken?" },
-          "feedback": { "strength": "Bestemming, reisdag en retourwens waren meteen duidelijk.", "focus": "Billete de ida y vuelta is de vaste combinatie voor een retourticket." },
-          "states": ["greeted_nuria", "toledo_selected", "return_ticket_requested"],
-          "next": "turn.choose_time"
+          "id": "ticket_to_toledo",
+          "requirements": [["billete", "ticket"], ["toledo"], ["mañana", "manana"]],
+          "npc_response": { "es": "Perfecto. ¿Quiere solo ida o ida y vuelta?", "nl": "Prima. Wilt u alleen heen of een retour?" },
+          "feedback": { "strength": "Bestemming en reisdag waren meteen duidelijk.", "focus": "Quisiera klinkt vriendelijk en natuurlijk aan een loket." },
+          "states": ["destination_confirmed", "travel_day_confirmed"],
+          "next": "turn.choose_return"
         }
       ],
-      "fallback": { "strength": "Je hebt contact gemaakt aan de balie.", "focus": "Noem ook billete, Toledo en mañana om je reiswens compleet te maken." }
+      "fallback": { "strength": "Je hebt Mateo aangesproken.", "focus": "Noem billete, Toledo en mañana om je reisvraag compleet te maken." }
     },
     {
-      "id": "turn.choose_time",
+      "id": "turn.choose_return",
       "turn": 2,
-      "npc_line": { "es": "Hay trenes a las nueve y a las diez y veinte.", "nl": "Er zijn treinen om negen uur en om twintig over tien." },
-      "prompt": "Kies de trein van negen uur.",
-      "placeholder": "El tren de las nueve, por favor.",
-      "hint": "Gebruik el tren de las… om een vertrektijd te kiezen.",
-      "choices": ["El tren de las nueve, por favor.", "Prefiero salir a las nueve."],
+      "npc_line": { "es": "¿Quiere solo ida o ida y vuelta?", "nl": "Wilt u alleen heen of een retour?" },
+      "prompt": "Kies een retour en zeg dat je zondag wilt terugkomen.",
+      "placeholder": "Ida y vuelta, por favor. Quiero volver el domingo.",
+      "hint": "Ida y vuelta betekent heen en terug; volver is terugkomen.",
+      "choices": ["Ida y vuelta, por favor. Quiero volver el domingo.", "Un billete de ida y vuelta. Regreso el domingo."],
       "options": [
         {
-          "id": "nine_oclock_train",
-          "requirements": [["nueve", "9", "a las nueve"]],
-          "npc_response": { "es": "De acuerdo. Compruebo la disponibilidad.", "nl": "In orde. Ik controleer de beschikbaarheid." },
-          "feedback": { "strength": "Je koos de gewenste vertrektijd kort en duidelijk.", "focus": "El tren de las nueve klinkt natuurlijk wanneer er meerdere vertrektijden zijn." },
-          "states": ["departure_time_selected"],
+          "id": "return_sunday",
+          "requirements": [["ida y vuelta", "regreso", "volver"], ["domingo"]],
+          "npc_response": { "es": "Muy bien. Veamos los trenes de la mañana.", "nl": "Prima. We bekijken de treinen in de ochtend." },
+          "feedback": { "strength": "Je maakte zowel het kaarttype als de terugreis duidelijk.", "focus": "Ida y vuelta is de vaste combinatie voor een retour." },
+          "states": ["return_ticket_requested", "return_day_confirmed"],
           "next": "@complication"
         }
       ],
-      "fallback": { "strength": "Je begrijpt dat Nuria twee tijden aanbiedt.", "focus": "Noem las nueve om de trein van negen uur te kiezen." }
+      "fallback": { "strength": "Je reageert op de keuze tussen enkel en retour.", "focus": "Gebruik ida y vuelta en noem domingo als terugreisdag." }
     },
     {
-      "id": "branch.confirm_return",
+      "id": "branch.choose_time",
       "turn": 3,
-      "npc_line": { "es": "¿Quiere ida y vuelta?", "nl": "Wilt u een retourticket?" },
-      "prompt": "Bevestig dat je heen en terug wilt.",
-      "placeholder": "Sí, ida y vuelta, por favor.",
-      "hint": "Bevestig met sí en herhaal ida y vuelta.",
-      "choices": ["Sí, ida y vuelta, por favor.", "Sí, quiero volver el mismo día."],
+      "npc_line": { "es": "Hay un tren a las nueve y otro a las once. ¿Cuál prefiere?", "nl": "Er is een trein om negen uur en een om elf uur. Welke heeft uw voorkeur?" },
+      "prompt": "Kies de trein van negen uur.",
+      "placeholder": "El tren de las nueve, por favor.",
+      "hint": "El tren de las nueve betekent de trein van negen uur.",
+      "choices": ["El tren de las nueve, por favor.", "Prefiero el de las nueve."],
       "options": [
         {
-          "id": "confirm_return",
-          "requirements": [["si", "ida y vuelta", "volver"]],
-          "npc_response": { "es": "Perfecto. La vuelta queda abierta para la tarde.", "nl": "Prima. De terugreis blijft open voor de middag." },
-          "feedback": { "strength": "Je bevestigde de retourreis zonder extra omwegen.", "focus": "Ida y vuelta is genoeg wanneer de medewerker alleen om bevestiging vraagt." },
-          "states": ["complication_resolved", "return_confirmed"],
-          "next": "turn.ask_price_platform"
+          "id": "choose_nine",
+          "requirements": [["nueve", "9"]],
+          "npc_response": { "es": "De acuerdo. El de las nueve.", "nl": "In orde. Die van negen uur." },
+          "feedback": { "strength": "Je koos kort en ondubbelzinnig een vertrektijd.", "focus": "El de las nueve voorkomt dat je het hele zinsdeel hoeft te herhalen." },
+          "states": ["complication_resolved", "departure_option_selected"],
+          "next": "turn.ask_price"
         }
       ],
-      "fallback": { "strength": "Je hoort dat Nuria vraagt naar de terugreis.", "focus": "Zeg sí, ida y vuelta om een retourticket te bevestigen." }
+      "fallback": { "strength": "Je begrijpt dat Mateo twee tijden aanbiedt.", "focus": "Kies nueve of once om de vertrektijd vast te leggen." }
     },
     {
-      "id": "branch.later_train",
+      "id": "branch.accept_later_train",
       "turn": 3,
-      "npc_line": { "es": "Lo siento, el tren de las nueve está completo. Quedan plazas a las diez y veinte.", "nl": "Sorry, de trein van negen uur is vol. Er zijn nog plaatsen om twintig over tien." },
-      "prompt": "Accepteer de latere trein of vraag of er een eerdere optie is.",
-      "placeholder": "Entonces, el de las diez y veinte está bien.",
-      "hint": "Entonces betekent dan; está bien betekent dat is goed.",
-      "choices": ["Entonces, el de las diez y veinte está bien.", "¿Hay otro tren más temprano?"],
+      "npc_line": { "es": "El tren de las diez está completo. Hay otro a las diez y cuarenta. ¿Le parece bien?", "nl": "De trein van tien uur is vol. Er is een andere om tien voor elf. Is dat goed?" },
+      "prompt": "Accepteer de latere trein en bevestig de nieuwe tijd.",
+      "placeholder": "Sí, el de las diez y cuarenta me parece bien.",
+      "hint": "Me parece bien betekent dat is prima voor mij.",
+      "choices": ["Sí, el de las diez y cuarenta me parece bien.", "De acuerdo. Tomo el tren de las diez y cuarenta."],
       "options": [
         {
-          "id": "resolve_later_train",
-          "requirements": [["diez y veinte", "10:20", "mas temprano", "otro tren", "esta bien"]],
-          "npc_response": { "es": "Muy bien. Le reservo una plaza a las diez y veinte.", "nl": "Prima. Ik reserveer een plaats om twintig over tien." },
-          "feedback": { "strength": "Je reageerde zelfstandig toen je eerste trein vol bleek.", "focus": "Entonces… está bien is een natuurlijke manier om een alternatief te accepteren." },
-          "states": ["complication_resolved", "later_train_selected"],
-          "next": "turn.ask_price_platform"
+          "id": "accept_ten_forty",
+          "requirements": [["diez y cuarenta", "10:40", "me parece bien", "de acuerdo"]],
+          "npc_response": { "es": "Perfecto. Reservo el de las diez y cuarenta.", "nl": "Prima. Ik reserveer die van tien voor elf." },
+          "feedback": { "strength": "Je reageerde zelfstandig toen de eerste trein vol bleek.", "focus": "Me parece bien is een natuurlijke manier om een alternatief te accepteren." },
+          "states": ["complication_resolved", "alternative_option_accepted"],
+          "next": "turn.ask_price"
         }
       ],
-      "fallback": { "strength": "Je begrijpt dat de eerste trein vol is.", "focus": "Accepteer las diez y veinte of vraag naar otro tren más temprano." }
+      "fallback": { "strength": "Je begrijpt dat de eerste trein niet beschikbaar is.", "focus": "Bevestig diez y cuarenta of accepteer met me parece bien." }
     },
     {
-      "id": "branch.flexible_fare",
+      "id": "branch.compare_connections",
       "turn": 3,
-      "npc_line": { "es": "Solo queda la tarifa flexible. Puede cambiar la hora sin coste. ¿Le parece bien?", "nl": "Alleen het flexibele tarief is nog beschikbaar. U kunt de tijd kosteloos wijzigen. Is dat goed?" },
-      "prompt": "Accepteer het flexibele tarief en controleer of je de tijd later kunt wijzigen.",
-      "placeholder": "Sí, me parece bien. ¿Puedo cambiar la hora más tarde?",
-      "hint": "¿Puedo cambiar…? betekent: kan ik … wijzigen?",
-      "choices": ["Sí, me parece bien. ¿Puedo cambiar la hora más tarde?", "Acepto la tarifa flexible si puedo cambiar la hora."],
+      "npc_line": { "es": "Puede salir a las nueve con un cambio o a las once en un tren directo. ¿Qué prefiere?", "nl": "U kunt om negen uur vertrekken met een overstap of om elf uur met een rechtstreekse trein. Wat heeft uw voorkeur?" },
+      "prompt": "Kies de rechtstreekse trein en leg uit dat je liever niet overstapt.",
+      "placeholder": "Prefiero el tren directo de las once porque no quiero hacer transbordo.",
+      "hint": "Tren directo is een rechtstreekse trein; hacer transbordo is overstappen.",
+      "choices": ["Prefiero el tren directo de las once porque no quiero hacer transbordo.", "El de las once, por favor. Prefiero viajar sin transbordo."],
       "options": [
         {
-          "id": "accept_flexible_fare",
-          "requirements": [["me parece bien", "acepto", "flexible"], ["cambiar", "cambio", "hora"]],
-          "npc_response": { "es": "Sí, puede cambiarla antes de la salida.", "nl": "Ja, u kunt de tijd vóór vertrek wijzigen." },
-          "feedback": { "strength": "Je accepteerde het tarief én controleerde een belangrijke voorwaarde.", "focus": "¿Puedo cambiar la hora? is een concrete en breed bruikbare controlevraag." },
-          "states": ["complication_resolved", "flexible_fare_selected", "change_condition_checked"],
-          "next": "turn.ask_price_platform"
+          "id": "choose_direct_train",
+          "requirements": [["directo", "sin transbordo", "no quiero hacer transbordo"], ["once", "11"]],
+          "npc_response": { "es": "Entendido. Le reservo el tren directo de las once.", "nl": "Begrepen. Ik reserveer de rechtstreekse trein van elf uur." },
+          "feedback": { "strength": "Je vergeleek twee verbindingen en motiveerde je keuze.", "focus": "Prefiero… porque… maakt je voorkeur in één natuurlijke zin duidelijk." },
+          "states": ["complication_resolved", "connection_option_selected"],
+          "next": "turn.ask_price"
         }
       ],
-      "fallback": { "strength": "Je begrijpt dat Nuria een flexibel tarief aanbiedt.", "focus": "Accepteer met me parece bien en vraag met ¿Puedo cambiar la hora? naar de wijziging." }
+      "fallback": { "strength": "Je hoort het verschil tussen vroeg met overstap en later rechtstreeks.", "focus": "Noem directo of transbordo én een tijd om je keuze duidelijk te maken." }
     },
     {
-      "id": "turn.ask_price_platform",
+      "id": "turn.ask_price",
       "turn": 4,
-      "npc_line": { "es": "La vuelta puede ser a partir de las cinco de la tarde.", "nl": "De terugreis kan vanaf vijf uur in de middag." },
-      "prompt": "Vraag hoeveel het retourticket kost en van welk spoor de trein vertrekt.",
-      "placeholder": "¿Cuánto cuesta el billete y de qué vía sale el tren?",
-      "hint": "De qué vía sale betekent: van welk spoor vertrekt hij.",
-      "choices": ["¿Cuánto cuesta el billete y de qué vía sale el tren?", "¿Cuál es el precio y desde qué vía sale?"],
+      "npc_line": { "es": "Ya tengo la conexión. ¿Necesita algo más?", "nl": "Ik heb de verbinding gevonden. Heeft u nog iets nodig?" },
+      "prompt": "Vraag hoeveel het retour kost en zeg dat je met de kaart wilt betalen.",
+      "placeholder": "¿Cuánto cuesta el billete de ida y vuelta? Quiero pagar con tarjeta.",
+      "hint": "¿Cuánto cuesta? vraagt naar de prijs; pagar con tarjeta is met de kaart betalen.",
+      "choices": ["¿Cuánto cuesta el billete de ida y vuelta? Quiero pagar con tarjeta.", "¿Cuál es el precio? Pago con tarjeta, por favor."],
       "options": [
         {
-          "id": "price_and_platform",
-          "requirements": [["cuanto cuesta", "precio", "coste"], ["via", "anden", "sale"]],
-          "npc_response": { "es": "Son treinta y dos euros. El tren sale de la vía seis.", "nl": "Dat is tweeëndertig euro. De trein vertrekt van spoor zes." },
-          "feedback": { "strength": "Je vroeg kosten en vertrekspoor in één heldere beurt.", "focus": "¿De qué vía sale el tren? is de natuurlijke vraag naar het spoor." },
-          "states": ["price_requested", "platform_requested"],
-          "next": "turn.pay_collect"
+          "id": "ask_price_pay_card",
+          "requirements": [["cuanto cuesta", "precio"], ["tarjeta"]],
+          "npc_response": { "es": "Son veinticuatro euros. Puede pagar con tarjeta.", "nl": "Het is vierentwintig euro. U kunt met de kaart betalen." },
+          "feedback": { "strength": "Je vroeg prijs en betaalwijze in één heldere beurt.", "focus": "¿Cuánto cuesta? is de meest directe en breed bruikbare prijsvraag." },
+          "states": ["price_requested", "payment_method_confirmed"],
+          "next": "turn.confirm_details"
         }
       ],
-      "fallback": { "strength": "Je bent klaar om de praktische reisinformatie te controleren.", "focus": "Vraag naar precio of cuánto cuesta én naar la vía." }
+      "fallback": { "strength": "Je geeft aan dat je verder wilt met het kaartje.", "focus": "Vraag ¿Cuánto cuesta? en noem tarjeta om prijs en betaalwijze af te ronden." }
     },
     {
-      "id": "turn.pay_collect",
+      "id": "turn.confirm_details",
       "turn": 5,
-      "npc_line": { "es": "¿Quiere pagar con tarjeta o en efectivo?", "nl": "Wilt u met kaart of contant betalen?" },
-      "prompt": "Betaal met kaart en vraag Nuria om beide tickets.",
-      "placeholder": "Con tarjeta, por favor. ¿Me da los dos billetes?",
-      "hint": "Los dos billetes verwijst naar het heen- en terugticket.",
-      "choices": ["Con tarjeta, por favor. ¿Me da los dos billetes?", "Pago con tarjeta. Los billetes, por favor."],
+      "npc_line": { "es": "Aquí tiene su billete. La salida aparece en la pantalla central.", "nl": "Hier is uw kaartje. Het vertrek staat op het centrale scherm." },
+      "prompt": "Controleer de vertrektijd, vraag vanaf welk perron de trein vertrekt en bedank Mateo.",
+      "placeholder": "Entonces, ¿salgo a las diez y cuarenta? ¿De qué andén sale el tren? Muchas gracias.",
+      "hint": "¿De qué andén sale? betekent: van welk perron vertrekt hij?",
+      "choices": ["Entonces, ¿salgo a las diez y cuarenta? ¿De qué andén sale el tren? Muchas gracias.", "¿Me confirma la hora? ¿De qué andén sale? Gracias."],
       "options": [
         {
-          "id": "pay_and_collect",
-          "requirements": [["tarjeta"], ["billetes", "dos billetes", "ticket"]],
-          "npc_response": { "es": "Aquí tiene los dos billetes. Buen viaje a Toledo.", "nl": "Hier zijn beide tickets. Goede reis naar Toledo." },
-          "feedback": { "strength": "Je rondde de aankoop volledig af: betaalwijze én tickets.", "focus": "Aquí tiene is een veelgebruikte reactie wanneer iemand je kaartjes overhandigt." },
-          "states": ["card_payment_selected", "tickets_collected", "conversation_completed"],
+          "id": "confirm_time_and_platform",
+          "requirements": [["hora", "salgo", "confirma", "nueve", "diez", "once"], ["anden", "andén", "via"]],
+          "npc_response": { "es": "La hora está en el billete y el andén aparecerá en la pantalla. Buen viaje.", "nl": "De tijd staat op het kaartje en het perron verschijnt op het scherm. Goede reis." },
+          "feedback": { "strength": "Je controleerde de twee details die je nodig hebt om zelfstandig te vertrekken.", "focus": "¿De qué andén sale el tren? is de vaste, natuurlijke perronvraag." },
+          "states": ["departure_time_confirmed", "platform_requested", "conversation_completed"],
           "next": "@complete"
         }
       ],
-      "fallback": { "strength": "Je bent bij het betalen van je reis.", "focus": "Noem tarjeta en vraag om los billetes om de aankoop af te ronden." }
+      "fallback": { "strength": "Je rondt het loketgesprek af.", "focus": "Controleer hora en vraag de qué andén om tijd en perron zeker te weten." }
     }
   ],
   "completion": {
     "polite_farewell": {
-      "es": "Muchas gracias por su ayuda. ¡Hasta luego!",
-      "nl": "Hartelijk dank voor uw hulp. Tot ziens!"
+      "es": "Muchas gracias por su ayuda. ¡Buen viaje!",
+      "nl": "Hartelijk dank voor uw hulp. Goede reis!"
     },
     "default_farewell": {
-      "es": "Gracias. Buen día.",
-      "nl": "Bedankt. Fijne dag."
+      "es": "Gracias. ¡Buen viaje!",
+      "nl": "Bedankt. Goede reis!"
     },
     "rewards": {
       "xp": 120,
       "confianza": 1,
       "valentia": 1,
       "stamp": { "es": "Mi primer billete", "nl": "Mijn eerste treinkaartje" },
-      "collectible": { "es": "Billete de ida y vuelta a Toledo", "nl": "Retourticket naar Toledo" },
-      "repair_badge": { "es": "Viajero atento", "nl": "Oplettende reiziger" }
+      "collectible": { "es": "Billete ilustrado a Toledo", "nl": "Geïllustreerd kaartje naar Toledo" },
+      "repair_badge": { "es": "Viaje resuelto", "nl": "Reisvraag opgelost" }
     }
   }
 }

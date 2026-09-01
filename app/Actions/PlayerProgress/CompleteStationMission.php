@@ -8,7 +8,7 @@ use App\PlayerProgress\ScenarioMissionProfile;
 
 final class CompleteStationMission
 {
-    public const SCENARIO_SLUG = 'station-nuria';
+    public const SCENARIO_SLUG = 'estacion-mateo';
 
     public const MISSION_KEY = 'mission.madrid.station.ticket';
 
@@ -30,15 +30,15 @@ final class CompleteStationMission
     ): array {
         $definition = $this->publishedMission->definition(self::SCENARIO_SLUG, self::MISSION_KEY, 'station_text_dialogue');
         $profile = new ScenarioMissionProfile(
-            stampKey: 'stamp.first_train_ticket',
-            collectibleKey: 'item.toledo_return_ticket',
-            repairBadgeKey: 'badge.viajero_atento',
+            stampKey: 'stamp.first_madrid_train_ticket',
+            collectibleKey: 'item.toledo_train_ticket',
+            repairBadgeKey: 'badge.viaje_resuelto',
             worldStates: [
                 'madrid.station.mission_completed',
-                'madrid.final.preview_unlocked',
+                'madrid.week_final.preview_unlocked',
             ],
             extraRewards: [[
-                'key' => 'madrid.final.preview',
+                'key' => 'madrid.week_final.preview',
                 'type' => 'unlock',
                 'title' => ['es' => 'Próxima misión: el reto final', 'nl' => 'Vooruitblik: de slotmissie'],
             ]],

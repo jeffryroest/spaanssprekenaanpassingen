@@ -65,11 +65,11 @@ final class PlayableContentTemplates
             'station' => $this->template(
                 key: 'station',
                 label: 'Stationsgesprek',
-                description: 'De afgeschermde proefweekmissie met Nuria aan de kaartverkoop van Atocha.',
+                description: 'De afgeschermde proefweekmissie met Mateo in Estación del Centro.',
                 contentType: ContentType::ConversationScenario,
-                slug: 'station-nuria',
-                title: 'En la estación · Nuria',
-                summary: 'Vertakkend gesprek om een retourticket naar Toledo te regelen.',
+                slug: 'estacion-mateo',
+                title: 'En la estación · Mateo',
+                summary: 'Vertakkend gesprek om een fictieve treinreis te regelen en vertrekdetails te controleren.',
                 exampleFile: 'station-dialogue-domain-data.json',
             ),
         ];

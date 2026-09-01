@@ -33,7 +33,7 @@ for (const asset of [
 assert(hubView.includes('data-hub-world-return') && hubView.includes('data-golden-route-version="3B5"'), 'Madrid mist de zichtbare voltooiingsreactie of fasemarkering');
 assert(bakeryView.includes('data-lucia-expression-sheet') && bakeryView.includes('bakery-world-reaction'), 'La Espiga mist Lucía-reacties of de wereldbeloning');
 assert(hubRuntime.includes('applyRuntimeMedia') && hubRuntime.includes('la-espiga-complete'), 'Madrid gebruikt gepubliceerde media of de terugkeerlus niet');
-assert(dialogueRuntime.includes('npc_expression_sheet') && dialogueRuntime.includes("setLuciaState('success')"), 'De dialoog koppelt media en Lucía-reacties niet aan spelstatus');
+assert(dialogueRuntime.includes('npc_expression_sheet') && dialogueRuntime.includes("setNpcState('success')"), 'De dialoog koppelt media en NPC-reacties niet aan spelstatus');
 assert(styles.includes('.bakery-lucia-frame') && styles.includes('.hub-world-return') && styles.includes('prefers-reduced-motion'), 'De visuele en bewegingsarme stijlen zijn onvolledig');
 assert(transformer.includes("'media' =>") && transformer.includes("route('api.v1.media.show'"), 'De publieke contentruntime adverteert geen revisiegebonden media');
 assert(mediaController.includes('max-age=31536000') && mediaController.includes('isPublishable') && mediaController.includes('If-None-Match'), 'De mediastream mist publicatiegrens, immutable caching of ETag');

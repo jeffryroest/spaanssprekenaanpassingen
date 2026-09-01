@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class EntitledConversationController extends Controller
 {
@@ -55,6 +56,28 @@ class EntitledConversationController extends Controller
             $releaseItem,
             $validated['locale'] ?? null,
         );
+        $mediaRouteName = (string) $request->route('mediaRouteName');
+        if ($mediaRouteName !== '') {
+            $detail['content']['media'] = $releaseItem->contentRevision->mediaAssets
+                ->filter(fn ($asset): bool => $asset->isPublishable()
+                    && Storage::disk($asset->disk)->exists($asset->object_key)
+                )
+                ->mapWithKeys(fn ($asset): array => [
+                    $asset->pivot->role => [
+                        'kind' => $asset->kind->value,
+                        'url' => route($mediaRouteName, [
+                            'version' => $releaseItem->version,
+                            'role' => $asset->pivot->role,
+                        ]),
+                        'mime_type' => $asset->mime_type,
+                        'width' => $asset->width,
+                        'height' => $asset->height,
+                        'alt_text' => $asset->alt_text,
+                        'transcript' => $asset->transcript,
+                    ],
+                ])
+                ->all();
+        }
         $detail['links']['self'] = $request->url();
 
         return $responder->respond($request, [

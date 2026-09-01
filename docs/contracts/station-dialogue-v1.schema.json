@@ -4,7 +4,7 @@
   "title": "Madrid station text dialogue v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "scene", "runtime_access", "npc", "mission", "level_branches", "repair", "steps", "completion"],
+  "required": ["schema_version", "scene", "runtime_access", "npc", "mission", "journey", "level_branches", "repair", "steps", "completion"],
   "properties": {
     "schema_version": { "const": "1.0.0" },
     "scene": { "const": "station_text_dialogue" },
@@ -22,7 +22,7 @@
       "additionalProperties": false,
       "required": ["id", "name", "role", "description"],
       "properties": {
-        "id": { "const": "npc.nuria.martin" },
+        "id": { "const": "npc.mateo.alvarez" },
         "name": { "type": "string", "minLength": 1 },
         "role": { "$ref": "#/$defs/localizedText" },
         "description": { "type": "string", "minLength": 1 }
@@ -40,14 +40,38 @@
         "required_text_turns": { "const": 5 }
       }
     },
+    "journey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fictional", "title", "notice", "details"],
+      "properties": {
+        "fictional": { "const": true },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "notice": { "type": "string", "minLength": 1 },
+        "details": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["label", "value"],
+            "properties": {
+              "label": { "$ref": "#/$defs/localizedText" },
+              "value": { "$ref": "#/$defs/localizedText" }
+            }
+          }
+        }
+      }
+    },
     "level_branches": {
       "type": "object",
       "additionalProperties": false,
       "required": ["A0", "A1", "A2"],
       "properties": {
-        "A0": { "const": "branch.confirm_return" },
-        "A1": { "const": "branch.later_train" },
-        "A2": { "const": "branch.flexible_fare" }
+        "A0": { "const": "branch.choose_time" },
+        "A1": { "const": "branch.accept_later_train" },
+        "A2": { "const": "branch.compare_connections" }
       }
     },
     "repair": {
@@ -91,11 +115,7 @@
               "required": ["id", "requirements", "npc_response", "feedback", "states", "next"],
               "properties": {
                 "id": { "type": "string", "minLength": 1 },
-                "requirements": {
-                  "type": "array",
-                  "minItems": 1,
-                  "items": { "$ref": "#/$defs/terms" }
-                },
+                "requirements": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/terms" } },
                 "npc_response": { "$ref": "#/$defs/localizedText" },
                 "feedback": { "$ref": "#/$defs/feedback" },
                 "states": { "$ref": "#/$defs/terms" },

@@ -339,6 +339,26 @@ final class PlayableContentInspector
             }
         }
 
+        if ($scene === 'station_text_dialogue') {
+            $journey = is_array($data['journey'] ?? null) ? $data['journey'] : [];
+            if (($journey['fictional'] ?? null) !== true
+                || ! is_array($journey['details'] ?? null)
+                || count($journey['details']) < 3) {
+                $errors[] = 'De stationsmissie vereist een expliciet fictieve oefenreis met minimaal drie reisdetails.';
+            }
+            $this->requireTranslation($journey['title'] ?? null, 'Oefenreis · titel', $errors);
+            $this->requireString($journey, 'notice', 'Oefenreis · toelichting', $errors);
+            foreach (($journey['details'] ?? []) as $index => $detail) {
+                if (! is_array($detail)) {
+                    $errors[] = 'Ieder reisdetail moet een object zijn.';
+
+                    continue;
+                }
+                $this->requireTranslation($detail['label'] ?? null, 'Reisdetail '.($index + 1).' · label', $errors);
+                $this->requireTranslation($detail['value'] ?? null, 'Reisdetail '.($index + 1).' · waarde', $errors);
+            }
+        }
+
         return [
             'scene' => $scene,
             'steps' => count($steps),

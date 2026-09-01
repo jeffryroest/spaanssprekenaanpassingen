@@ -64,7 +64,7 @@ Vanaf fase 2E maakt `php artisan migrate --force` ook de accountvoortgangstabell
 
 Vanaf fase 3B4 worden privé-redactiemedia standaard onder `storage/app/private/content-media` opgeslagen. Neem deze map samen met de database op in de Ploi-back-up en controleer dat de sitegebruiker er kan schrijven. Gebruik alleen een andere `CONTENT_STUDIO_MEDIA_DISK` nadat die Laravel-disk duurzaam en privé is ingericht.
 
-Fase 3B5 levert de drie gouden-route-assets mee in de code en installeert ze via `game:install-demo-content` op diezelfde privé-disk. Voer het commando na deployment bewust als bestaande beheerder uit, controleer de nieuwe conceptrevisies in de preview en publiceer ze daarna via de normale releaseflow. De installatie publiceert niets automatisch.
+Vanaf fase 3B6 levert het demopakket vijf gouden-route-assets mee: Madrid, La Espiga, Lucía, Estación del Centro en Mateo. `game:install-demo-content` installeert ze op diezelfde privé-disk en maakt de stationsmissie als concept aan. Voer het commando na deployment bewust als bestaande beheerder uit, controleer de conceptrevisies en media in de preview en publiceer ze daarna via de normale releaseflow. De installatie reviewt of publiceert niets automatisch.
 
 Wanneer de droge controle uitsluitend oude, onvolledige Madrid- of La Espiga-placeholders zonder `scene`, media en releasekoppeling meldt, kan een beheerder ze gecontroleerd vervangen:
 
@@ -74,6 +74,14 @@ php artisan game:install-demo-content --actor=beheerder@example.com --replace-ex
 ```
 
 Gebruik deze optie nooit als vervanging voor inhoudelijke vergelijking. De commandogrens weigert zelf alle werkelijk speelbare, gepubliceerde, gearchiveerde of releasegebonden content en bewaart de oude placeholder als onveranderlijke revisie.
+
+Controleer na een fase-3B6-deploy eerst zonder mutaties welke pakketonderdelen ontbreken:
+
+```bash
+php artisan game:install-demo-content --actor=beheerder@example.com --dry-run
+```
+
+Voer het commando daarna zonder `--dry-run` uit wanneer de stationsstarter als `create` wordt gemeld. De route `/spelen/madrid/station` wordt pas speelbaar nadat `estacion-mateo` inhoudelijk is gecontroleerd, gereviewd en via een expliciete productierelease is gepubliceerd.
 
 Voer bij de eerste deployment vóór `php artisan migrate --force` eenmaal uit:
 

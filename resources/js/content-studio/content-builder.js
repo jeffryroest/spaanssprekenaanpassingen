@@ -236,6 +236,22 @@ if (source && root) {
         textField(identity, 'Spelersdoel', mission.objective, (value) => mission.objective = value, { multiline: true, wide: true });
         textField(identity, 'Vereiste actieve beurten', mission.required_text_turns, (value) => mission.required_text_turns = value, { type: 'number', min: 5, max: 5, number: true, readonly: true });
 
+        if (data.scene === 'station_text_dialogue') {
+            const journey = data.journey ??= { fictional: true, title: {}, details: [] };
+            journey.title ??= {};
+            journey.details ??= [];
+            const journeyBody = section('Fictieve oefenreis', 'De reisgegevens die de speler vóór het loketgesprek krijgt. Dit is nooit een actuele dienstregeling.');
+            textField(journeyBody, 'Titel Spaans', journey.title.es, (value) => journey.title.es = value, { lang: 'es' });
+            textField(journeyBody, 'Titel Nederlands', journey.title.nl, (value) => journey.title.nl = value);
+            textField(journeyBody, 'Toelichting', journey.notice, (value) => journey.notice = value, { multiline: true, wide: true });
+            textField(journeyBody, 'Reisdetails', journey.details.map((detail) => `${detail.label?.es ?? ''} | ${detail.label?.nl ?? ''} | ${detail.value?.es ?? ''} | ${detail.value?.nl ?? ''}`).join('\n'), (value) => {
+                journey.details = value.split('\n').map((line) => line.split('|').map((part) => part.trim())).filter((parts) => parts[0]).map(([labelEs, labelNl, valueEs, valueNl]) => ({
+                    label: { es: labelEs, nl: labelNl ?? '' },
+                    value: { es: valueEs ?? '', nl: valueNl ?? '' },
+                }));
+            }, { multiline: true, wide: true, rows: 5, help: 'Eén regel per detail: label Spaans | label Nederlands | waarde Spaans | waarde Nederlands.' });
+        }
+
         const access = section('Toegang en niveauroutes', 'Koppel ieder niveau aan een bestaande vertakkingsstap.');
         data.runtime_access ??= {};
         const isPublic = data.scene === 'panaderia_text_dialogue';
