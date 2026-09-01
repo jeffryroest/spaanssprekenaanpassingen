@@ -20,6 +20,8 @@ final class PlayerProgressSnapshot
 
     public const STATION_MISSION_KEY = 'mission.madrid.station.ticket';
 
+    public const PERSONAL_REVIEW_MISSION_KEY = 'mission.madrid.review.personal';
+
     /**
      * @return array<string, mixed>
      */

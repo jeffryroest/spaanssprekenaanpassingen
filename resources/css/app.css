@@ -45,6 +45,144 @@
 }
 
 @layer components {
+    .review-body {
+        @apply min-h-screen bg-[#eee1ca] text-[#302722] antialiased;
+        background:
+            radial-gradient(circle at 12% 8%, rgb(255 240 191 / 65%), transparent 28rem),
+            linear-gradient(145deg, #ead6b5 0%, #f7f0e2 46%, #cfddd7 100%);
+    }
+
+    .review-shell {
+        @apply mx-auto min-h-screen max-w-[92rem] px-4 pb-14 pt-4 sm:px-7 lg:px-10;
+    }
+
+    .review-topbar {
+        @apply flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#493429]/10 bg-[#fffaf0]/90 px-4 py-3 shadow-sm backdrop-blur;
+    }
+
+    .review-day-mark {
+        @apply flex items-center gap-2 text-sm text-[#694c3d];
+    }
+
+    .review-day-mark span {
+        @apply grid size-8 place-items-center rounded-xl bg-[#a9472b] font-black text-white;
+    }
+
+    .review-hero {
+        @apply mx-auto grid max-w-7xl gap-5 py-8 lg:grid-cols-[1fr_24rem] lg:items-end lg:py-12;
+    }
+
+    .review-hero h1 {
+        @apply mt-3 max-w-3xl font-serif text-4xl font-black tracking-tight text-[#302722] sm:text-5xl;
+    }
+
+    .review-hero > div > p:last-child {
+        @apply mt-4 max-w-2xl text-base leading-7 text-[#725f54];
+    }
+
+    .review-privacy-note {
+        @apply flex gap-4 rounded-3xl border border-[#315d47]/15 bg-[#edf4e9]/95 p-5 text-[#4c6353] shadow-sm;
+    }
+
+    .review-privacy-note > span {
+        @apply grid size-11 shrink-0 place-items-center rounded-2xl bg-[#315d47] text-xl font-black text-white;
+    }
+
+    .review-privacy-note strong { @apply block text-sm text-[#315d47]; }
+    .review-privacy-note p { @apply mt-1 text-xs leading-5; }
+
+    .review-empty,
+    .review-complete {
+        @apply mx-auto max-w-3xl rounded-[2rem] border border-[#493429]/10 bg-[#fffaf0] p-8 text-center shadow-xl shadow-[#493429]/10 sm:p-12;
+    }
+
+    .review-empty > span,
+    .review-complete > span {
+        @apply mx-auto mb-5 grid size-16 place-items-center rounded-3xl bg-[#a9472b] text-3xl font-black text-white;
+    }
+
+    .review-empty h2,
+    .review-complete h2 { @apply mt-2 font-serif text-3xl font-black; }
+    .review-empty > p:not(.bakery-eyebrow),
+    .review-complete > p:not(.bakery-eyebrow) { @apply mx-auto mt-4 max-w-xl text-sm leading-6 text-[#76685f]; }
+    .review-empty a,
+    .review-complete-actions a { @apply mt-6 inline-flex min-h-11 items-center justify-center rounded-xl bg-[#a9472b] px-6 text-sm font-black text-white; }
+
+    .review-stage {
+        @apply mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-[#493429]/10 bg-[#fffaf0] shadow-2xl shadow-[#493429]/15;
+    }
+
+    .review-progress-row {
+        @apply grid items-center gap-3 border-b border-[#493429]/10 bg-white/70 px-5 py-4 sm:grid-cols-[9rem_1fr_auto] sm:px-7;
+    }
+
+    .review-progress-row > div:first-child { @apply flex gap-2 text-xs uppercase tracking-wide text-[#876e60]; }
+    .review-progress-track { @apply h-2 overflow-hidden rounded-full bg-[#493429]/10; }
+    .review-progress-track span { @apply block h-full rounded-full bg-gradient-to-r from-[#a9472b] to-[#e2a33c] transition-[width] duration-300; }
+    .review-due-pill { @apply w-fit rounded-full bg-[#e2eee8] px-3 py-1 text-xs font-black text-[#315d47]; }
+
+    .review-layout {
+        @apply grid lg:grid-cols-[minmax(19rem,0.82fr)_minmax(0,1.18fr)];
+    }
+
+    .review-scene {
+        @apply relative min-h-[24rem] overflow-hidden bg-[#293f45] p-5 sm:min-h-[30rem] lg:min-h-[45rem];
+    }
+
+    .review-scene-art {
+        @apply absolute inset-0 bg-cover bg-center opacity-75;
+        background-image: linear-gradient(180deg, rgb(15 36 43 / 5%) 45%, rgb(15 36 43 / 78%) 100%), url('/images/game/madrid-morning.webp');
+    }
+
+    .review-source-card {
+        @apply relative z-10 flex w-fit items-center gap-3 rounded-2xl bg-[#fffaf0]/95 p-3 shadow-lg;
+    }
+
+    .review-avatar { @apply grid size-11 place-items-center rounded-xl bg-[#a9472b] font-black text-white; }
+    .review-source-card strong,
+    .review-source-card span { @apply block; }
+    .review-source-card span { @apply mt-0.5 text-xs text-[#78675d]; }
+
+    .review-scene blockquote {
+        @apply absolute inset-x-5 bottom-5 z-10 rounded-3xl border border-white/20 bg-[#132f3a]/92 p-5 text-white shadow-xl backdrop-blur;
+    }
+
+    .review-scene blockquote span { @apply block font-serif text-xl font-black leading-7; }
+    .review-scene blockquote small { @apply mt-2 block text-sm leading-6 text-[#e5d9c8]; }
+
+    .review-card-panel { @apply p-5 sm:p-8 lg:p-10; }
+    .review-card-panel > h2 { @apply mt-2 font-serif text-3xl font-black leading-tight text-[#302722]; }
+    .review-recorder { @apply mt-7; }
+    .review-response-label { @apply mt-6 block text-sm font-black text-[#44352d]; }
+    .review-card-panel > input { @apply mt-2 min-h-12 w-full rounded-xl border border-[#493429]/20 bg-white px-4 text-base outline-none focus:border-[#a9472b] focus:ring-2 focus:ring-[#bd5a34]/30; }
+
+    .review-actions { @apply mt-4 flex flex-col gap-3 sm:flex-row sm:justify-between; }
+    .review-help-button { @apply min-h-11 rounded-xl border border-[#493429]/15 bg-white px-5 text-sm font-bold text-[#745f53] hover:border-[#a9472b]/40; }
+    .review-check-button { @apply min-h-11 rounded-xl bg-[#a9472b] px-6 text-sm font-black text-white hover:bg-[#913b25]; }
+    .review-status { @apply mt-4 text-sm leading-6 text-[#76685f]; }
+
+    .review-answer { @apply mt-6 rounded-2xl border border-[#315d47]/15 bg-[#edf4e9] p-5; }
+    .review-answer h3 { @apply mt-1 text-lg font-black text-[#315d47]; }
+    .review-answer [lang='es'] { @apply mt-3 font-serif text-xl font-black text-[#294d3a]; }
+    .review-answer p:last-child { @apply mt-2 text-sm leading-6 text-[#5c6f62]; }
+
+    .review-ratings { @apply mt-6 grid gap-3 sm:grid-cols-2; }
+    .review-ratings legend { @apply mb-3 text-sm font-black text-[#44352d]; }
+    .review-ratings button { @apply flex min-h-16 items-center justify-between rounded-2xl border border-[#493429]/10 bg-white px-4 text-left hover:border-[#a9472b]/45 hover:bg-[#fff8ec] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]; }
+    .review-ratings strong,
+    .review-ratings span { @apply block; }
+    .review-ratings span { @apply text-xs text-[#826f64]; }
+
+    .review-reward { @apply mx-auto mt-6 flex w-fit gap-3 rounded-2xl bg-[#edf4e9] px-5 py-3 text-sm text-[#315d47]; }
+    .review-complete-actions { @apply flex flex-wrap items-center justify-center gap-3; }
+    .review-complete-actions button { @apply mt-6 min-h-11 rounded-xl border border-[#a9472b]/30 bg-white px-6 text-sm font-black text-[#a9472b]; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .review-progress-track span { transition: none; }
+}
+
+@layer components {
     .cs-skip-link {
         @apply fixed left-4 top-4 z-[100] -translate-y-24 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-studio-950 shadow-lg transition focus:translate-y-0 focus:outline-none focus:ring-2 focus:ring-brand-500;
     }

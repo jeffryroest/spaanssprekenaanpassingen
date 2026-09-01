@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spaansspreken.nl/contracts/personal-review-v1.schema.json",
+  "title": "Persoonlijke herhalingsdeck v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "data", "meta"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cards", "meta"],
+      "properties": {
+        "cards": {
+          "type": "array",
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["practice_key", "source_mission_key", "source_content_node_id", "source_content_version", "step_id", "turn", "setting", "mission_title", "npc_name", "npc_line", "prompt", "hint", "examples", "due_state", "last_rating"],
+            "properties": {
+              "practice_key": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "source_mission_key": { "type": "string", "maxLength": 120 },
+              "source_content_node_id": { "type": "integer", "minimum": 1 },
+              "source_content_version": { "type": "integer", "minimum": 1 },
+              "step_id": { "type": "string", "maxLength": 80 },
+              "turn": { "type": "integer", "minimum": 1 },
+              "setting": { "type": "string" },
+              "mission_title": { "type": ["string", "null"] },
+              "npc_name": { "type": ["string", "null"] },
+              "npc_line": {
+                "type": "object",
+                "required": ["es", "nl"],
+                "properties": { "es": { "type": "string" }, "nl": { "type": "string" } }
+              },
+              "prompt": { "type": "string" },
+              "hint": { "type": "string" },
+              "examples": { "type": "array", "items": { "type": "string" } },
+              "due_state": { "enum": ["new", "due"] },
+              "last_rating": { "type": ["string", "null"], "enum": ["again", "hard", "good", "easy", null] }
+            }
+          }
+        },
+        "meta": {
+          "type": "object",
+          "required": ["maximum_cards", "completed_sources", "card_count", "has_practice_history", "next_due_at", "generated_at"],
+          "properties": {
+            "maximum_cards": { "const": 5 },
+            "completed_sources": { "type": "integer", "minimum": 0 },
+            "card_count": { "type": "integer", "minimum": 0, "maximum": 5 },
+            "has_practice_history": { "type": "boolean" },
+            "next_due_at": { "type": ["string", "null"], "format": "date-time" },
+            "generated_at": { "type": "string", "format": "date-time" }
+          }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "required": ["answer_persisted", "transcript_persisted", "audio_persisted", "feedback_persisted"],
+      "properties": {
+        "answer_persisted": { "const": false },
+        "transcript_persisted": { "const": false },
+        "audio_persisted": { "const": false },
+        "feedback_persisted": { "const": false }
+      }
+    }
+  }
+}
