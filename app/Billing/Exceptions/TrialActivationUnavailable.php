@@ -4,6 +4,4 @@ namespace App\Billing\Exceptions;
 
 use RuntimeException;
 
-final class TrialActivationUnavailable extends RuntimeException
-{
-}
+final class TrialActivationUnavailable extends RuntimeException {}
