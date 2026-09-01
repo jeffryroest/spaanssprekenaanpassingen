@@ -1,6 +1,7 @@
 import './game/madrid-hub';
 import './game/panaderia-recorder';
 import './game/panaderia-dialogue';
+import './game/personal-review';
 import './content-studio/content-builder';
 import './content-studio/content-preview';
 

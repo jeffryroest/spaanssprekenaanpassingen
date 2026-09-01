@@ -42,6 +42,7 @@
             <h2 class="text-2xl font-bold text-white">Accountvoortgang</h2>
             <p class="mt-4 leading-7 text-stone-300">Als je bent ingelogd, bewaren we na een voltooide missie de gebruikte gepubliceerde contentversie, stap-id's, invoerbron, hulpgebruik, afgeleide missiestates, XP/Confianza/Valentía en unieke beloningssleutels. Zo blijven je resultaat en ontgrendelingen na opnieuw inloggen beschikbaar.</p>
             <p class="mt-4 leading-7 text-stone-300">De voortgangsopslag bevat geen ruwe opname, antwoordtekst, transcript, transcript-confidence, spelercorrectie, AI-feedback of gezondheidsinformatie. Die inhoud wordt ook niet in het accountdashboard teruggegeven.</p>
+            <p class="mt-4 leading-7 text-stone-300">Voor persoonlijke herhaling bewaren we daarnaast een gehashte kaart-id, bronmissie en -versie, stap-id, invoerbron, hulpgebruik, jouw keuze ‘nog eens/moeilijk/goed/makkelijk’ en de volgende oefendatum. Je Spaanse oefenantwoord wordt vóór het wisselen van kaart uit de pagina verwijderd en niet meegestuurd in het opslagverzoek.</p>
         </section>
 
         <p class="mt-8 text-sm leading-6 text-stone-400">Een bredere juridische privacy- en retentiereview staat gepland vóór de gesloten bèta. Deze technische uitleg wordt bijgewerkt wanneer de gegevensverwerking verandert.</p>

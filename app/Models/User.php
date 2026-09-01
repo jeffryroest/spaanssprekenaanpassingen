@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $this->hasMany(MissionAttempt::class);
     }
 
+    public function practiceItems(): HasMany
+    {
+        return $this->hasMany(UserPracticeItem::class);
+    }
+
     public function rewards(): HasMany
     {
         return $this->hasMany(UserReward::class);

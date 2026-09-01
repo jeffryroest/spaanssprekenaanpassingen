@@ -62,6 +62,8 @@ Het script gebruikt `composer.lock` en `package-lock.json`, voert `npm ci` uit, 
 
 Vanaf fase 2E maakt `php artisan migrate --force` ook de accountvoortgangstabellen aan. Maak deze tabellen niet handmatig in MySQL; de migratie bevat zowel de foreign keys als de terugrolvolgorde. De deploy kan zonder verlies opnieuw worden uitgevoerd wanneer de migratie al is toegepast.
 
+Fase 3C1 voegt via dezelfde migratiestap `user_practice_items` toe. Deze tabel bevat alleen de structurele intervalprojectie voor dag 4; er worden geen bestaande missiepogingen automatisch geconverteerd en er is geen seeder nodig. De eerste deckweergave leest voltooide missies direct en maakt pas bij afronding een planning aan.
+
 Vanaf fase 3B4 worden privé-redactiemedia standaard onder `storage/app/private/content-media` opgeslagen. Neem deze map samen met de database op in de Ploi-back-up en controleer dat de sitegebruiker er kan schrijven. Gebruik alleen een andere `CONTENT_STUDIO_MEDIA_DISK` nadat die Laravel-disk duurzaam en privé is ingericht.
 
 Vanaf fase 3B6 levert het demopakket vijf gouden-route-assets mee: Madrid, La Espiga, Lucía, Estación del Centro en Mateo. `game:install-demo-content` installeert ze op diezelfde privé-disk en maakt de stationsmissie als concept aan. Voer het commando na deployment bewust als bestaande beheerder uit, controleer de conceptrevisies en media in de preview en publiceer ze daarna via de normale releaseflow. De installatie reviewt of publiceert niets automatisch.
