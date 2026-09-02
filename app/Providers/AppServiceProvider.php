@@ -62,6 +62,12 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('trial-activation', fn (Request $request): Limit => Limit::perHour(5)
             ->by('user:'.$request->user()->getAuthIdentifier()));
 
+        RateLimiter::for('billing-checkout', fn (Request $request): Limit => Limit::perHour(5)
+            ->by('user:'.$request->user()->getAuthIdentifier()));
+
+        RateLimiter::for('billing-cancellation', fn (Request $request): Limit => Limit::perHour(5)
+            ->by('user:'.$request->user()->getAuthIdentifier()));
+
         foreach (ContentPermission::cases() as $permission) {
             Gate::define(
                 "content-studio.{$permission->value}",

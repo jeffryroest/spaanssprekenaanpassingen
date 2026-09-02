@@ -2,6 +2,7 @@
 
 return [
     'trial_activation_enabled' => (bool) env('SUBSCRIPTION_TRIAL_ACTIVATION_ENABLED', false),
+    'checkout_consent_version' => 'mollie-monthly-995-v1',
 
     /*
     | Dit aanbod is door de producteigenaar vastgesteld. Het wordt niet

@@ -32,8 +32,9 @@ class MollieWebhookTest extends TestCase
         $event = SubscriptionEvent::query()->sole();
         $this->assertSame('mollie', $event->provider);
         $this->assertSame('payment.paid', $event->event_type);
-        $this->assertSame('received', $event->processing_status);
-        $this->assertNull($event->processed_at);
+        $this->assertSame('ignored', $event->processing_status);
+        $this->assertNotNull($event->processed_at);
+        $this->assertSame('unknown_subscription', $event->processing_error);
         $this->assertSame('sub_safeRef123', $event->event_payload['subscription_id']);
 
         $stored = json_encode($event->event_payload, JSON_THROW_ON_ERROR);

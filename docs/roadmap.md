@@ -48,7 +48,7 @@
 - **3C1 — persoonlijke herhaling (gerealiseerd):** speelbare dag-4-kaartensessie uit werkelijk voltooide, nog gepubliceerde routes, transparante intervalplanning en een privacybewuste, idempotente dagbeloning.
 - **3C2 — finale en minimaal NPC-geheugen (gerealiseerd):** speelbare dag-7-terugkeer naar Lucía met drie niveaupaden, duurzame slotbeloningen en herkenning uit bestaande structurele missievoortgang, zonder vrije gespreksinhoud te bewaren.
 - **3D1 — conversiefundament (gerealiseerd):** goedgekeurd Mollie-maandplan van € 9,95, gecontroleerde eenmalige proefactivatie, paywallpresentatie en een idempotente, gesaneerde provider-eventinbox; live afschrijving blijft uit.
-- **3D2 — checkout en abonnementsverwerking:** customer/mandate/checkout, eventprojectie, opzegging en herstelpaden na expliciete besluiten over de resterende voorwaarden.
+- **3D2 — checkout en abonnementsverwerking (kern gerealiseerd):** ordersnapshot met besteller en betaalstatus, customer/mandate/checkout, eventprojectie en opzegging per periode-einde; herstelbeleid voor refunds, chargebacks en betaalachterstand blijft een expliciete vervolgbeslissing.
 
 **Beslispoort:** retentie, spreken en conversie zijn meetbaar.
 

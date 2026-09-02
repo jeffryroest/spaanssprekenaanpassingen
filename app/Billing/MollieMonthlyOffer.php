@@ -46,7 +46,7 @@ final class MollieMonthlyOffer
             && $plan->active;
     }
 
-    /** @return array{provider: string, name: string, price_label: string, interval_label: string, trial_days: int, trial_activation_available: bool} */
+    /** @return array{provider: string, name: string, price_label: string, interval_label: string, trial_days: int, trial_activation_available: bool, checkout_available: bool} */
     public function presentation(): array
     {
         $offer = $this->configuration();
@@ -58,6 +58,9 @@ final class MollieMonthlyOffer
             'interval_label' => 'per maand',
             'trial_days' => $offer['trial_days'],
             'trial_activation_available' => (bool) config('subscriptions.trial_activation_enabled')
+                && $this->activePlan() !== null,
+            'checkout_available' => (bool) config('services.mollie.enabled')
+                && (bool) config('services.mollie.checkout_enabled')
                 && $this->activePlan() !== null,
         ];
     }
