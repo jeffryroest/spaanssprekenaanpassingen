@@ -50,6 +50,12 @@
                     Mediabibliotheek
                 </a>
                 @can('billing.manage')
+                    <a href="{{ route('content-studio.beta.index') }}"
+                       @if (request()->routeIs('content-studio.beta.*')) aria-current="page" @endif
+                       class="cs-nav-link {{ request()->routeIs('content-studio.beta.*') ? 'cs-nav-link-active' : '' }}">
+                        <x-content-studio.icon name="dashboard" />
+                        Bètastatus
+                    </a>
                     <a href="{{ route('content-studio.billing.index') }}"
                        @if (request()->routeIs('content-studio.billing.*')) aria-current="page" @endif
                        class="cs-nav-link {{ request()->routeIs('content-studio.billing.*') ? 'cs-nav-link-active' : '' }}">

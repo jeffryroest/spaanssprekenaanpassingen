@@ -24,6 +24,10 @@ Schedule::command('billing:send-due-emails')
     ->everyFifteenMinutes()
     ->withoutOverlapping();
 
+Schedule::command('operations:heartbeat')
+    ->everyMinute()
+    ->withoutOverlapping();
+
 Artisan::command('content-studio:provision-administrator {email} {--name=}', function (string $email) {
     $email = Str::lower(trim($email));
     $user = User::query()->where('email', $email)->first();
