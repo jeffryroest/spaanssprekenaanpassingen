@@ -31,6 +31,10 @@ Na de betaalbevestiging controleert de backend het mandaat en maakt of vindt hij
 - definitieve juridische bewaartermijnen voor bestelgegevens;
 - live productieactivatie.
 
+## Operationele tussenstap 3D3A
+
+Zolang bovenstaand beleid niet is geaccepteerd, worden financiële uitzonderingen wel veilig zichtbaar voor uitsluitend de rol `beheerder`, maar veranderen zij toegang niet automatisch. Een mislukte terugkerende betaling verlengt de betaalde periode niet. Refunds en chargebacks worden aan de bestaande order en, waar aanwezig, het abonnement gekoppeld. Vrije providertekst en betaalinstrumentgegevens blijven buiten het beheerbeeld.
+
 ## Privacy en veiligheid
 
 - API-sleutels bestaan uitsluitend als servervariabele.

@@ -5,6 +5,7 @@ use App\Http\Controllers\Billing\CancelMollieSubscriptionController;
 use App\Http\Controllers\Billing\MollieReturnController;
 use App\Http\Controllers\Billing\StartMollieCheckoutController;
 use App\Http\Controllers\Billing\StartTrialWeekController;
+use App\Http\Controllers\ContentStudio\BillingOverviewController;
 use App\Http\Controllers\ContentStudio\ContentController;
 use App\Http\Controllers\ContentStudio\ContentPreviewController;
 use App\Http\Controllers\ContentStudio\ContentReleaseController;
@@ -200,6 +201,13 @@ Route::prefix('content-studio')
     ->middleware(['auth', 'can:content-studio.view'])
     ->group(function (): void {
         Route::get('/', DashboardController::class)->name('dashboard');
+
+        Route::get('/betalingen', BillingOverviewController::class)
+            ->middleware('can:billing.manage')
+            ->name('billing.index');
+        Route::post('/betalingen/zoeken', BillingOverviewController::class)
+            ->middleware('can:billing.manage')
+            ->name('billing.search');
 
         Route::get('/reviews', ReviewQueueController::class)->name('reviews.index');
         Route::post('/reviews/{contentNode}/decision', [ContentReviewController::class, 'decide'])

@@ -45,6 +45,10 @@ final readonly class MolliePaymentSnapshot
 
     public function occurredAt(): ?string
     {
+        if ($this->hasFinancialReversal()) {
+            return null;
+        }
+
         return match ($this->status) {
             'paid' => $this->paidAt,
             'failed' => $this->failedAt,
@@ -52,6 +56,11 @@ final readonly class MolliePaymentSnapshot
             'expired' => $this->expiredAt,
             default => null,
         };
+    }
+
+    public function hasFinancialReversal(): bool
+    {
+        return $this->amountRefunded !== '0.00' || $this->amountChargedBack !== '0.00';
     }
 
     /** @return array<string, string|null> */
