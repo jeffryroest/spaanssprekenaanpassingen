@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Billing\CancelMollieSubscriptionController;
 use App\Http\Controllers\Billing\BillingInvoiceController;
+use App\Http\Controllers\Billing\CancelMollieSubscriptionController;
 use App\Http\Controllers\Billing\MollieReturnController;
 use App\Http\Controllers\Billing\StartMollieCheckoutController;
 use App\Http\Controllers\Billing\StartTrialWeekController;
