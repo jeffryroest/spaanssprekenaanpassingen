@@ -2,8 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Billing\BillingEmailPlanner;
 use App\Enums\CheckoutPaymentStatus;
 use App\Enums\SubscriptionStatus;
+use App\Mail\PaymentConfirmedMail;
+use App\Models\BillingEmailDelivery;
+use App\Models\BillingInvoice;
 use App\Models\Subscription;
 use App\Models\SubscriptionEvent;
 use App\Models\SubscriptionOrder;
@@ -13,6 +17,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request as ClientRequest;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class MollieCheckoutSubscriptionTest extends TestCase
@@ -27,6 +32,16 @@ class MollieCheckoutSubscriptionTest extends TestCase
         config()->set('services.mollie.checkout_enabled', true);
         config()->set('services.mollie.api_key', 'test_safe_placeholder');
         config()->set('services.mollie.base_url', 'https://api.mollie.test/v2');
+        config()->set('subscriptions.invoicing.seller', [
+            'legal_name' => 'Test Taal BV',
+            'trade_name' => 'Test Spaans',
+            'street' => 'Teststraat 1',
+            'postal_code' => '1000 AA',
+            'city' => 'Teststad',
+            'country' => 'NL',
+            'chamber_of_commerce' => '00000000',
+            'vat_id' => 'NL000000000B00',
+        ]);
         $this->artisan('subscriptions:install-mollie-monthly')->assertSuccessful();
     }
 
@@ -59,6 +74,7 @@ class MollieCheckoutSubscriptionTest extends TestCase
             'first_name' => 'Ana',
             'last_name' => 'García López',
             'email' => 'ana@example.com',
+            'purchase_type' => 'individual',
             'recurring_consent' => '1',
         ])->assertRedirect('https://www.mollie.test/checkout/abc');
 
@@ -69,7 +85,7 @@ class MollieCheckoutSubscriptionTest extends TestCase
         $this->assertSame(CheckoutPaymentStatus::Open, $order->payment_status);
         $this->assertSame(995, $order->amount_minor);
         $this->assertSame('EUR', $order->currency);
-        $this->assertSame('mollie-monthly-995-v1', $order->consent_version);
+        $this->assertSame('mollie-monthly-995-v2', $order->consent_version);
         $this->assertNotNull($order->consented_at);
         $this->assertSame('cst_safe123', $order->provider_customer_ref);
         $this->assertSame('tr_12345678', $order->provider_payment_ref);
@@ -89,6 +105,48 @@ class MollieCheckoutSubscriptionTest extends TestCase
                 && $data['sequenceType'] === 'first'
                 && $data['metadata']['checkout_reference'] === $order->public_id;
         });
+    }
+
+    public function test_business_checkout_registers_conditional_invoice_fields(): void
+    {
+        $player = User::factory()->create();
+        Http::fake(function (ClientRequest $request) {
+            return match (true) {
+                $request->method() === 'POST' && $request->url() === 'https://api.mollie.test/v2/customers' => Http::response([
+                    'id' => 'cst_business123',
+                ], 201),
+                $request->method() === 'POST' && $request->url() === 'https://api.mollie.test/v2/customers/cst_business123/payments' => Http::response([
+                    'id' => 'tr_business123',
+                    'status' => 'open',
+                    '_links' => ['checkout' => ['href' => 'https://www.mollie.test/checkout/business']],
+                ], 201),
+                default => Http::response([], 500),
+            };
+        });
+
+        $this->actingAs($player)->post(route('billing.mollie.start'), [
+            'first_name' => 'Ana',
+            'last_name' => 'García',
+            'email' => 'ADMIN@EXAMPLE.COM',
+            'purchase_type' => 'business',
+            'company_name' => 'Academia Norte SL',
+            'vat_id' => 'es b12345678',
+            'billing_street' => 'Calle Mayor 1',
+            'billing_postal_code' => '28013',
+            'billing_city' => 'Madrid',
+            'billing_country' => 'es',
+            'recurring_consent' => '1',
+        ])->assertRedirect('https://www.mollie.test/checkout/business');
+
+        $order = SubscriptionOrder::query()->sole();
+        $this->assertSame('business', $order->purchase_type);
+        $this->assertSame('Academia Norte SL', $order->company_name);
+        $this->assertSame('ES B12345678', $order->vat_id);
+        $this->assertSame('Calle Mayor 1', $order->billing_street);
+        $this->assertSame('28013', $order->billing_postal_code);
+        $this->assertSame('Madrid', $order->billing_city);
+        $this->assertSame('ES', $order->billing_country);
+        $this->assertSame('admin@example.com', $order->email);
     }
 
     public function test_paid_return_creates_monthly_subscription_and_activates_access_once(): void
@@ -136,6 +194,32 @@ class MollieCheckoutSubscriptionTest extends TestCase
         $this->assertSame($subscription->getKey(), $order->subscription_id);
         $this->assertNotNull($order->completed_at);
         $this->assertSame('processed', SubscriptionEvent::query()->sole()->processing_status);
+        $invoice = BillingInvoice::query()->sole();
+        $this->assertSame('SS-2026-000001', $invoice->invoice_number);
+        $this->assertSame('exempt', $invoice->tax_treatment);
+        $this->assertSame(0, $invoice->tax_minor);
+        $this->assertSame('Test Taal BV', $invoice->seller_snapshot['legal_name']);
+        $this->assertSame('ana@example.com', $invoice->buyer_snapshot['email']);
+        $this->assertSame('payment_confirmed', BillingEmailDelivery::query()->sole()->kind);
+
+        $invoiceResponse = $this->actingAs($player)->get(route('billing.invoices.download', $invoice));
+        $invoiceResponse
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/pdf')
+            ->assertHeader('Cache-Control', 'no-store, private');
+        $this->assertStringStartsWith('%PDF-1.4', $invoiceResponse->getContent());
+
+        $otherPlayer = User::factory()->create();
+        $this->actingAs($otherPlayer)
+            ->get(route('billing.invoices.download', $invoice))
+            ->assertNotFound();
+
+        Mail::fake();
+        $this->artisan('billing:send-due-emails')->assertSuccessful();
+        Mail::assertSent(
+            PaymentConfirmedMail::class,
+            fn (PaymentConfirmedMail $mail): bool => $mail->invoice->is($invoice),
+        );
 
         Http::assertSent(function (ClientRequest $request): bool {
             $data = $request->data();
@@ -149,6 +233,8 @@ class MollieCheckoutSubscriptionTest extends TestCase
         $this->actingAs($player)->get(route('billing.mollie.return', $order))->assertOk();
         $this->assertDatabaseCount('subscriptions', 1);
         $this->assertDatabaseCount('subscription_events', 1);
+        $this->assertDatabaseCount('billing_invoices', 1);
+        $this->assertDatabaseCount('billing_email_deliveries', 1);
     }
 
     public function test_recurring_paid_webhook_extends_the_local_period(): void
@@ -162,10 +248,19 @@ class MollieCheckoutSubscriptionTest extends TestCase
             'provider' => 'mollie',
             'provider_customer_ref' => 'cst_safe123',
             'provider_subscription_ref' => 'sub_safe123',
-            'status' => SubscriptionStatus::Active,
+            'status' => SubscriptionStatus::PastDue,
             'current_period_starts_at' => '2026-09-01 10:00:00',
             'current_period_ends_at' => '2026-10-01 10:00:00',
+            'past_due_since_at' => '2026-10-01 10:00:00',
+            'grace_ends_at' => '2026-10-15 10:00:00',
         ]);
+        $order = $this->openOrder($player);
+        $order->forceFill([
+            'subscription_id' => $subscription->getKey(),
+            'payment_status' => CheckoutPaymentStatus::Paid,
+            'paid_at' => '2026-09-01 10:00:00',
+        ])->save();
+        app(BillingEmailPlanner::class)->paymentFailed($subscription);
 
         Http::fake([
             'https://api.mollie.test/v2/payments/tr_recurring1' => Http::response([
@@ -184,7 +279,18 @@ class MollieCheckoutSubscriptionTest extends TestCase
         $subscription->refresh();
         $this->assertTrue($subscription->current_period_starts_at->equalTo('2026-10-01 10:00:00'));
         $this->assertTrue($subscription->current_period_ends_at->equalTo('2026-11-01 10:00:00'));
+        $this->assertSame(SubscriptionStatus::Active, $subscription->status);
+        $this->assertNull($subscription->past_due_since_at);
+        $this->assertNull($subscription->grace_ends_at);
         $this->assertSame('processed', SubscriptionEvent::query()->sole()->processing_status);
+        $this->assertDatabaseCount('billing_invoices', 1);
+        $this->assertSame(
+            3,
+            BillingEmailDelivery::query()
+                ->where('kind', 'like', 'payment_recovery_day_%')
+                ->whereNotNull('cancelled_at')
+                ->count(),
+        );
     }
 
     public function test_cancellation_keeps_access_until_period_end(): void
@@ -218,6 +324,10 @@ class MollieCheckoutSubscriptionTest extends TestCase
         $this->assertTrue($subscription->current_period_ends_at->equalTo('2026-10-01 10:00:00'));
 
         Http::assertSent(fn (ClientRequest $request): bool => $request->method() === 'DELETE');
+        $this->assertDatabaseHas('billing_email_deliveries', [
+            'subscription_id' => $subscription->getKey(),
+            'kind' => 'subscription_cancelled',
+        ]);
     }
 
     public function test_checkout_requires_buyer_fields_and_explicit_recurring_consent(): void
@@ -229,7 +339,19 @@ class MollieCheckoutSubscriptionTest extends TestCase
             'first_name' => '',
             'last_name' => '',
             'email' => 'not-an-email',
-        ])->assertSessionHasErrors(['first_name', 'last_name', 'email', 'recurring_consent']);
+            'purchase_type' => 'business',
+        ])->assertSessionHasErrors([
+            'first_name',
+            'last_name',
+            'email',
+            'company_name',
+            'vat_id',
+            'billing_street',
+            'billing_postal_code',
+            'billing_city',
+            'billing_country',
+            'recurring_consent',
+        ]);
 
         $this->assertDatabaseCount('subscription_orders', 0);
         Http::assertNothingSent();
@@ -244,13 +366,14 @@ class MollieCheckoutSubscriptionTest extends TestCase
             'first_name' => 'Ana',
             'last_name' => 'García',
             'email' => 'ana@example.com',
+            'purchase_type' => 'individual',
             'provider' => 'mollie',
             'provider_customer_ref' => 'cst_safe123',
             'provider_payment_ref' => 'tr_12345678',
             'payment_status' => CheckoutPaymentStatus::Open,
             'currency' => 'EUR',
             'amount_minor' => 995,
-            'consent_version' => 'mollie-monthly-995-v1',
+            'consent_version' => 'mollie-monthly-995-v2',
             'consented_at' => now()->subMinute(),
             'checkout_started_at' => now()->subMinute(),
         ]);

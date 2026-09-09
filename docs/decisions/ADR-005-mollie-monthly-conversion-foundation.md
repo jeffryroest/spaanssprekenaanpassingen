@@ -1,6 +1,6 @@
 # ADR-005 · Mollie-maandaanbod en veilige conversiegrens
 
-Status: gedeeltelijk geaccepteerd; checkoutkern geaccepteerd
+Status: geaccepteerd tot en met betaalherstel en facturatie; productieactivatie open
 
 ## Geaccepteerde besluiten
 
@@ -12,6 +12,11 @@ Status: gedeeltelijk geaccepteerd; checkoutkern geaccepteerd
 - Opzeggen stopt de automatische verlenging en laat toegang doorlopen tot het einde van de betaalde periode.
 - Bij de bestelling worden minimaal voornaam, achternaam, e-mailadres en de status van de eerste betaling geregistreerd.
 - Na verlopen toegang blijft alleen de openbare voorbeeldmissie beschikbaar.
+- Een mislukte maandincasso geeft veertien dagen respijt met herstelberichten op dag 0, 7 en 13.
+- Refunds en chargebacks blokkeren toegang direct en gaan naar beheercontrole.
+- De klant kan zelf opzeggen; een beheerder kan dit namens de klant doen. Toegang blijft tot het betaalde periode-einde actief.
+- Particuliere checkout vraagt alleen basisgegevens. Zakelijke checkout vraagt daarnaast bedrijfsnaam, btw-id en factuuradres.
+- De geconfigureerde Nederlandse onderneming factureert als Spaansspreken.nl met prefix `SS`, een pdf per betaalde gebeurtenis en de vastgelegde behandeling `btw-vrijgesteld wegens taalonderwijs`; niet-publieke bedrijfsgegevens staan uitsluitend in servervariabelen.
 
 ## Technisch besluit
 
@@ -25,15 +30,18 @@ Na de betaalbevestiging controleert de backend het mandaat en maakt of vindt hij
 
 ## Nog niet geaccepteerd
 
-- betaalachterstand, retries en chargebackbeleid;
-- terugbetalingsbeleid en het effect daarvan op reeds verleende toegang;
-- definitieve factuur- en btw-informatie;
 - definitieve juridische bewaartermijnen voor bestelgegevens;
 - live productieactivatie.
 
 ## Operationele tussenstap 3D3A
 
 Zolang bovenstaand beleid niet is geaccepteerd, worden financiële uitzonderingen wel veilig zichtbaar voor uitsluitend de rol `beheerder`, maar veranderen zij toegang niet automatisch. Een mislukte terugkerende betaling verlengt de betaalde periode niet. Refunds en chargebacks worden aan de bestaande order en, waar aanwezig, het abonnement gekoppeld. Vrije providertekst en betaalinstrumentgegevens blijven buiten het beheerbeeld.
+
+## Geaccepteerde vervolgstap 3D3B
+
+Vanaf 3D3B zet een terminale mislukte maandbetaling de lokale projectie op `past_due` met een onveranderlijk `grace_ends_at` veertien dagen na het eerste incident. Mollie verzorgt eventuele providerretries; een e-maillink initieert geen betaling. Een geverifieerde herstelbetaling heractiveert toegang, maakt één factuur en annuleert nog niet verzonden herinneringen. Een refund of chargeback zet de projectie direct op `paused` en vult `ended_at`, zonder provider-call in de databasetransactie.
+
+Facturen gebruiken een transactiegebonden jaarreeks en onveranderlijke afzender- en afnemerssnapshots. Alleen de accounteigenaar kan de pdf downloaden. De webhookinbox blijft vrij van namen, e-mailadressen, adressen en vrije providerdata.
 
 ## Privacy en veiligheid
 

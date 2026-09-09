@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Billing;
 
+use App\Billing\CheckoutBuyer;
 use App\Billing\Exceptions\BillingProviderUnavailable;
 use App\Billing\Exceptions\CheckoutUnavailable;
 use App\Billing\StartMollieCheckout;
@@ -20,9 +21,7 @@ final class StartMollieCheckoutController extends Controller
         try {
             $checkout = $startCheckout->handle(
                 user: $request->user(),
-                firstName: trim($validated['first_name']),
-                lastName: trim($validated['last_name']),
-                email: mb_strtolower(trim($validated['email'])),
+                buyer: CheckoutBuyer::fromValidated($validated),
             );
         } catch (CheckoutUnavailable $exception) {
             return to_route('trial-week.show')->with('access_notice', $exception->getMessage());

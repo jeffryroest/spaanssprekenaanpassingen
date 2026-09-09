@@ -47,6 +47,9 @@
             @endif
 
             <a href="{{ route('trial-week.show') }}" class="mt-7 inline-flex min-h-11 items-center justify-center rounded-xl bg-[#a9472b] px-5 text-sm font-black text-white">Bekijk mijn toegang</a>
+            @if ($invoice)
+                <a href="{{ route('billing.invoices.download', $invoice) }}" class="ml-2 mt-7 inline-flex min-h-11 items-center justify-center rounded-xl border border-[#a9472b]/30 bg-white px-5 text-sm font-black text-[#a9472b]">Download factuur</a>
+            @endif
         </section>
     </main>
 </body>

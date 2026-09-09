@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Billing\CancelMollieSubscriptionController;
+use App\Http\Controllers\Billing\BillingInvoiceController;
 use App\Http\Controllers\Billing\MollieReturnController;
 use App\Http\Controllers\Billing\StartMollieCheckoutController;
 use App\Http\Controllers\Billing\StartTrialWeekController;
 use App\Http\Controllers\ContentStudio\BillingOverviewController;
+use App\Http\Controllers\ContentStudio\CancelBillingSubscriptionController;
 use App\Http\Controllers\ContentStudio\ContentController;
 use App\Http\Controllers\ContentStudio\ContentPreviewController;
 use App\Http\Controllers\ContentStudio\ContentReleaseController;
@@ -63,6 +65,8 @@ Route::middleware('auth')->group(function (): void {
         ->name('billing.mollie.start');
     Route::get('/abonnement/bestelling/{subscriptionOrder}', MollieReturnController::class)
         ->name('billing.mollie.return');
+    Route::get('/abonnement/facturen/{billingInvoice}', BillingInvoiceController::class)
+        ->name('billing.invoices.download');
     Route::post('/abonnement/opzeggen', CancelMollieSubscriptionController::class)
         ->middleware('throttle:billing-cancellation')
         ->name('billing.mollie.cancel');
@@ -208,6 +212,10 @@ Route::prefix('content-studio')
         Route::post('/betalingen/zoeken', BillingOverviewController::class)
             ->middleware('can:billing.manage')
             ->name('billing.search');
+        Route::post('/betalingen/abonnementen/{subscription}/opzeggen', CancelBillingSubscriptionController::class)
+            ->whereNumber('subscription')
+            ->middleware(['can:billing.manage', 'throttle:billing-cancellation'])
+            ->name('billing.subscriptions.cancel');
 
         Route::get('/reviews', ReviewQueueController::class)->name('reviews.index');
         Route::post('/reviews/{contentNode}/decision', [ContentReviewController::class, 'decide'])

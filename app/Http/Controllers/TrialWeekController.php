@@ -6,6 +6,7 @@ use App\Access\EntitlementService;
 use App\Access\TrialWeekCatalog;
 use App\Billing\MollieMonthlyOffer;
 use App\Enums\SubscriptionStatus;
+use App\Models\BillingInvoice;
 use App\Models\Subscription;
 use App\Models\SubscriptionOrder;
 use Illuminate\Http\JsonResponse;
@@ -39,9 +40,14 @@ final class TrialWeekController extends Controller
             'mollieSubscription' => Subscription::query()
                 ->where('user_id', $request->user()->getKey())
                 ->where('provider', 'mollie')
-                ->whereIn('status', [SubscriptionStatus::Active, SubscriptionStatus::PastDue, SubscriptionStatus::Cancelled])
+                ->whereIn('status', [SubscriptionStatus::Active, SubscriptionStatus::PastDue, SubscriptionStatus::Paused, SubscriptionStatus::Cancelled])
                 ->latest('id')
                 ->first(),
+            'billingInvoices' => BillingInvoice::query()
+                ->whereHas('subscription', fn ($query) => $query->where('user_id', $request->user()->getKey()))
+                ->latest('issued_at')
+                ->limit(12)
+                ->get(),
         ]);
     }
 

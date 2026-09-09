@@ -4,6 +4,7 @@ import './game/panaderia-dialogue';
 import './game/personal-review';
 import './content-studio/content-builder';
 import './content-studio/content-preview';
+import './billing/checkout';
 
 const sidebar = document.querySelector('[data-studio-sidebar]');
 const sidebarOverlay = document.querySelector('[data-sidebar-overlay]');

@@ -32,7 +32,7 @@
         $status = match ($access['state']) {
             'trialing' => ['label' => 'Proefperiode actief', 'title' => 'Dag '.($access['trial_day'] ?? 1).' van '.($access['trial_days'] ?? 7), 'tone' => 'bg-[#e4f0df] text-[#315d47]', 'description' => 'Nieuwe missiedagen worden stap voor stap bereikbaar. Alleen gepubliceerde content kan worden gestart.'],
             'active' => ['label' => 'Toegang actief', 'title' => 'Je volledige proefweekroute is beschikbaar', 'tone' => 'bg-[#e4f0df] text-[#315d47]', 'description' => 'Je account heeft de benodigde rechten. Missies verschijnen zodra ze via de Content Studio zijn gepubliceerd.'],
-            'past_due' => ['label' => 'Betaling openstaand', 'title' => 'Controleer je toegang', 'tone' => 'bg-[#fff0cc] text-[#7b5615]', 'description' => 'De toegangsservice past de ingestelde grace-policy server-side toe. Er worden hier geen betaalgegevens getoond.'],
+            'past_due' => ['label' => 'Betaling openstaand', 'title' => 'Je hebt maximaal 14 dagen hersteltijd', 'tone' => 'bg-[#fff0cc] text-[#7b5615]', 'description' => 'Mollie kan de incasso automatisch opnieuw proberen. Controleer hieronder de actuele status; klikken schrijft nooit direct geld af.'],
             'paused' => ['label' => 'Gepauzeerd', 'title' => 'Je extra missiedagen zijn gepauzeerd', 'tone' => 'bg-[#efe4d5] text-[#705c4f]', 'description' => 'De openbare voorbeeldmissie blijft speelbaar.'],
             'cancelled' => ['label' => 'Opgezegd', 'title' => $access['access_active'] ? 'Toegang tot het periode-einde' : 'Je extra toegang is beëindigd', 'tone' => 'bg-[#efe4d5] text-[#705c4f]', 'description' => 'De server gebruikt het effectieve periode-einde en niet alleen het statuslabel.'],
             'expired' => ['label' => 'Verlopen', 'title' => 'Je extra toegang is verlopen', 'tone' => 'bg-[#f3dddd] text-[#8a3838]', 'description' => 'De openbare eerste missie blijft beschikbaar. Het maandaanbod staat hieronder; live afrekenen wordt apart geactiveerd.'],
@@ -104,7 +104,11 @@
                         <a href="{{ route('billing.mollie.return', $latestOrder) }}" class="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#a9472b] px-5 text-sm font-black text-white">Bekijk betaalstatus</a>
                     @elseif ($mollieSubscription !== null && in_array($mollieSubscription->status->value, ['active', 'past_due'], true))
                         <h3 class="text-lg font-black">Bestaand abonnement</h3>
-                        <p class="mt-2 text-sm leading-6 text-[#6f5e54]">Er bestaat al een Mollie-abonnement voor dit account. Een nieuwe checkout is geblokkeerd om dubbele maandbetalingen te voorkomen. Controleer eerst de betaal- of abonnementsstatus.</p>
+                        <p class="mt-2 text-sm leading-6 text-[#6f5e54]">Er bestaat al een Mollie-abonnement voor dit account. Een nieuwe checkout is geblokkeerd om dubbele maandbetalingen te voorkomen. Mollie kan een mislukte incasso automatisch opnieuw proberen.</p>
+                    @elseif ($mollieSubscription !== null && $mollieSubscription->status->value === 'paused')
+                        <h3 class="text-lg font-black">Abonnement geblokkeerd</h3>
+                        <p class="mt-2 text-sm leading-6 text-[#6f5e54]">De betaling is terugbetaald of teruggeboekt. Uit veiligheid kun je niet opnieuw afrekenen totdat support de situatie heeft gecontroleerd.</p>
+                        <a href="mailto:{{ config('subscriptions.invoicing.support_email') }}" class="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#a9472b]/30 bg-white px-5 text-sm font-black text-[#a9472b]">Neem contact op met support</a>
                     @elseif ($offer['checkout_available'])
                         <h3 class="text-lg font-black">Gegevens van de besteller</h3>
                         <form method="POST" action="{{ route('billing.mollie.start') }}" class="mt-4 grid gap-4" data-mollie-checkout>
@@ -123,12 +127,50 @@
                                 E-mailadres
                                 <input type="email" name="email" value="{{ old('email', $buyer['email']) }}" autocomplete="email" maxlength="254" required class="mt-1 min-h-11 w-full rounded-xl border border-[#493429]/20 bg-white px-3 font-normal focus:border-[#bd5a34] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]/30">
                             </label>
+                            @php($businessPurchase = old('purchase_type', 'individual') === 'business')
+                            <label class="text-sm font-bold">
+                                Ik bestel als
+                                <select name="purchase_type" data-purchase-type required class="mt-1 min-h-11 w-full rounded-xl border border-[#493429]/20 bg-white px-3 font-normal focus:border-[#bd5a34] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]/30">
+                                    <option value="individual" @selected(! $businessPurchase)>Particulier</option>
+                                    <option value="business" @selected($businessPurchase)>Bedrijf</option>
+                                </select>
+                            </label>
+                            <fieldset data-business-fields @if (! $businessPurchase) hidden @endif class="grid gap-4 rounded-2xl border border-[#493429]/10 bg-[#fffaf0] p-4">
+                                <legend class="px-1 text-sm font-black">Zakelijke factuurgegevens</legend>
+                                <label class="text-sm font-bold">
+                                    Bedrijfsnaam
+                                    <input type="text" name="company_name" value="{{ old('company_name') }}" autocomplete="organization" maxlength="180" @required($businessPurchase) class="mt-1 min-h-11 w-full rounded-xl border border-[#493429]/20 bg-white px-3 font-normal focus:border-[#bd5a34] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]/30">
+                                </label>
+                                <label class="text-sm font-bold">
+                                    Btw-identificatienummer
+                                    <input type="text" name="vat_id" value="{{ old('vat_id') }}" autocomplete="off" maxlength="32" @required($businessPurchase) class="mt-1 min-h-11 w-full rounded-xl border border-[#493429]/20 bg-white px-3 font-normal uppercase focus:border-[#bd5a34] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]/30">
+                                </label>
+                                <label class="text-sm font-bold">
+                                    Straat en huisnummer
+                                    <input type="text" name="billing_street" value="{{ old('billing_street') }}" autocomplete="billing street-address" maxlength="180" @required($businessPurchase) class="mt-1 min-h-11 w-full rounded-xl border border-[#493429]/20 bg-white px-3 font-normal focus:border-[#bd5a34] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]/30">
+                                </label>
+                                <div class="grid gap-4 sm:grid-cols-[0.7fr_1.3fr]">
+                                    <label class="text-sm font-bold">
+                                        Postcode
+                                        <input type="text" name="billing_postal_code" value="{{ old('billing_postal_code') }}" autocomplete="billing postal-code" maxlength="32" @required($businessPurchase) class="mt-1 min-h-11 w-full rounded-xl border border-[#493429]/20 bg-white px-3 font-normal uppercase focus:border-[#bd5a34] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]/30">
+                                    </label>
+                                    <label class="text-sm font-bold">
+                                        Plaats
+                                        <input type="text" name="billing_city" value="{{ old('billing_city') }}" autocomplete="billing address-level2" maxlength="120" @required($businessPurchase) class="mt-1 min-h-11 w-full rounded-xl border border-[#493429]/20 bg-white px-3 font-normal focus:border-[#bd5a34] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]/30">
+                                    </label>
+                                </div>
+                                <label class="text-sm font-bold">
+                                    Landcode
+                                    <input type="text" name="billing_country" value="{{ old('billing_country', 'NL') }}" autocomplete="billing country" maxlength="2" pattern="[A-Za-z]{2}" @required($businessPurchase) class="mt-1 min-h-11 w-full rounded-xl border border-[#493429]/20 bg-white px-3 font-normal uppercase focus:border-[#bd5a34] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]/30" aria-describedby="billing-country-help">
+                                    <span id="billing-country-help" class="mt-1 block text-xs font-normal text-[#7a6b62]">Twee letters, bijvoorbeeld NL of BE.</span>
+                                </label>
+                            </fieldset>
                             <label class="flex items-start gap-3 rounded-xl bg-[#f7f1e7] p-4 text-sm leading-6">
                                 <input type="checkbox" name="recurring_consent" value="1" required class="mt-1 size-4 shrink-0 accent-[#a9472b]">
                                 <span>Ik ga akkoord met een directe betaling van € 9,95 en daarna € 9,95 per maand totdat ik opzeg. Opzeggen gaat in aan het einde van de lopende betaalperiode.</span>
                             </label>
                             <button type="submit" class="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#a9472b] px-5 text-sm font-black text-white hover:bg-[#913b25] focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2">Betaal € 9,95 via Mollie</button>
-                            <p class="text-xs leading-5 text-[#7a6b62]">We bewaren je naam, e-mailadres, toestemming en betaalstatus bij deze bestelling. Lees meer in het <a href="{{ route('privacy') }}#betalingen" class="font-bold underline underline-offset-2">privacybeleid</a>.</p>
+                            <p class="text-xs leading-5 text-[#7a6b62]">€ 9,95 per maand, vrijgesteld van btw wegens taalonderwijs. We bewaren je bestel- en eventuele zakelijke factuurgegevens, toestemming en betaalstatus. Lees meer in het <a href="{{ route('privacy') }}#betalingen" class="font-bold underline underline-offset-2">privacybeleid</a>.</p>
                         </form>
                     @else
                         <span class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#493429]/10 bg-[#f4eee6] px-5 text-center text-sm font-bold text-[#78685e]" aria-disabled="true">Afrekenen via Mollie wordt voorbereid</span>
@@ -153,6 +195,23 @@
                         <button type="submit" class="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl border border-[#8a3838]/30 bg-white px-5 text-sm font-black text-[#8a3838] hover:bg-[#fff0f0] focus:outline-none focus:ring-2 focus:ring-[#8a3838]">Abonnement opzeggen</button>
                     </form>
                 @endif
+            </section>
+        @endif
+
+        @if ($billingInvoices->isNotEmpty())
+            <section class="mt-8 rounded-3xl border border-[#493429]/10 bg-[#fffaf0] p-6 shadow-sm sm:p-8" aria-labelledby="invoices-title">
+                <h2 id="invoices-title" class="text-xl font-black">Mijn facturen</h2>
+                <ul class="mt-4 divide-y divide-[#493429]/10">
+                    @foreach ($billingInvoices as $invoice)
+                        <li class="flex flex-wrap items-center justify-between gap-3 py-3">
+                            <div>
+                                <p class="font-bold">{{ $invoice->invoice_number }}</p>
+                                <p class="text-xs text-[#7a6b62]">{{ $invoice->issued_at->format('d-m-Y') }} · {{ $invoice->amountLabel() }} · btw-vrijgesteld</p>
+                            </div>
+                            <a href="{{ route('billing.invoices.download', $invoice) }}" class="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#a9472b]/30 bg-white px-4 text-sm font-black text-[#a9472b]">Download pdf</a>
+                        </li>
+                    @endforeach
+                </ul>
             </section>
         @endif
 

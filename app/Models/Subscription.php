@@ -20,6 +20,8 @@ use InvalidArgumentException;
     'trial_ends_at',
     'current_period_starts_at',
     'current_period_ends_at',
+    'past_due_since_at',
+    'grace_ends_at',
     'cancel_at_period_end',
     'cancelled_at',
     'ended_at',
@@ -51,6 +53,8 @@ class Subscription extends Model
             'trial_ends_at' => 'immutable_datetime',
             'current_period_starts_at' => 'immutable_datetime',
             'current_period_ends_at' => 'immutable_datetime',
+            'past_due_since_at' => 'immutable_datetime',
+            'grace_ends_at' => 'immutable_datetime',
             'cancel_at_period_end' => 'boolean',
             'cancelled_at' => 'immutable_datetime',
             'ended_at' => 'immutable_datetime',
@@ -75,5 +79,15 @@ class Subscription extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(SubscriptionOrder::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(BillingInvoice::class);
+    }
+
+    public function billingEmails(): HasMany
+    {
+        return $this->hasMany(BillingEmailDelivery::class);
     }
 }

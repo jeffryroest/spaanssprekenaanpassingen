@@ -20,7 +20,7 @@ final class StartMollieCheckout
         private readonly EntitlementService $entitlements,
     ) {}
 
-    public function handle(User $user, string $firstName, string $lastName, string $email): MollieCheckout
+    public function handle(User $user, CheckoutBuyer $buyer): MollieCheckout
     {
         if (! config('services.mollie.enabled') || ! config('services.mollie.checkout_enabled')) {
             throw new CheckoutUnavailable('Afrekenen is nog niet beschikbaar.');
@@ -36,7 +36,7 @@ final class StartMollieCheckout
             throw new CheckoutUnavailable('Je hebt al toegang. Bekijk daar je abonnementsstatus.');
         }
 
-        $order = DB::transaction(function () use ($user, $plan, $firstName, $lastName, $email): SubscriptionOrder {
+        $order = DB::transaction(function () use ($user, $plan, $buyer): SubscriptionOrder {
             $lockedUser = User::query()->whereKey($user->getKey())->lockForUpdate()->firstOrFail();
 
             if ($this->entitlements->snapshotFor($lockedUser)->accessActive) {
@@ -45,7 +45,7 @@ final class StartMollieCheckout
 
             $hasUnresolvedMollieSubscription = $lockedUser->subscriptions()
                 ->where('provider', 'mollie')
-                ->whereIn('status', [SubscriptionStatus::Active, SubscriptionStatus::PastDue])
+                ->whereIn('status', [SubscriptionStatus::Active, SubscriptionStatus::PastDue, SubscriptionStatus::Paused])
                 ->exists();
 
             if ($hasUnresolvedMollieSubscription) {
@@ -72,9 +72,7 @@ final class StartMollieCheckout
                 'public_id' => (string) Str::ulid(),
                 'user_id' => $user->getKey(),
                 'subscription_plan_id' => $plan->getKey(),
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'email' => $email,
+                ...$buyer->orderAttributes(),
                 'provider' => 'mollie',
                 'payment_status' => CheckoutPaymentStatus::Created,
                 'currency' => $configuration['currency'],
@@ -86,8 +84,8 @@ final class StartMollieCheckout
 
         try {
             $customerId = $this->mollie->createCustomer(
-                name: trim($firstName.' '.$lastName),
-                email: $email,
+                name: trim($buyer->firstName.' '.$buyer->lastName),
+                email: $buyer->email,
                 checkoutReference: $order->public_id,
                 idempotencyKey: 'customer-'.$order->public_id,
             );

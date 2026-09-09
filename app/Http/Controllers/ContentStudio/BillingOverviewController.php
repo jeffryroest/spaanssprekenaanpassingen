@@ -36,7 +36,9 @@ final class BillingOverviewController extends Controller
                     $query->where('public_id', 'like', "%{$search}%")
                         ->orWhere('first_name', 'like', "%{$search}%")
                         ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('company_name', 'like', "%{$search}%")
+                        ->orWhere('vat_id', 'like', "%{$search}%");
                 });
             })
             ->latest();
@@ -81,11 +83,26 @@ final class BillingOverviewController extends Controller
                     CheckoutPaymentStatus::ChargedBack,
                 ])
                 ->count(),
+            'managedSubscriptions' => Subscription::query()
+                ->with(['user', 'orders' => fn ($query) => $query->oldest('id')])
+                ->where('provider', 'mollie')
+                ->whereIn('status', [SubscriptionStatus::Active, SubscriptionStatus::PastDue])
+                ->where('cancel_at_period_end', false)
+                ->latest('id')
+                ->limit(20)
+                ->get(),
             'activeSubscriptionCount' => Subscription::query()
-                ->whereIn('status', [SubscriptionStatus::Active, SubscriptionStatus::Cancelled])
                 ->where(function ($query): void {
-                    $query->whereNull('current_period_ends_at')
-                        ->orWhere('current_period_ends_at', '>', now());
+                    $query->where(function ($query): void {
+                        $query->whereIn('status', [SubscriptionStatus::Active, SubscriptionStatus::Cancelled])
+                            ->where(function ($query): void {
+                                $query->whereNull('current_period_ends_at')
+                                    ->orWhere('current_period_ends_at', '>', now());
+                            });
+                    })->orWhere(function ($query): void {
+                        $query->where('status', SubscriptionStatus::PastDue)
+                            ->where('grace_ends_at', '>', now());
+                    });
                 })
                 ->count(),
         ])->withHeaders([
