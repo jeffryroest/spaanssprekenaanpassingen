@@ -245,13 +245,12 @@
                         <p class="mt-2 text-sm leading-6 text-[#76685f]">{{ $day['title_nl'] }}</p>
 
                         <div class="mt-auto pt-5">
-                            <?php if ($day['action_url']): ?>
-                                <a href="{{ $day['action_url'] }}" class="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#a9472b] px-4 text-sm font-black text-white hover:bg-[#913b25] focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2">
-                                    {{ $day['access_state'] === 'completed' ? 'Speel opnieuw' : 'Start dag '.$day['day'] }}
-                                </a>
-                            <?php else: ?>
-                                <span class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#493429]/10 bg-white/60 px-4 text-center text-sm font-bold text-[#887970]" aria-disabled="true">Nog niet te starten</span>
-                            <?php endif; ?>
+                            <a
+                                href="{{ $day['action_url'] ?: '#' }}"
+                                aria-disabled="{{ $day['action_url'] ? 'false' : 'true' }}"
+                                tabindex="{{ $day['action_url'] ? '0' : '-1' }}"
+                                class="inline-flex min-h-11 w-full items-center justify-center rounded-xl px-4 text-center text-sm font-black focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2 {{ $day['action_url'] ? 'bg-[#a9472b] text-white hover:bg-[#913b25]' : 'pointer-events-none border border-[#493429]/10 bg-white/60 text-[#887970]' }}"
+                            >{{ $day['action_url'] ? ($day['access_state'] === 'completed' ? 'Speel opnieuw' : 'Start dag '.$day['day']) : 'Nog niet te starten' }}</a>
                         </div>
                     </li>
                 @endforeach
