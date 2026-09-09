@@ -6,6 +6,7 @@ use App\ContentStudio\RuntimeReadiness;
 use App\Enums\SubscriptionStatus;
 use App\Models\BillingEmailDelivery;
 use App\Models\Subscription;
+use Carbon\CarbonImmutable;
 
 final class BetaOperationsSnapshot
 {
@@ -20,7 +21,7 @@ final class BetaOperationsSnapshot
      *   ready_count: int,
      *   check_count: int,
      *   incidents: array{past_due: int, paused: int, overdue_emails: int, exhausted_emails: int},
-     *   scheduler_last_seen_at: ?\Carbon\CarbonImmutable
+     *   scheduler_last_seen_at: ?CarbonImmutable
      * }
      */
     public function current(): array
