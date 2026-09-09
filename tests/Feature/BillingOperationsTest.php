@@ -52,7 +52,7 @@ class BillingOperationsTest extends TestCase
         $this->actingAs($administrator)
             ->post(route('content-studio.billing.search'), ['q' => 'ana@', 'status' => 'paid'])
             ->assertOk()
-            ->assertHeader('Cache-Control', 'private, no-store')
+            ->assertHeader('Cache-Control', 'no-store, private')
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow')
             ->assertSee('Ana García')
             ->assertSee('ana@example.com')

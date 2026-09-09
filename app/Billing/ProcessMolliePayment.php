@@ -229,8 +229,7 @@ final class ProcessMolliePayment
         string $status,
         ?string $error = null,
         ?int $subscriptionId = null,
-    ): SubscriptionEvent
-    {
+    ): SubscriptionEvent {
         $event->forceFill([
             'subscription_id' => $subscriptionId ?? $event->subscription_id,
             'processing_status' => $status,
@@ -241,8 +240,7 @@ final class ProcessMolliePayment
         return $event->refresh();
     }
 
-    private function failureCode(CheckoutPaymentStatus $status): ?string
-    {
+    private function failureCode(CheckoutPaymentStatus $status): ?string {
         return in_array($status, [
             CheckoutPaymentStatus::Failed,
             CheckoutPaymentStatus::Canceled,
