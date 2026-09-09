@@ -6,6 +6,7 @@ use App\Http\Controllers\Billing\CancelMollieSubscriptionController;
 use App\Http\Controllers\Billing\MollieReturnController;
 use App\Http\Controllers\Billing\StartMollieCheckoutController;
 use App\Http\Controllers\Billing\StartTrialWeekController;
+use App\Http\Controllers\ContentStudio\BetaOverviewController;
 use App\Http\Controllers\ContentStudio\BillingOverviewController;
 use App\Http\Controllers\ContentStudio\CancelBillingSubscriptionController;
 use App\Http\Controllers\ContentStudio\ContentController;
@@ -205,6 +206,10 @@ Route::prefix('content-studio')
     ->middleware(['auth', 'can:content-studio.view'])
     ->group(function (): void {
         Route::get('/', DashboardController::class)->name('dashboard');
+
+        Route::get('/beta', BetaOverviewController::class)
+            ->middleware('can:beta.manage')
+            ->name('beta.index');
 
         Route::get('/betalingen', BillingOverviewController::class)
             ->middleware('can:billing.manage')

@@ -56,7 +56,8 @@
 
 ## Fase 4 — bèta en uitbreiding
 
-- Beveiligings- en privacyreview.
-- Beheer, support en analytics.
+- **4A — bèta-gereedheid (gerealiseerd):** beheerder-only cohortmeting zonder nieuwe tracking of vrije leerdata, operationele productiechecks, scheduler-heartbeat en compatibele browserbeveiligingsheaders.
+- Verdiepende beveiligings- en privacyreview, inclusief volledige CSP, retentie en verwijderproces.
+- Beheer, support en aanvullende analytics op basis van bètabevindingen.
 - Gesloten bèta.
 - Nieuwe Spaanse steden als contentpakketten.
