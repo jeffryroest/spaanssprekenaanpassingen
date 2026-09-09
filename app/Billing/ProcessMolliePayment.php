@@ -240,7 +240,8 @@ final class ProcessMolliePayment
         return $event->refresh();
     }
 
-    private function failureCode(CheckoutPaymentStatus $status): ?string {
+    private function failureCode(CheckoutPaymentStatus $status): ?string
+    {
         return in_array($status, [
             CheckoutPaymentStatus::Failed,
             CheckoutPaymentStatus::Canceled,
