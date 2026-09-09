@@ -57,8 +57,8 @@ class BillingOperationsTest extends TestCase
             ->assertOk()
             ->assertHeader('Cache-Control', 'no-store, private')
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow')
-            ->assertSee('Ana García')
             ->assertSee('ana@example.com')
+            ->assertSee('Ana García')
             ->assertSee('Betaald')
             ->assertDontSee('luis@example.com');
 
