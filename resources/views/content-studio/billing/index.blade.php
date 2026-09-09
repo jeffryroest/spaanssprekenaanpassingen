@@ -44,7 +44,9 @@
         @else
             <div class="divide-y divide-slate-100">
                 @foreach ($managedSubscriptions as $subscription)
-                    @php($billingOrder = $subscription->orders->first())
+                    @php
+                        $billingOrder = $subscription->orders->first();
+                    @endphp
                     <article class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
                         <div>
                             <div class="flex flex-wrap items-center gap-2">

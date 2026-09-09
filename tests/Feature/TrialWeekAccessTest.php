@@ -37,19 +37,6 @@ class TrialWeekAccessTest extends TestCase
 
     public function test_account_without_subscription_sees_seven_days_and_only_the_public_sample(): void
     {
-        $compiled = app('blade.compiler')->compileString(
-            file_get_contents(resource_path('views/player/trial-week.blade.php')),
-        );
-        $compiledLines = array_filter(
-            explode("\n", $compiled),
-            fn (string $line): bool => preg_match('/<\?php (?:if|elseif|else|endif|foreach|endforeach)/', $line) === 1,
-        );
-        $this->fail(implode("\n", array_map(
-            fn (int $line, string $content): string => sprintf('%04d %s', $line + 1, $content),
-            array_keys($compiledLines),
-            array_values($compiledLines),
-        )));
-
         $player = User::factory()->create();
 
         $response = $this->actingAs($player)->get(route('trial-week.show'));

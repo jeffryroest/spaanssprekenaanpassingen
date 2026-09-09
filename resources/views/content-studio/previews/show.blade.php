@@ -37,14 +37,18 @@
 
         <div data-preview-frame data-preview-width="desktop" class="preview-frame mx-auto overflow-hidden rounded-3xl bg-[#f5ecdc] text-[#22342f] shadow-2xl shadow-black/40 transition-[max-width] duration-300">
             @if($mediaByRole->get('ambient_audio'))
-                @php($ambientAudio = $mediaByRole->get('ambient_audio'))
+                @php
+                    $ambientAudio = $mediaByRole->get('ambient_audio');
+                @endphp
                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#dec99f] bg-[#fffaf0] px-5 py-3 text-sm">
                     <span class="font-bold text-[#53675e]">Optioneel omgevingsgeluid · standaard uit</span>
                     <audio controls preload="none" class="h-9 max-w-full"><source src="{{ route('content-studio.media.stream', $ambientAudio) }}" type="{{ $ambientAudio->mime_type }}"></audio>
                 </div>
             @endif
             @if($domainData['scene'] === 'madrid_hub')
-                @php($background = $mediaByRole->get('map_background'))
+                @php
+                    $background = $mediaByRole->get('map_background');
+                @endphp
                 <section class="preview-world relative isolate min-h-[680px] overflow-hidden p-6 sm:p-10" @if($background) style="background-image: linear-gradient(rgb(23 44 54 / 25%), rgb(23 44 54 / 5%)), url('{{ route('content-studio.media.stream', $background) }}')" @endif>
                     <div class="relative z-10 max-w-xl rounded-3xl bg-[#fffaf0]/95 p-6 shadow-xl backdrop-blur sm:p-8">
                         <p class="text-xs font-black uppercase tracking-[0.18em] text-[#a8432b]">{{ data_get($domainData, 'intro.eyebrow') }}</p>
@@ -73,8 +77,10 @@
                     </div>
                 </section>
             @else
-                @php($sceneBackground = $mediaByRole->get('scene_background'))
-                @php($npcPortrait = $mediaByRole->get('npc_portrait') ?? $mediaByRole->get('npc_expression_sheet'))
+                @php
+                    $sceneBackground = $mediaByRole->get('scene_background');
+                    $npcPortrait = $mediaByRole->get('npc_portrait') ?? $mediaByRole->get('npc_expression_sheet');
+                @endphp
                 <section class="preview-dialogue-scene min-h-[720px] p-5 sm:p-10" @if($sceneBackground) style="background-image: linear-gradient(rgb(23 44 54 / 48%), rgb(23 44 54 / 22%)), url('{{ route('content-studio.media.stream', $sceneBackground) }}')" @endif>
                     <div class="mx-auto max-w-4xl">
                         <div class="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">

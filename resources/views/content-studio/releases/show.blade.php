@@ -76,7 +76,9 @@
                 @else
                     <div class="divide-y divide-slate-100">
                         @foreach ($contentRelease->items as $item)
-                            @php($localization = $item->contentNode?->defaultLocalization())
+                            @php
+                                $localization = $item->contentNode?->defaultLocalization();
+                            @endphp
                             <article class="flex flex-col gap-4 p-5 sm:p-6 lg:flex-row lg:items-center">
                                 <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-700"><x-content-studio.icon name="document" /></span>
                                 <div class="min-w-0 flex-1">

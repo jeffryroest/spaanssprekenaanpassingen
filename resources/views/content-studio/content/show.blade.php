@@ -245,7 +245,9 @@
         </div>
         <ol class="divide-y divide-slate-100">
             @foreach ($contentNode->revisions->reverse() as $revision)
-                @php($latestReviewForRevision = $contentNode->reviews->where('version', $revision->version)->last())
+                @php
+                    $latestReviewForRevision = $contentNode->reviews->where('version', $revision->version)->last();
+                @endphp
                 <li class="flex gap-4 p-5 sm:p-6">
                     <span class="mt-1 grid size-9 shrink-0 place-items-center rounded-full {{ $revision->version === $contentNode->current_version ? 'bg-brand-100 text-brand-700' : 'bg-slate-100 text-slate-500' }}">
                         <x-content-studio.icon name="clock" class="size-4" />

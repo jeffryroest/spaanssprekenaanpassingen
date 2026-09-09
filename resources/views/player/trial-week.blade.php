@@ -127,7 +127,9 @@
                                 E-mailadres
                                 <input type="email" name="email" value="{{ old('email', $buyer['email']) }}" autocomplete="email" maxlength="254" required class="mt-1 min-h-11 w-full rounded-xl border border-[#493429]/20 bg-white px-3 font-normal focus:border-[#bd5a34] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]/30">
                             </label>
-                            @php($businessPurchase = old('purchase_type', 'individual') === 'business')
+                            @php
+                                $businessPurchase = old('purchase_type', 'individual') === 'business';
+                            @endphp
                             <label class="text-sm font-bold">
                                 Ik bestel als
                                 <select name="purchase_type" data-purchase-type required class="mt-1 min-h-11 w-full rounded-xl border border-[#493429]/20 bg-white px-3 font-normal focus:border-[#bd5a34] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]/30">
@@ -245,12 +247,13 @@
                         <p class="mt-2 text-sm leading-6 text-[#76685f]">{{ $day['title_nl'] }}</p>
 
                         <div class="mt-auto pt-5">
-                            <a
-                                href="{{ $day['action_url'] ?: '#' }}"
-                                aria-disabled="{{ $day['action_url'] ? 'false' : 'true' }}"
-                                tabindex="{{ $day['action_url'] ? '0' : '-1' }}"
-                                class="inline-flex min-h-11 w-full items-center justify-center rounded-xl px-4 text-center text-sm font-black focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2 {{ $day['action_url'] ? 'bg-[#a9472b] text-white hover:bg-[#913b25]' : 'pointer-events-none border border-[#493429]/10 bg-white/60 text-[#887970]' }}"
-                            >{{ $day['action_url'] ? ($day['access_state'] === 'completed' ? 'Speel opnieuw' : 'Start dag '.$day['day']) : 'Nog niet te starten' }}</a>
+                            @if ($day['action_url'])
+                                <a href="{{ $day['action_url'] }}" class="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#a9472b] px-4 text-sm font-black text-white hover:bg-[#913b25] focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2">
+                                    {{ $day['access_state'] === 'completed' ? 'Speel opnieuw' : 'Start dag '.$day['day'] }}
+                                </a>
+                            @else
+                                <span class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#493429]/10 bg-white/60 px-4 text-center text-sm font-bold text-[#887970]" aria-disabled="true">Nog niet te starten</span>
+                            @endif
                         </div>
                     </li>
                 @endforeach
