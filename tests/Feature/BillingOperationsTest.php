@@ -52,8 +52,16 @@ class BillingOperationsTest extends TestCase
             ->get(route('content-studio.billing.index'))
             ->assertForbidden();
 
-        $this->actingAs($administrator)
-            ->post(route('content-studio.billing.search'), ['q' => 'ana@', 'status' => 'paid'])
+        $response = $this->actingAs($administrator)
+            ->post(route('content-studio.billing.search'), ['q' => 'ana@', 'status' => 'paid']);
+        $this->fail(json_encode([
+            'database' => SubscriptionOrder::query()->get(['first_name', 'email', 'payment_status'])->toArray(),
+            'search' => $response->viewData('search'),
+            'status' => $response->viewData('selectedStatus'),
+            'orders' => $response->viewData('orders')->toArray(),
+        ], JSON_THROW_ON_ERROR));
+
+        $response
             ->assertOk()
             ->assertHeader('Cache-Control', 'no-store, private')
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow')

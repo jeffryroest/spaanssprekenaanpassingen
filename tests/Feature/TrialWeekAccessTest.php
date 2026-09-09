@@ -40,7 +40,10 @@ class TrialWeekAccessTest extends TestCase
         $compiled = app('blade.compiler')->compileString(
             file_get_contents(resource_path('views/player/trial-week.blade.php')),
         );
-        $compiledLines = array_slice(explode("\n", $compiled), 245, 24, true);
+        $compiledLines = array_filter(
+            explode("\n", $compiled),
+            fn (string $line): bool => preg_match('/<\?php (?:if|elseif|else|endif|foreach|endforeach)/', $line) === 1,
+        );
         $this->fail(implode("\n", array_map(
             fn (int $line, string $content): string => sprintf('%04d %s', $line + 1, $content),
             array_keys($compiledLines),
