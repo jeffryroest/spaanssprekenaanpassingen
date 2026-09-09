@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Access\EntitlementService;
 use App\Enums\CheckoutPaymentStatus;
 use App\Enums\ContentRole;
 use App\Enums\SubscriptionStatus;
+use App\Mail\PaymentRecoveryMail;
 use App\Models\Subscription;
 use App\Models\SubscriptionEvent;
 use App\Models\SubscriptionOrder;
@@ -14,6 +16,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class BillingOperationsTest extends TestCase
@@ -54,8 +57,8 @@ class BillingOperationsTest extends TestCase
             ->assertOk()
             ->assertHeader('Cache-Control', 'no-store, private')
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow')
-            ->assertSee('Ana García')
             ->assertSee('ana@example.com')
+            ->assertSee('Ana García')
             ->assertSee('Betaald')
             ->assertDontSee('luis@example.com');
 
@@ -79,7 +82,7 @@ class BillingOperationsTest extends TestCase
         }
     }
 
-    public function test_refund_becomes_an_admin_attention_item_without_changing_access(): void
+    public function test_refund_becomes_an_admin_attention_item_and_blocks_access(): void
     {
         CarbonImmutable::setTestNow('2026-09-09 10:00:00');
         $administrator = User::factory()->create(['content_role' => ContentRole::Administrator]);
@@ -119,7 +122,8 @@ class BillingOperationsTest extends TestCase
         $this->assertSame($subscription->getKey(), $event->subscription_id);
         $this->assertSame('Betaling terugbetaald', $event->attentionLabel());
         $this->assertTrue($event->occurred_at->equalTo('2026-09-09 10:00:00'));
-        $this->assertSame(SubscriptionStatus::Active, $subscription->status);
+        $this->assertSame(SubscriptionStatus::Paused, $subscription->status);
+        $this->assertTrue($subscription->ended_at->equalTo('2026-09-09 10:00:00'));
         $this->assertTrue($subscription->current_period_ends_at->equalTo('2026-10-01 10:00:00'));
 
         $this->actingAs($administrator)
@@ -131,11 +135,19 @@ class BillingOperationsTest extends TestCase
             ->assertDontSee('cst_safe123');
     }
 
-    public function test_failed_recurring_payment_is_linked_but_does_not_apply_an_unapproved_access_policy(): void
+    public function test_failed_recurring_payment_starts_the_approved_fourteen_day_grace_period(): void
     {
         CarbonImmutable::setTestNow('2026-10-01 10:15:00');
         $player = User::factory()->create();
         $subscription = $this->subscription($player);
+        $this->order(
+            $player,
+            '01J6Q8B8V5QJK6M0W9NY7Q3B4E',
+            'Ana',
+            'ana@example.com',
+            CheckoutPaymentStatus::Paid,
+            $subscription,
+        );
 
         Http::fake([
             'https://api.mollie.test/v2/payments/tr_failed123' => Http::response([
@@ -157,8 +169,67 @@ class BillingOperationsTest extends TestCase
         $this->assertSame($subscription->getKey(), $event->subscription_id);
         $this->assertSame('Betaling mislukt', $event->attentionLabel());
         $this->assertSame('processed', $event->processing_status);
-        $this->assertSame(SubscriptionStatus::Active, $subscription->status);
+        $this->assertSame(SubscriptionStatus::PastDue, $subscription->status);
+        $this->assertTrue($subscription->past_due_since_at->equalTo('2026-10-01 10:15:00'));
+        $this->assertTrue($subscription->grace_ends_at->equalTo('2026-10-15 10:15:00'));
         $this->assertTrue($subscription->current_period_ends_at->equalTo('2026-10-01 10:00:00'));
+        $this->assertDatabaseCount('billing_email_deliveries', 3);
+
+        $entitlements = app(EntitlementService::class);
+        $this->assertTrue($entitlements->snapshotFor($player, CarbonImmutable::parse('2026-10-15 10:14:59'))->accessActive);
+        $this->assertFalse($entitlements->snapshotFor($player, CarbonImmutable::parse('2026-10-15 10:15:00'))->accessActive);
+
+        Mail::fake();
+        $this->artisan('billing:send-due-emails')->assertSuccessful();
+        Mail::assertSent(PaymentRecoveryMail::class, 1);
+
+        CarbonImmutable::setTestNow('2026-10-08 10:15:00');
+        $this->artisan('billing:send-due-emails')->assertSuccessful();
+        Mail::assertSent(PaymentRecoveryMail::class, 2);
+
+        CarbonImmutable::setTestNow('2026-10-14 10:15:00');
+        $this->artisan('billing:send-due-emails')->assertSuccessful();
+        Mail::assertSent(PaymentRecoveryMail::class, 3);
+    }
+
+    public function test_administrator_can_cancel_on_behalf_of_the_customer(): void
+    {
+        CarbonImmutable::setTestNow('2026-09-15 10:00:00');
+        $administrator = User::factory()->create(['content_role' => ContentRole::Administrator]);
+        $editor = User::factory()->create(['content_role' => ContentRole::Editor]);
+        $player = User::factory()->create();
+        $subscription = $this->subscription($player);
+        $this->order(
+            $player,
+            '01J6Q8B8V5QJK6M0W9NY7Q3B4F',
+            'Ana',
+            'ana@example.com',
+            CheckoutPaymentStatus::Paid,
+            $subscription,
+        );
+        Http::fake([
+            'https://api.mollie.test/v2/customers/cst_safe123/subscriptions/sub_safe123' => Http::response([], 204),
+        ]);
+
+        $this->actingAs($editor)
+            ->post(route('content-studio.billing.subscriptions.cancel', $subscription), [
+                'confirm_cancellation' => '1',
+            ])
+            ->assertForbidden();
+
+        $this->actingAs($administrator)
+            ->post(route('content-studio.billing.subscriptions.cancel', $subscription), [
+                'confirm_cancellation' => '1',
+            ])
+            ->assertRedirect(route('content-studio.billing.index'));
+
+        $subscription->refresh();
+        $this->assertSame(SubscriptionStatus::Cancelled, $subscription->status);
+        $this->assertTrue($subscription->cancel_at_period_end);
+        $this->assertDatabaseHas('billing_email_deliveries', [
+            'subscription_id' => $subscription->getKey(),
+            'kind' => 'subscription_cancelled',
+        ]);
     }
 
     private function subscription(User $player): Subscription

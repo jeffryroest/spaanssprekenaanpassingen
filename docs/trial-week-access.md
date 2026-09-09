@@ -46,4 +46,4 @@ De migratie verwijdert eerst `subscriptions` en daarna `subscription_plans`. Er 
 3. **3C2 — minimaal NPC-geheugen:** terugkeerherkenning uit structurele voortgang.
 4. **3D1 — conversiefundament (gerealiseerd):** aanbod, proefactivatie, paywall en geverifieerde provider-eventinbox.
 5. **3D2 — checkoutkern (gerealiseerd):** mandate, terugkerende betaling, opzegging per periode-einde en eventprojectie.
-6. **3D3 — betaalherstel:** expliciet beleid en routes voor refunds, chargebacks, betaalachterstand, facturen/btw en bewaartermijnen.
+6. **3D3 — betaalherstel:** operationeel overzicht, veertien dagen respijt, dag-0/7/13-communicatie, directe blokkade bij refunds/chargebacks en btw-vrijgestelde pdf-facturen; alleen de definitieve bewaartermijn blijft open.

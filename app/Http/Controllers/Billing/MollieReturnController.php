@@ -37,6 +37,7 @@ final class MollieReturnController extends Controller
 
         return view('billing.order', [
             'order' => $subscriptionOrder,
+            'invoice' => $subscriptionOrder->invoices()->latest('issued_at')->first(),
             'notice' => $notice,
         ]);
     }

@@ -93,7 +93,9 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100 bg-white">
                         @foreach ($contentNodes as $contentNode)
-                            @php($localization = $contentNode->defaultLocalization())
+                            @php
+                                $localization = $contentNode->defaultLocalization();
+                            @endphp
                             <tr class="transition hover:bg-brand-50/30">
                                 <td class="px-5 py-4 sm:px-6">
                                     <div class="flex items-center gap-3">

@@ -6,6 +6,7 @@ use App\Enums\CheckoutPaymentStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'public_id',
@@ -15,6 +16,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'first_name',
     'last_name',
     'email',
+    'purchase_type',
+    'company_name',
+    'vat_id',
+    'billing_street',
+    'billing_postal_code',
+    'billing_city',
+    'billing_country',
     'provider',
     'provider_customer_ref',
     'provider_payment_ref',
@@ -62,5 +70,10 @@ class SubscriptionOrder extends Model
     public function subscription(): BelongsTo
     {
         return $this->belongsTo(Subscription::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(BillingInvoice::class);
     }
 }

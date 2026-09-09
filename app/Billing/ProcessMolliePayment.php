@@ -17,6 +17,8 @@ final class ProcessMolliePayment
     public function __construct(
         private readonly MollieApiClient $mollie,
         private readonly ProviderWebhookInbox $inbox,
+        private readonly IssueBillingInvoice $invoices,
+        private readonly BillingEmailPlanner $emails,
     ) {}
 
     public function handle(MolliePaymentSnapshot $snapshot): SubscriptionEvent
@@ -79,6 +81,10 @@ final class ProcessMolliePayment
         ])->save();
 
         if ($status !== CheckoutPaymentStatus::Paid) {
+            if ($snapshot->hasFinancialReversal() && $order->subscription !== null) {
+                return $this->pauseForReversal($event, $order->subscription);
+            }
+
             return $this->finish(
                 $event,
                 'processed',
@@ -163,6 +169,10 @@ final class ProcessMolliePayment
                 'processing_error' => null,
             ])->save();
 
+            $invoice = $this->invoices->handle($subscription, $event, $lockedOrder);
+            $this->emails->cancelRecoveryMessages($subscription);
+            $this->emails->paymentConfirmed($subscription, $invoice);
+
             return $event->refresh();
         });
     }
@@ -190,8 +200,16 @@ final class ProcessMolliePayment
             return $this->finish($event, 'ignored', 'subscription_payment_mismatch');
         }
 
+        if ($snapshot->hasFinancialReversal()) {
+            return $this->pauseForReversal($event, $subscription);
+        }
+
+        if (in_array($snapshot->status, ['failed', 'canceled', 'expired'], true)) {
+            return $this->markPastDue($event, $subscription);
+        }
+
         if ($snapshot->status !== 'paid') {
-            return $this->finish($event, 'processed');
+            return $this->finish($event, 'processed', subscriptionId: $subscription->getKey());
         }
 
         if ($snapshot->paidAt === null) {
@@ -210,6 +228,8 @@ final class ProcessMolliePayment
                 'status' => $locked->cancel_at_period_end ? SubscriptionStatus::Cancelled : SubscriptionStatus::Active,
                 'current_period_starts_at' => $paidAt,
                 'current_period_ends_at' => $paidAt->addMonthNoOverflow(),
+                'past_due_since_at' => null,
+                'grace_ends_at' => null,
                 'ended_at' => null,
             ])->save();
 
@@ -219,9 +239,64 @@ final class ProcessMolliePayment
                 'processed_at' => now(),
                 'processing_error' => null,
             ])->save();
+
+            $invoice = $this->invoices->handle($locked, $event);
+            $this->emails->cancelRecoveryMessages($locked);
+            $this->emails->paymentConfirmed($locked, $invoice);
         });
 
         return $event->refresh();
+    }
+
+    private function markPastDue(SubscriptionEvent $event, Subscription $subscription): SubscriptionEvent
+    {
+        return DB::transaction(function () use ($event, $subscription): SubscriptionEvent {
+            $locked = Subscription::query()->lockForUpdate()->findOrFail($subscription->getKey());
+
+            if (! $locked->cancel_at_period_end && $locked->status !== SubscriptionStatus::PastDue) {
+                $failedAt = now()->toImmutable();
+                $locked->forceFill([
+                    'status' => SubscriptionStatus::PastDue,
+                    'past_due_since_at' => $failedAt,
+                    'grace_ends_at' => $failedAt->addDays(max(0, (int) config('subscriptions.past_due_grace_days', 14))),
+                ])->save();
+            }
+
+            $event->forceFill([
+                'subscription_id' => $locked->getKey(),
+                'processing_status' => 'processed',
+                'processed_at' => now(),
+                'processing_error' => null,
+            ])->save();
+
+            $this->emails->paymentFailed($locked);
+
+            return $event->refresh();
+        });
+    }
+
+    private function pauseForReversal(SubscriptionEvent $event, Subscription $subscription): SubscriptionEvent
+    {
+        return DB::transaction(function () use ($event, $subscription): SubscriptionEvent {
+            $locked = Subscription::query()->lockForUpdate()->findOrFail($subscription->getKey());
+            $locked->forceFill([
+                'status' => SubscriptionStatus::Paused,
+                'past_due_since_at' => null,
+                'grace_ends_at' => null,
+                'ended_at' => now(),
+            ])->save();
+
+            $event->forceFill([
+                'subscription_id' => $locked->getKey(),
+                'processing_status' => 'processed',
+                'processed_at' => now(),
+                'processing_error' => null,
+            ])->save();
+
+            $this->emails->cancelRecoveryMessages($locked);
+
+            return $event->refresh();
+        });
     }
 
     private function finish(

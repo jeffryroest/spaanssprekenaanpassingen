@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable([
     'subscription_id',
@@ -35,6 +36,11 @@ class SubscriptionEvent extends Model
     public function subscription(): BelongsTo
     {
         return $this->belongsTo(Subscription::class);
+    }
+
+    public function invoice(): HasOne
+    {
+        return $this->hasOne(BillingInvoice::class);
     }
 
     public function attentionKind(): ?string

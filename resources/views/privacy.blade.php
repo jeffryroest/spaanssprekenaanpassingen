@@ -47,8 +47,9 @@
 
         <section id="betalingen" class="mt-6 rounded-3xl border border-white/10 bg-white/[0.06] p-6 sm:p-8">
             <h2 class="text-2xl font-bold text-white">Bestellingen en betalingen</h2>
-            <p class="mt-4 leading-7 text-stone-300">Bij een bestelling bewaren we je voornaam, achternaam, e-mailadres, het gekozen aanbod, bedrag en valuta, de versie en het moment van je toestemming, de betaalstatus en technische Mollie-referenties. Daarmee kunnen we je betaling aan je account koppelen, toegang activeren en de status van je abonnement tonen.</p>
+            <p class="mt-4 leading-7 text-stone-300">Bij een bestelling bewaren we je voornaam, achternaam, e-mailadres, het gekozen aanbod, bedrag en valuta, de versie en het moment van je toestemming, de betaalstatus en technische Mollie-referenties. Kies je voor een zakelijke aankoop, dan bewaren we daarnaast bedrijfsnaam, btw-identificatienummer en factuuradres. Daarmee kunnen we je betaling aan je account koppelen, toegang activeren en een btw-vrijgestelde factuur verstrekken.</p>
             <p class="mt-4 leading-7 text-stone-300">De daadwerkelijke betaling wordt door Mollie verwerkt. Spaansspreken.nl bewaart geen kaartnummer, bankrekeningnummer of andere betaalmiddelgegevens. Vrije Mollie-omschrijvingen en Mollie-klantmetadata worden niet in webhooklogs of spelstatus opgeslagen.</p>
+            <p class="mt-4 leading-7 text-stone-300">Na een bevestigde betaling maken we een genummerde factuursnapshot en plannen we een betaalbevestiging. Bij een mislukte maandincasso plannen we tijdens de hersteltermijn van veertien dagen maximaal drie e-mails. Zodra de betaling herstelt, vervallen nog niet verstuurde herinneringen.</p>
             <p class="mt-4 leading-7 text-stone-300">Je abonnement en bestelregistratie blijven bij je account beschikbaar voor betaaladministratie en ondersteuning. De definitieve bewaartermijnen en juridische grondslagen worden vóór de gesloten bèta in de bredere privacy- en retentiereview vastgesteld.</p>
         </section>
 

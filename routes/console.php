@@ -10,6 +10,7 @@ use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
@@ -18,6 +19,10 @@ use Symfony\Component\Console\Command\Command;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Schedule::command('billing:send-due-emails')
+    ->everyFifteenMinutes()
+    ->withoutOverlapping();
 
 Artisan::command('content-studio:provision-administrator {email} {--name=}', function (string $email) {
     $email = Str::lower(trim($email));

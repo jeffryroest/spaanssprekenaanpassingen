@@ -195,7 +195,9 @@
             </div>
             <div class="grid gap-6 p-5 md:grid-cols-2 sm:p-6">
                 @foreach($mediaRoles as $role => $definition)
-                    @php($roleAssets = $availableMedia->filter(fn ($asset) => $asset->kind === $definition['kind']))
+                    @php
+                        $roleAssets = $availableMedia->filter(fn ($asset) => $asset->kind === $definition['kind']);
+                    @endphp
                     <div>
                         <label for="media-{{ $role }}" class="cs-label">{{ $definition['label'] }}</label>
                         <select id="media-{{ $role }}" name="media[{{ $role }}]" class="cs-field @error('media.'.$role) cs-field-error @enderror">

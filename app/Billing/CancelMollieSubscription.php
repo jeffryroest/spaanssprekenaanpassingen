@@ -10,22 +10,34 @@ use Illuminate\Support\Facades\DB;
 
 final class CancelMollieSubscription
 {
-    public function __construct(private readonly MollieApiClient $mollie) {}
+    public function __construct(
+        private readonly MollieApiClient $mollie,
+        private readonly BillingEmailPlanner $emails,
+    ) {}
 
     public function handle(User $user): Subscription
     {
         $subscription = Subscription::query()
             ->where('user_id', $user->getKey())
             ->where('provider', 'mollie')
-            ->whereIn('status', [SubscriptionStatus::Active, SubscriptionStatus::Cancelled])
-            ->where(function ($query): void {
-                $query->whereNull('current_period_ends_at')
-                    ->orWhere('current_period_ends_at', '>', now());
-            })
+            ->whereIn('status', [SubscriptionStatus::Active, SubscriptionStatus::PastDue, SubscriptionStatus::Cancelled])
             ->latest('id')
             ->first();
 
-        if ($subscription === null
+        if ($subscription === null) {
+            throw new CheckoutUnavailable('Er is geen actief Mollie-abonnement om op te zeggen.');
+        }
+
+        return $this->handleSubscription($subscription);
+    }
+
+    public function handleSubscription(Subscription $subscription): Subscription
+    {
+        if (! in_array($subscription->status, [
+            SubscriptionStatus::Active,
+            SubscriptionStatus::PastDue,
+            SubscriptionStatus::Cancelled,
+        ], true)
             || $subscription->provider_customer_ref === null
             || $subscription->provider_subscription_ref === null) {
             throw new CheckoutUnavailable('Er is geen actief Mollie-abonnement om op te zeggen.');
@@ -46,7 +58,12 @@ final class CancelMollieSubscription
                 'status' => SubscriptionStatus::Cancelled,
                 'cancel_at_period_end' => true,
                 'cancelled_at' => now(),
+                'past_due_since_at' => null,
+                'grace_ends_at' => null,
             ])->save();
+
+            $this->emails->cancelRecoveryMessages($locked);
+            $this->emails->cancellationConfirmed($locked);
 
             return $locked->refresh();
         });

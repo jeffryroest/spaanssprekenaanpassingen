@@ -7,10 +7,16 @@
         <div>
             <p class="cs-eyebrow">Mollie en abonnementen</p>
             <h1 class="cs-page-title">Betalingen</h1>
-            <p class="cs-page-description">Bekijk bestellingen en financiële signalen. Dit overzicht trekt toegang niet automatisch in: refunds, chargebacks en betaalachterstand blijven een expliciete beleidsbeslissing.</p>
+            <p class="cs-page-description">Bekijk bestellingen, facturatie en financiële signalen. Mislukte maandincasso’s krijgen veertien dagen respijt; refunds en chargebacks blokkeren toegang voor controle.</p>
         </div>
         <span class="status-chip">Alleen beheerders</span>
     </div>
+
+    @if (session('billing_notice'))
+        <div class="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900" role="status">
+            {{ session('billing_notice') }}
+        </div>
+    @endif
 
     <section class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Betaalstatus">
         @foreach ([
@@ -27,10 +33,51 @@
         @endforeach
     </section>
 
+    <section class="cs-panel mt-8 overflow-hidden" aria-labelledby="subscriptions-title">
+        <div class="cs-panel-header">
+            <h2 id="subscriptions-title" class="font-bold text-slate-900">Abonnementen beheren</h2>
+            <p class="mt-1 text-sm text-slate-500">Een beheerder kan namens de klant opzeggen. De betaalde toegang blijft tot het periode-einde bestaan.</p>
+        </div>
+
+        @if ($managedSubscriptions->isEmpty())
+            <div class="px-6 py-10 text-center text-sm text-slate-500">Geen actieve abonnementen om te beheren.</div>
+        @else
+            <div class="divide-y divide-slate-100">
+                @foreach ($managedSubscriptions as $subscription)
+                    @php
+                        $billingOrder = $subscription->orders->first();
+                    @endphp
+                    <article class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <p class="font-bold text-slate-900">{{ $billingOrder ? trim($billingOrder->first_name.' '.$billingOrder->last_name) : $subscription->user->name }}</p>
+                                <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ $subscription->status === App\Enums\SubscriptionStatus::PastDue ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-800' }}">{{ $subscription->status->label() }}</span>
+                            </div>
+                            <p class="mt-1 break-all text-xs text-slate-500">{{ $billingOrder?->email ?? $subscription->user->email }}</p>
+                            @if ($subscription->status === App\Enums\SubscriptionStatus::PastDue && $subscription->grace_ends_at)
+                                <p class="mt-2 text-xs font-semibold text-amber-800">Respijt tot {{ $subscription->grace_ends_at->timezone('Europe/Madrid')->format('d-m-Y H:i') }}</p>
+                            @elseif ($subscription->current_period_ends_at)
+                                <p class="mt-2 text-xs text-slate-500">Betaalde periode tot {{ $subscription->current_period_ends_at->timezone('Europe/Madrid')->format('d-m-Y H:i') }}</p>
+                            @endif
+                        </div>
+                        <form method="POST" action="{{ route('content-studio.billing.subscriptions.cancel', $subscription) }}" class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                            @csrf
+                            <label class="flex items-start gap-2 text-xs text-slate-600">
+                                <input type="checkbox" name="confirm_cancellation" value="1" required class="mt-0.5 size-4 accent-slate-900">
+                                <span>Opzegging namens klant bevestigen</span>
+                            </label>
+                            <button type="submit" class="mt-3 inline-flex min-h-10 items-center justify-center rounded-lg border border-red-200 bg-white px-4 text-xs font-bold text-red-700 hover:bg-red-50">Opzeggen per periode-einde</button>
+                        </form>
+                    </article>
+                @endforeach
+            </div>
+        @endif
+    </section>
+
     <section class="cs-panel mt-8 overflow-hidden" aria-labelledby="orders-title">
         <div class="cs-panel-header">
             <h2 id="orders-title" class="font-bold text-slate-900">Bestellingen</h2>
-            <p class="mt-1 text-sm text-slate-500">Zoek op besteller, e-mailadres of intern bestelnummer.</p>
+            <p class="mt-1 text-sm text-slate-500">Zoek op besteller, bedrijf, btw-id, e-mailadres of intern bestelnummer.</p>
         </div>
 
         <form method="POST" action="{{ route('content-studio.billing.search') }}" class="grid gap-4 border-b border-slate-200 p-5 md:grid-cols-[minmax(0,1fr)_16rem_auto] md:items-end sm:p-6">
@@ -85,6 +132,9 @@
                             <tr>
                                 <td class="px-5 py-4 sm:px-6">
                                     <p class="font-bold text-slate-900">{{ $order->first_name }} {{ $order->last_name }}</p>
+                                    @if ($order->company_name)
+                                        <p class="mt-1 text-xs font-semibold text-slate-700">{{ $order->company_name }}</p>
+                                    @endif
                                     <p class="mt-1 break-all text-xs text-slate-500">{{ $order->email }}</p>
                                 </td>
                                 <td class="px-5 py-4 sm:px-6">

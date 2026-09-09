@@ -81,6 +81,10 @@ final class EntitlementService
 
     private function pastDueAccessEndsAt(Subscription $subscription): ?CarbonImmutable
     {
+        if ($subscription->grace_ends_at !== null) {
+            return $subscription->grace_ends_at;
+        }
+
         $periodEnd = $subscription->current_period_ends_at;
         if ($periodEnd === null) {
             return null;
