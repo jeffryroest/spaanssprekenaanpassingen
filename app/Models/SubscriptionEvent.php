@@ -36,4 +36,55 @@ class SubscriptionEvent extends Model
     {
         return $this->belongsTo(Subscription::class);
     }
+
+    public function attentionKind(): ?string
+    {
+        $payload = $this->event_payload;
+
+        if ($this->positiveAmount($payload['amount_charged_back'] ?? null)) {
+            return 'charged_back';
+        }
+
+        if ($this->positiveAmount($payload['amount_refunded'] ?? null)) {
+            return 'refunded';
+        }
+
+        $status = $payload['status'] ?? null;
+
+        if (in_array($status, ['failed', 'canceled', 'expired'], true)) {
+            return $status;
+        }
+
+        if ($this->processing_status === 'received') {
+            return 'unprocessed';
+        }
+
+        if ($this->processing_status === 'ignored'
+            && ! in_array($this->processing_error, ['unknown_payment', 'unknown_subscription'], true)) {
+            return 'manual_check';
+        }
+
+        return null;
+    }
+
+    public function attentionLabel(): ?string
+    {
+        return match ($this->attentionKind()) {
+            'charged_back' => 'Betaling teruggeboekt',
+            'refunded' => 'Betaling terugbetaald',
+            'failed' => 'Betaling mislukt',
+            'canceled' => 'Betaling geannuleerd',
+            'expired' => 'Betaling verlopen',
+            'unprocessed' => 'Nog niet verwerkt',
+            'manual_check' => 'Handmatige controle nodig',
+            default => null,
+        };
+    }
+
+    private function positiveAmount(mixed $value): bool
+    {
+        return is_string($value)
+            && preg_match('/^(0|[1-9][0-9]{0,9})\.[0-9]{2}$/', $value) === 1
+            && $value !== '0.00';
+    }
 }

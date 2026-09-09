@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Enums\ContentPermission;
+use App\Enums\ContentRole;
 use App\Feedback\Contracts\TurnAssessor;
 use App\Feedback\Contracts\TurnContextResolver;
 use App\Feedback\OpenAiTurnAssessor;
@@ -74,5 +75,10 @@ class AppServiceProvider extends ServiceProvider
                 fn (User $user): bool => $user->hasContentPermission($permission),
             );
         }
+
+        Gate::define(
+            'billing.manage',
+            fn (User $user): bool => $user->content_role === ContentRole::Administrator,
+        );
     }
 }

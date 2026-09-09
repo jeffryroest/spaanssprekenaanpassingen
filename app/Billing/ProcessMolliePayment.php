@@ -75,11 +75,15 @@ final class ProcessMolliePayment
             'provider_payment_ref' => $snapshot->id,
             'payment_status' => $status,
             'last_provider_sync_at' => now(),
-            'failure_code' => null,
+            'failure_code' => $this->failureCode($status),
         ])->save();
 
         if ($status !== CheckoutPaymentStatus::Paid) {
-            return $this->finish($event, 'processed');
+            return $this->finish(
+                $event,
+                'processed',
+                subscriptionId: $order->subscription_id,
+            );
         }
 
         if ($snapshot->paidAt === null) {
@@ -220,15 +224,31 @@ final class ProcessMolliePayment
         return $event->refresh();
     }
 
-    private function finish(SubscriptionEvent $event, string $status, ?string $error = null): SubscriptionEvent
-    {
+    private function finish(
+        SubscriptionEvent $event,
+        string $status,
+        ?string $error = null,
+        ?int $subscriptionId = null,
+    ): SubscriptionEvent {
         $event->forceFill([
+            'subscription_id' => $subscriptionId ?? $event->subscription_id,
             'processing_status' => $status,
             'processed_at' => now(),
             'processing_error' => $error,
         ])->save();
 
         return $event->refresh();
+    }
+
+    private function failureCode(CheckoutPaymentStatus $status): ?string
+    {
+        return in_array($status, [
+            CheckoutPaymentStatus::Failed,
+            CheckoutPaymentStatus::Canceled,
+            CheckoutPaymentStatus::Expired,
+            CheckoutPaymentStatus::Refunded,
+            CheckoutPaymentStatus::ChargedBack,
+        ], true) ? 'mollie_'.$status->value : null;
     }
 
     private function orderStatus(MolliePaymentSnapshot $snapshot): CheckoutPaymentStatus

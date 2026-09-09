@@ -70,4 +70,4 @@ Bronnen: [Mollie webhooks](https://docs.mollie.com/reference/webhooks), [Mollie 
 
 ## Vervolg
 
-De checkoutkern is gerealiseerd. Vervolgwerk richt zich op het expliciete beleid en de gebruikersroutes voor terugbetalingen, chargebacks, betaalachterstand/retries, facturen/btw en definitieve bewaartermijnen. Productieactivatie blijft een afzonderlijke menselijke poort.
+De checkoutkern en het [operationele betaaloverzicht](mollie-billing-operations.md) zijn gerealiseerd. Vervolgwerk richt zich op het expliciete beleid en de gebruikersroutes voor terugbetalingen, chargebacks, betaalachterstand/retries, facturen/btw en definitieve bewaartermijnen. Productieactivatie blijft een afzonderlijke menselijke poort.

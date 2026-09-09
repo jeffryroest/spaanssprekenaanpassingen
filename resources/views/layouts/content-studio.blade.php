@@ -49,6 +49,14 @@
                     <x-content-studio.icon name="media" />
                     Mediabibliotheek
                 </a>
+                @can('billing.manage')
+                    <a href="{{ route('content-studio.billing.index') }}"
+                       @if (request()->routeIs('content-studio.billing.*')) aria-current="page" @endif
+                       class="cs-nav-link {{ request()->routeIs('content-studio.billing.*') ? 'cs-nav-link-active' : '' }}">
+                        <x-content-studio.icon name="billing" />
+                        Betalingen
+                    </a>
+                @endcan
             </div>
 
             <p class="mt-8 px-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-slate-500">Workflow</p>
@@ -129,6 +137,8 @@
                                         Contentcatalogus
                                     @elseif (request()->routeIs('content-studio.media.*'))
                                         Mediabibliotheek
+                                    @elseif (request()->routeIs('content-studio.billing.*'))
+                                        Betalingen
                                     @elseif (request()->routeIs('content-studio.content.create'))
                                         Nieuw concept
                                     @elseif (request()->routeIs('content-studio.content.edit'))
