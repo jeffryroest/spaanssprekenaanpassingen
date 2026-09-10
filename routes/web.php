@@ -258,3 +258,63 @@ Route::prefix('content-studio')
             ->name('billing.search');
         Route::post('/betalingen/abonnementen/{subscription}/opzeggen', CancelBillingSubscriptionController::class)
             ->whereNumber('subscription')
+            ->middleware(['can:billing.manage', 'throttle:billing-cancellation'])
+            ->name('billing.subscriptions.cancel');
+
+        Route::get('/reviews', ReviewQueueController::class)->name('reviews.index');
+        Route::post('/reviews/{contentNode}/decision', [ContentReviewController::class, 'decide'])
+            ->whereNumber('contentNode')
+            ->name('reviews.decide');
+
+        Route::get('/releases', [ContentReleaseController::class, 'index'])->name('releases.index');
+        Route::get('/releases/create', [ContentReleaseController::class, 'create'])->name('releases.create');
+        Route::post('/releases', [ContentReleaseController::class, 'store'])->name('releases.store');
+        Route::get('/releases/{contentRelease}', [ContentReleaseController::class, 'show'])
+            ->whereNumber('contentRelease')
+            ->name('releases.show');
+        Route::post('/releases/{contentRelease}/items', [ContentReleaseItemController::class, 'store'])
+            ->whereNumber('contentRelease')
+            ->name('releases.items.store');
+        Route::delete('/releases/{contentRelease}/items/{contentReleaseItem}', [ContentReleaseItemController::class, 'destroy'])
+            ->whereNumber('contentRelease')
+            ->whereNumber('contentReleaseItem')
+            ->name('releases.items.destroy');
+        Route::post('/releases/{contentRelease}/publish', [ContentReleasePublicationController::class, 'publish'])
+            ->whereNumber('contentRelease')
+            ->name('releases.publish');
+        Route::post('/releases/{contentRelease}/cancel', [ContentReleasePublicationController::class, 'cancel'])
+            ->whereNumber('contentRelease')
+            ->name('releases.cancel');
+
+        Route::get('/media', [MediaAssetController::class, 'index'])->name('media.index');
+        Route::post('/media', [MediaAssetController::class, 'store'])->name('media.store');
+        Route::get('/media/{mediaAsset}/bestand', [MediaAssetController::class, 'stream'])
+            ->whereNumber('mediaAsset')
+            ->name('media.stream');
+
+        Route::get('/content', [ContentController::class, 'index'])->name('content.index');
+        Route::get('/content/create', [ContentController::class, 'create'])->name('content.create');
+        Route::post('/content', [ContentController::class, 'store'])->name('content.store');
+        Route::get('/content/{contentNode}', [ContentController::class, 'show'])
+            ->whereNumber('contentNode')
+            ->name('content.show');
+        Route::get('/content/{contentNode}/preview', ContentPreviewController::class)
+            ->whereNumber('contentNode')
+            ->middleware('signed')
+            ->name('content.preview');
+        Route::get('/content/{contentNode}/edit', [ContentController::class, 'edit'])
+            ->whereNumber('contentNode')
+            ->name('content.edit');
+        Route::put('/content/{contentNode}', [ContentController::class, 'update'])
+            ->whereNumber('contentNode')
+            ->name('content.update');
+        Route::post('/content/{contentNode}/submit-review', [ContentReviewController::class, 'submit'])
+            ->whereNumber('contentNode')
+            ->name('content.submit-review');
+        Route::post('/content/{contentNode}/withdraw-review', [ContentReviewController::class, 'withdraw'])
+            ->whereNumber('contentNode')
+            ->name('content.withdraw-review');
+        Route::delete('/content/{contentNode}', [ContentController::class, 'destroy'])
+            ->whereNumber('contentNode')
+            ->name('content.destroy');
+    });
