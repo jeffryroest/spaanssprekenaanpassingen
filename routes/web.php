@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountDeletionRequestController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\ContentStudio\ContentReleasePublicationController;
 use App\Http\Controllers\ContentStudio\ContentReviewController;
 use App\Http\Controllers\ContentStudio\DashboardController;
 use App\Http\Controllers\ContentStudio\MediaAssetController;
+use App\Http\Controllers\ContentStudio\PlayerAccountDetailController;
 use App\Http\Controllers\ContentStudio\PlayerAccountOverviewController;
 use App\Http\Controllers\ContentStudio\ReviewQueueController;
 use App\Http\Controllers\Game\CompleteFinalMissionController;
@@ -88,6 +90,13 @@ Route::middleware('auth')->group(function (): void {
     Route::put('/account/wachtwoord', [PlayerAccountController::class, 'updatePassword'])
         ->middleware('throttle:5,1')
         ->name('player.account.password');
+    Route::post('/account/verwijderverzoek', [AccountDeletionRequestController::class, 'store'])
+        ->middleware('throttle:3,60')
+        ->name('player.account.deletion.store');
+    Route::post('/account/verwijderverzoek/{deletionRequest}/intrekken', [AccountDeletionRequestController::class, 'cancel'])
+        ->whereNumber('deletionRequest')
+        ->middleware('throttle:3,60')
+        ->name('player.account.deletion.cancel');
     Route::get('/proefweek', [TrialWeekController::class, 'show'])
         ->name('trial-week.show');
     Route::post('/proefweek/start', StartTrialWeekController::class)
@@ -249,6 +258,28 @@ Route::prefix('content-studio')
         Route::post('/accounts/zoeken', PlayerAccountOverviewController::class)
             ->middleware('can:accounts.manage')
             ->name('accounts.search');
+        Route::get('/accounts/{user}', [PlayerAccountDetailController::class, 'show'])
+            ->whereNumber('user')
+            ->middleware('can:accounts.manage')
+            ->name('accounts.show');
+        Route::put('/accounts/{user}/rol', [PlayerAccountDetailController::class, 'updateRole'])
+            ->whereNumber('user')
+            ->middleware(['can:accounts.manage', 'throttle:20,1'])
+            ->name('accounts.role.update');
+        Route::post('/accounts/{user}/notities', [PlayerAccountDetailController::class, 'storeNote'])
+            ->whereNumber('user')
+            ->middleware(['can:accounts.manage', 'throttle:30,1'])
+            ->name('accounts.notes.store');
+        Route::post('/accounts/{user}/notities/{supportNote}/oplossen', [PlayerAccountDetailController::class, 'resolveNote'])
+            ->whereNumber('user')
+            ->whereNumber('supportNote')
+            ->middleware(['can:accounts.manage', 'throttle:30,1'])
+            ->name('accounts.notes.resolve');
+        Route::post('/accounts/{user}/verwijderverzoeken/{deletionRequest}/verwerken', [PlayerAccountDetailController::class, 'processDeletion'])
+            ->whereNumber('user')
+            ->whereNumber('deletionRequest')
+            ->middleware(['can:accounts.manage', 'throttle:5,60'])
+            ->name('accounts.deletions.process');
 
         Route::get('/betalingen', BillingOverviewController::class)
             ->middleware('can:billing.manage')

@@ -139,9 +139,46 @@
             </section>
         </div>
 
-        <aside class="mt-6 rounded-3xl border border-[#493429]/10 bg-white/65 p-6 text-sm leading-6 text-[#70625a]">
-            Accountverwijdering is nog niet geautomatiseerd, omdat de bewaartermijn voor betaal- en factuurgegevens eerst formeel moet worden vastgesteld. Een verzoek kan alvast naar <a href="mailto:{{ config('subscriptions.invoicing.support_email') }}" class="font-black text-[#a9472b] underline underline-offset-4">{{ config('subscriptions.invoicing.support_email') }}</a>.
-        </aside>
+        <section class="mt-6 rounded-3xl border border-red-900/15 bg-white/65 p-6 sm:p-8" aria-labelledby="deletion-title">
+            <p class="text-xs font-black uppercase tracking-[0.15em] text-[#8a3838]">Privacy</p>
+            <h2 id="deletion-title" class="mt-2 text-2xl font-black">Account laten verwijderen</h2>
+            <p class="mt-2 max-w-3xl text-sm leading-6 text-[#70625a]">Je kunt een formeel verwijderverzoek indienen. Support controleert eerst of een abonnement moet worden afgerond. Daarna verwijderen we je profiel, sessies en alle spelvoortgang. Betaal- en factuurgegevens die wettelijk bij de administratie horen, blijven afzonderlijk bewaard tot hun bewaartermijn voorbij is.</p>
+
+            @if (session('deletion_status'))
+                <div class="player-auth-success" role="status">{{ session('deletion_status') }}</div>
+            @endif
+            @if ($errors->getBag('deletion')->any())
+                <div class="player-auth-error" role="alert">Het verwijderverzoek kon niet worden verwerkt. Controleer de velden.</div>
+            @endif
+
+            @if ($latestDeletionRequest && in_array($latestDeletionRequest->status, [App\Enums\AccountDeletionStatus::Requested, App\Enums\AccountDeletionStatus::Blocked], true))
+                <div class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-950">
+                    <p class="font-black">{{ $latestDeletionRequest->status->label() }}</p>
+                    <p class="mt-1">Aangevraagd op {{ $latestDeletionRequest->requested_at->timezone('Europe/Madrid')->format('d-m-Y H:i') }}.</p>
+                    <form method="POST" action="{{ route('player.account.deletion.cancel', $latestDeletionRequest) }}" class="mt-4">
+                        @csrf
+                        <button type="submit" class="font-black text-[#8a3838] underline decoration-[#8a3838]/30 underline-offset-4">Verzoek intrekken</button>
+                    </form>
+                </div>
+            @elseif (auth()->user()->content_role === null)
+                <form method="POST" action="{{ route('player.account.deletion.store') }}" class="mt-6 max-w-xl space-y-5">
+                    @csrf
+                    <div>
+                        <label for="deletion-current-password" class="player-auth-label">Huidig wachtwoord</label>
+                        <input id="deletion-current-password" name="current_password" type="password" autocomplete="current-password" required class="player-auth-field @error('current_password', 'deletion') player-auth-field-error @enderror">
+                        @error('current_password', 'deletion')<p class="player-auth-field-message" role="alert">{{ $message }}</p>@enderror
+                    </div>
+                    <label class="flex items-start gap-3 text-sm leading-6 text-[#5f5149]">
+                        <input name="confirm_deletion" type="checkbox" value="1" class="mt-1 size-4 rounded border-[#493429]/30 text-[#8a3838] focus:ring-[#8a3838]" required>
+                        <span>Ik begrijp dat mijn profiel en spelvoortgang na controle definitief worden verwijderd.</span>
+                    </label>
+                    @error('confirm_deletion', 'deletion')<p class="player-auth-field-message" role="alert">{{ $message }}</p>@enderror
+                    <button type="submit" class="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#8a3838] px-5 py-3 font-black text-white shadow-sm transition hover:bg-[#713030]">Verwijderverzoek indienen</button>
+                </form>
+            @else
+                <p class="mt-5 text-sm font-semibold text-[#70625a]">Content Studio-accounts worden via het interne rollen- en toegangsproces afgehandeld. Neem contact op met een andere beheerder.</p>
+            @endif
+        </section>
     </main>
 </body>
 </html>

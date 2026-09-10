@@ -24,6 +24,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'privacy_erased_at' => 'immutable_datetime',
             'password' => 'hashed',
             'content_role' => ContentRole::class,
         ];
@@ -72,5 +73,20 @@ class User extends Authenticatable
     public function subscriptionOrders(): HasMany
     {
         return $this->hasMany(SubscriptionOrder::class);
+    }
+
+    public function supportNotes(): HasMany
+    {
+        return $this->hasMany(AccountSupportNote::class);
+    }
+
+    public function deletionRequests(): HasMany
+    {
+        return $this->hasMany(AccountDeletionRequest::class);
+    }
+
+    public function contentRoleAudits(): HasMany
+    {
+        return $this->hasMany(ContentRoleAudit::class);
     }
 }

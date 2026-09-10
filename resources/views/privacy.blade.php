@@ -50,10 +50,16 @@
             <p class="mt-4 leading-7 text-stone-300">Bij een bestelling bewaren we je voornaam, achternaam, e-mailadres, het gekozen aanbod, bedrag en valuta, de versie en het moment van je toestemming, de betaalstatus en technische Mollie-referenties. Kies je voor een zakelijke aankoop, dan bewaren we daarnaast bedrijfsnaam, btw-identificatienummer en factuuradres. Daarmee kunnen we je betaling aan je account koppelen, toegang activeren en een btw-vrijgestelde factuur verstrekken.</p>
             <p class="mt-4 leading-7 text-stone-300">De daadwerkelijke betaling wordt door Mollie verwerkt. Spaansspreken.nl bewaart geen kaartnummer, bankrekeningnummer of andere betaalmiddelgegevens. Vrije Mollie-omschrijvingen en Mollie-klantmetadata worden niet in webhooklogs of spelstatus opgeslagen.</p>
             <p class="mt-4 leading-7 text-stone-300">Na een bevestigde betaling maken we een genummerde factuursnapshot en plannen we een betaalbevestiging. Bij een mislukte maandincasso plannen we tijdens de hersteltermijn van veertien dagen maximaal drie e-mails. Zodra de betaling herstelt, vervallen nog niet verstuurde herinneringen.</p>
-            <p class="mt-4 leading-7 text-stone-300">Je abonnement en bestelregistratie blijven bij je account beschikbaar voor betaaladministratie en ondersteuning. De definitieve bewaartermijnen en juridische grondslagen worden vóór de gesloten bèta in de bredere privacy- en retentiereview vastgesteld.</p>
+            <p class="mt-4 leading-7 text-stone-300">Je abonnement en bestelregistratie blijven bij je account beschikbaar voor betaaladministratie en ondersteuning. Facturen en andere fiscale basisgegevens worden in beginsel zeven jaar bewaard. Een accountverwijdering wist deze administratie daarom niet eerder; de overige account- en spelgegevens worden na controle wel verwijderd.</p>
         </section>
 
-        <p class="mt-8 text-sm leading-6 text-stone-400">Een bredere juridische privacy- en retentiereview staat gepland vóór de gesloten bèta. Deze technische uitleg wordt bijgewerkt wanneer de gegevensverwerking verandert.</p>
+        <section id="verwijderen" class="mt-6 rounded-3xl border border-white/10 bg-white/[0.06] p-6 sm:p-8">
+            <h2 class="text-2xl font-bold text-white">Account verwijderen</h2>
+            <p class="mt-4 leading-7 text-stone-300">Via je account kun je zelf een verwijderverzoek indienen en vóór verwerking weer intrekken. Na controle verwijderen we je profiel, actieve sessies, supportnotities en alle spelvoortgang. Een lopend abonnement wordt eerst afgerond, zodat geen nieuwe afschrijving ontstaat nadat je inlogaccount is gewist.</p>
+            <p class="mt-4 leading-7 text-stone-300">Betaal- en factuurgegevens die voor de fiscale administratie nodig zijn, worden afgescheiden bewaard tot hun termijn voorbij is. De Belastingdienst noemt voor basisgegevens en gewone facturen een termijn van zeven jaar.</p>
+        </section>
+
+        <p class="mt-8 text-sm leading-6 text-stone-400">Een bredere juridische privacyreview en de gecontroleerde eindpurge van verlopen fiscale gegevens blijven beslispoorten vóór verdere opschaling. Deze technische uitleg wordt bijgewerkt wanneer de gegevensverwerking verandert.</p>
     </main>
 </body>
 </html>

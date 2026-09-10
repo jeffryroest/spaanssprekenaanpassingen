@@ -88,7 +88,7 @@
                             @endphp
                             <tr>
                                 <td class="px-5 py-4 sm:px-6">
-                                    <p class="font-bold text-slate-900">{{ $account->name }}</p>
+                                    <a href="{{ route('content-studio.accounts.show', $account) }}" class="font-bold text-brand-700 hover:text-brand-900 hover:underline">{{ $account->name }}</a>
                                     <p class="mt-1 break-all text-xs text-slate-500">{{ $account->email }}</p>
                                 </td>
                                 <td class="px-5 py-4 sm:px-6">
@@ -117,7 +117,7 @@
         @endif
     </section>
 
-    <aside class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
-        Rolwijzigingen en accountverwijdering blijven bewust buiten deze eerste supportweergave. Rolmutaties moeten altijd worden geaudit; verwijdering wacht op het formele retentiebeleid voor bestellingen en facturen.
+    <aside class="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-sm leading-6 text-emerald-900">
+        Open een account voor geauditeerde rolwijzigingen, minimale supportnotities en het gecontroleerde verwijderproces. Vrije leerinhoud blijft buiten het supportdossier.
     </aside>
 @endsection
