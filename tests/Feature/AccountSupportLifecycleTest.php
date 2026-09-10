@@ -16,9 +16,9 @@ use App\Models\SubscriptionOrder;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use DateTimeInterface;
 use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -216,7 +216,7 @@ class AccountSupportLifecycleTest extends TestCase
         User $player,
         SubscriptionPlan $plan,
         SubscriptionStatus $status,
-        ?CarbonImmutable $endedAt = null,
+        ?DateTimeInterface $endedAt = null,
     ): Subscription {
         return Subscription::query()->create([
             'user_id' => $player->getKey(),
