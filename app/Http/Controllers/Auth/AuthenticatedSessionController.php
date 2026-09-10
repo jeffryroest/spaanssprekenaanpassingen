@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller
 
         $fallback = $request->user()->hasContentPermission(ContentPermission::View)
             ? route('content-studio.dashboard', absolute: false)
-            : route('player.progress', absolute: false);
+            : route('home', absolute: false);
 
         return redirect()->intended($fallback);
     }

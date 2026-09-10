@@ -63,6 +63,14 @@
                         Betalingen
                     </a>
                 @endcan
+                @can('accounts.manage')
+                    <a href="{{ route('content-studio.accounts.index') }}"
+                       @if (request()->routeIs('content-studio.accounts.*')) aria-current="page" @endif
+                       class="cs-nav-link {{ request()->routeIs('content-studio.accounts.*') ? 'cs-nav-link-active' : '' }}">
+                        <x-content-studio.icon name="users" />
+                        Spelers en accounts
+                    </a>
+                @endcan
             </div>
 
             <p class="mt-8 px-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-slate-500">Workflow</p>
@@ -145,6 +153,8 @@
                                         Mediabibliotheek
                                     @elseif (request()->routeIs('content-studio.billing.*'))
                                         Betalingen
+                                    @elseif (request()->routeIs('content-studio.accounts.*'))
+                                        Spelers en accounts
                                     @elseif (request()->routeIs('content-studio.content.create'))
                                         Nieuw concept
                                     @elseif (request()->routeIs('content-studio.content.edit'))
@@ -175,6 +185,10 @@
                             <p class="truncate text-sm font-semibold text-slate-800">{{ auth()->user()->name }}</p>
                             <p class="truncate text-xs text-slate-500">{{ auth()->user()->content_role->label() }}</p>
                         </div>
+                        <a href="{{ route('player.account') }}" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand-500" role="menuitem">
+                            <x-content-studio.icon name="users" class="size-4 text-slate-500" />
+                            Mijn account
+                        </a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand-500" role="menuitem">

@@ -15,6 +15,7 @@ class HomePageTest extends TestCase
             ->assertSee('Spaansspreken.nl')
             ->assertSee('Je eerste ochtend in Madrid')
             ->assertSee('Start je eerste missie')
+            ->assertSee('Aanmelden')
             ->assertSee('madrid-morning.webp', false)
             ->assertDontSee('Laravel 13')
             ->assertDontSee('Fase 3B1');

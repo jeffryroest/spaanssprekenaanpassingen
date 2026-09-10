@@ -20,14 +20,24 @@
             @auth
                 <a href="{{ route('player.progress') }}">Mijn voortgang</a>
                 <a href="{{ route('trial-week.show') }}">Mijn proefweek</a>
+                <a href="{{ route('player.account') }}">Account</a>
                 @can('content-studio.view')
                     <a href="{{ route('content-studio.dashboard') }}">Content Studio</a>
                 @endcan
             @else
                 <a href="{{ route('login') }}">Inloggen</a>
+                <a href="{{ route('register') }}">Aanmelden</a>
             @endauth
         </nav>
     </header>
+
+    @if (session('success'))
+        <div class="world-status-banner" role="status">
+            <span aria-hidden="true">✓</span>
+            <p>{{ session('success') }}</p>
+            <a href="{{ route('game.madrid') }}">Start je eerste missie</a>
+        </div>
+    @endif
 
     <main id="main-content">
         <section class="world-hero" aria-labelledby="world-hero-title">

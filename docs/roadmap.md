@@ -57,7 +57,9 @@
 ## Fase 4 — bèta en uitbreiding
 
 - **4A — bèta-gereedheid (gerealiseerd):** beheerder-only cohortmeting zonder nieuwe tracking of vrije leerdata, operationele productiechecks, scheduler-heartbeat en compatibele browserbeveiligingsheaders.
+- **4B1 — spelersentree en accountbasis (gerealiseerd op fasebranch):** Nederlandstalige aanmeld- en inlogroutes, veilig wachtwoordherstel via de bestaande mailer, spelersgericht accountbeheer en een beheerder-only supportoverzicht van accounts zonder vrije leerdata.
 - Verdiepende beveiligings- en privacyreview, inclusief volledige CSP, retentie en verwijderproces.
-- Beheer, support en aanvullende analytics op basis van bètabevindingen.
+- **4B2 — beheer en support (volgend):** geaudite rolmutaties, accountdetail, supportnotities zonder vrije leerdata en het formele retentie-/verwijderproces.
+- **4C — Content Studio 2.0 (volgend):** relatiegerichte missiebouwer, visuele gespreksgrafiek met toegankelijke lijstweergave, auditlog, taxonomieën en importstaging.
 - Gesloten bèta.
 - Nieuwe Spaanse steden als contentpakketten.

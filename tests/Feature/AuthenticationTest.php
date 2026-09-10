@@ -17,7 +17,7 @@ class AuthenticationTest extends TestCase
         $this->get(route('login'))->assertOk();
     }
 
-    public function test_player_can_log_in_and_is_redirected_to_progress(): void
+    public function test_player_can_log_in_and_is_redirected_to_game_home(): void
     {
         $user = User::factory()->create();
 
@@ -27,7 +27,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticatedAs($user);
-        $response->assertRedirect(route('player.progress', absolute: false));
+        $response->assertRedirect(route('home', absolute: false));
     }
 
     public function test_content_editor_can_log_in_and_is_redirected_to_content_studio(): void
@@ -80,7 +80,13 @@ class AuthenticationTest extends TestCase
         $this->post(route('login.store'), [
             'email' => $user->email,
             'password' => 'password',
-        ])->assertRedirect(route('player.progress', absolute: false));
+        ])->assertRedirect(route('home', absolute: false));
+    }
+
+    public function test_legacy_english_auth_routes_redirect_to_the_dutch_player_routes(): void
+    {
+        $this->get('/login')->assertRedirect('/inloggen');
+        $this->get('/register')->assertRedirect('/aanmelden');
     }
 
     public function test_invalid_credentials_are_rejected_without_revealing_account_state(): void
