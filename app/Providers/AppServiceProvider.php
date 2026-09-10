@@ -85,5 +85,10 @@ class AppServiceProvider extends ServiceProvider
             'beta.manage',
             fn (User $user): bool => $user->content_role === ContentRole::Administrator,
         );
+
+        Gate::define(
+            'accounts.manage',
+            fn (User $user): bool => $user->content_role === ContentRole::Administrator,
+        );
     }
 }

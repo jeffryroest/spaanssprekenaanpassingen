@@ -11,12 +11,13 @@ class ContentStudioDesignSystemTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_login_uses_the_branded_content_studio_shell(): void
+    public function test_login_uses_the_branded_player_world_shell(): void
     {
         $this->get(route('login'))
             ->assertOk()
-            ->assertSee('data-auth-shell', false)
-            ->assertSee('Inloggen op Spaansspreken.nl');
+            ->assertSee('player-auth-shell', false)
+            ->assertSee('Ga verder in Madrid')
+            ->assertSee('Maak gratis een account');
     }
 
     public function test_dashboard_uses_accessible_shared_navigation(): void

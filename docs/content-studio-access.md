@@ -44,7 +44,7 @@ De migratie kan worden teruggedraaid met `php artisan migrate:rollback --step=1`
 
 ## Acceptatiecriteria
 
-- Gasten worden vanaf `/content-studio` naar `/login` gestuurd.
+- Gasten worden vanaf `/content-studio` naar `/inloggen` gestuurd.
 - Ingelogde gebruikers zonder redactierol krijgen HTTP 403.
 - Alle zes redactierollen kunnen het dashboard bekijken.
 - Alleen Beheerder en Hoofdredacteur hebben de publicatiepermissie.

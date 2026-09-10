@@ -146,7 +146,7 @@ class PlayerProgressTest extends TestCase
         $this->post(route('login.store'), [
             'email' => $player->email,
             'password' => 'password',
-        ])->assertRedirect(route('player.progress', absolute: false));
+        ])->assertRedirect(route('home', absolute: false));
 
         $this->get(route('player.progress'))
             ->assertOk()

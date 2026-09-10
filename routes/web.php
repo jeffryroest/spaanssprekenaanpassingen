@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Billing\BillingInvoiceController;
 use App\Http\Controllers\Billing\CancelMollieSubscriptionController;
 use App\Http\Controllers\Billing\MollieReturnController;
@@ -17,6 +20,7 @@ use App\Http\Controllers\ContentStudio\ContentReleasePublicationController;
 use App\Http\Controllers\ContentStudio\ContentReviewController;
 use App\Http\Controllers\ContentStudio\DashboardController;
 use App\Http\Controllers\ContentStudio\MediaAssetController;
+use App\Http\Controllers\ContentStudio\PlayerAccountOverviewController;
 use App\Http\Controllers\ContentStudio\ReviewQueueController;
 use App\Http\Controllers\Game\CompleteFinalMissionController;
 use App\Http\Controllers\Game\CompleteHealthMissionController;
@@ -31,6 +35,7 @@ use App\Http\Controllers\Game\FinalMissionController;
 use App\Http\Controllers\Game\PersonalReviewController;
 use App\Http\Controllers\Game\SpeechTranscriptionController;
 use App\Http\Controllers\Game\TurnFeedbackController;
+use App\Http\Controllers\PlayerAccountController;
 use App\Http\Controllers\PlayerProgressController;
 use App\Http\Controllers\TrialWeekController;
 use Illuminate\Support\Facades\Route;
@@ -47,15 +52,42 @@ Route::post('/spelen/madrid/la-panaderia/feedback', TurnFeedbackController::clas
     ->name('game.madrid.panaderia.feedback');
 
 Route::middleware('guest')->group(function (): void {
-    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
+    Route::get('/inloggen', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/inloggen', [AuthenticatedSessionController::class, 'store'])->name('login.store');
+    Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.legacy.store');
+
+    Route::get('/aanmelden', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('/aanmelden', [RegisteredUserController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('register.store');
+
+    Route::get('/wachtwoord-vergeten', [PasswordResetLinkController::class, 'create'])
+        ->name('password.request');
+    Route::post('/wachtwoord-vergeten', [PasswordResetLinkController::class, 'store'])
+        ->middleware('throttle:3,1')
+        ->name('password.email');
+    Route::get('/wachtwoord-herstellen/{token}', [NewPasswordController::class, 'create'])
+        ->name('password.reset');
+    Route::post('/wachtwoord-herstellen', [NewPasswordController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('password.update');
 });
+
+Route::redirect('/login', '/inloggen', 301)->name('login.legacy');
+Route::redirect('/register', '/aanmelden', 301)->name('register.legacy');
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
 Route::middleware('auth')->group(function (): void {
+    Route::get('/account', [PlayerAccountController::class, 'show'])
+        ->name('player.account');
+    Route::put('/account/profiel', [PlayerAccountController::class, 'updateProfile'])
+        ->name('player.account.profile');
+    Route::put('/account/wachtwoord', [PlayerAccountController::class, 'updatePassword'])
+        ->middleware('throttle:5,1')
+        ->name('player.account.password');
     Route::get('/proefweek', [TrialWeekController::class, 'show'])
         ->name('trial-week.show');
     Route::post('/proefweek/start', StartTrialWeekController::class)
@@ -210,6 +242,13 @@ Route::prefix('content-studio')
         Route::get('/beta', BetaOverviewController::class)
             ->middleware('can:beta.manage')
             ->name('beta.index');
+
+        Route::get('/accounts', PlayerAccountOverviewController::class)
+            ->middleware('can:accounts.manage')
+            ->name('accounts.index');
+        Route::post('/accounts/zoeken', PlayerAccountOverviewController::class)
+            ->middleware('can:accounts.manage')
+            ->name('accounts.search');
 
         Route::get('/betalingen', BillingOverviewController::class)
             ->middleware('can:billing.manage')
