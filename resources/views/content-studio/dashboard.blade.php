@@ -44,7 +44,7 @@
         <div class="cs-panel-header flex flex-wrap items-start justify-between gap-4">
             <div>
                 <h2 id="runtime-readiness-title" class="font-bold text-slate-900">Speelbaarheid op productie</h2>
-                <p class="mt-1 text-sm text-slate-500">Deze vijf gepubliceerde contracten vormen de huidige spelersroute. Voor de gouden route tellen ook de vereiste scène- en personagemedia mee; een concept is nooit automatisch live.</p>
+                <p class="mt-1 text-sm text-slate-500">De Madrid-wereld en zeven proefweekdagen vormen samen de huidige spelersroute. Voor ieder gesprek tellen ook de vereiste scène- en personagemedia mee; een concept is nooit automatisch live.</p>
             </div>
             <span class="status-chip">{{ collect($runtimeReadiness)->where('ready', true)->count() }}/{{ count($runtimeReadiness) }} speelbaar</span>
         </div>
@@ -68,7 +68,7 @@
                     </div>
                     @if ($item['content_node'])
                         <a href="{{ route('content-studio.content.show', $item['content_node']) }}" class="cs-button-secondary shrink-0">Open content</a>
-                    @else
+                    @elseif ($item['template'])
                         @can('create', App\Models\ContentNode::class)
                             <a href="{{ route('content-studio.content.create', ['template' => $item['template']]) }}" class="cs-button-secondary shrink-0">Maak veilig concept</a>
                         @endcan

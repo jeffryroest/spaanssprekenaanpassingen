@@ -47,6 +47,47 @@
         </div>
     </section>
 
+    <section class="cs-panel mt-8 overflow-hidden" aria-labelledby="trial-content-title">
+        <div class="cs-panel-header flex flex-wrap items-start justify-between gap-4">
+            <div>
+                <p class="cs-eyebrow">Fase 4B3</p>
+                <h2 id="trial-content-title" class="mt-2 font-bold text-slate-900">Proefweekcontent en media</h2>
+                <p class="mt-1 text-sm text-slate-500">Per dag wordt de exact gepubliceerde productierevisie gecontroleerd op scene-contract, toegangsgrens en verplichte beeldrollen.</p>
+            </div>
+            <span class="status-chip">{{ collect($operations['content_items'])->where('ready', true)->count() }}/{{ count($operations['content_items']) }} onderdelen gereed</span>
+        </div>
+        <div class="divide-y divide-slate-100">
+            @foreach ($operations['content_items'] as $item)
+                <article class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                    <div class="flex min-w-0 items-start gap-3">
+                        <span class="grid size-11 shrink-0 place-items-center rounded-2xl {{ $item['ready'] ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900' }} text-xs font-black" aria-label="{{ $item['day'] ? 'Dag '.$item['day'] : 'Wereld' }}">
+                            {{ $item['day'] ?? 'M' }}
+                        </span>
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h3 class="font-bold text-slate-900">{{ $item['label'] }}</h3>
+                                <span class="rounded-full px-2 py-0.5 text-xs font-bold {{ $item['ready'] ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800' }}">{{ $item['status'] }}</span>
+                            </div>
+                            <p class="mt-1 text-sm text-slate-500">{{ $item['scope'] }}</p>
+                            @if ($item['missing_media_roles'] !== [])
+                                <p class="mt-1 text-xs font-semibold text-amber-800">Nog vereist: {{ implode(', ', $item['missing_media_roles']) }}</p>
+                            @elseif (isset($item['detail']))
+                                <p class="mt-1 text-xs text-slate-500">{{ $item['detail'] }}</p>
+                            @endif
+                        </div>
+                    </div>
+                    @if ($item['content_node'])
+                        <a href="{{ route('content-studio.content.show', $item['content_node']) }}" class="cs-button-secondary shrink-0">Open content</a>
+                    @elseif ($item['template'])
+                        <a href="{{ route('content-studio.content.create', ['template' => $item['template']]) }}" class="cs-button-secondary shrink-0">Maak concept</a>
+                    @else
+                        <span class="text-xs font-semibold text-slate-500">Automatisch samengesteld</span>
+                    @endif
+                </article>
+            @endforeach
+        </div>
+    </section>
+
     <div class="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(20rem,1fr)]">
         <section class="cs-panel overflow-hidden" aria-labelledby="readiness-title">
             <div class="cs-panel-header flex flex-wrap items-start justify-between gap-4">

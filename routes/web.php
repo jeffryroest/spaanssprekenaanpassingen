@@ -128,8 +128,16 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/spelen/madrid/taxi/content', EntitledConversationController::class)
         ->defaults('scenarioSlug', 'taxi-diego')
         ->defaults('requiredEntitlement', 'trial_week')
+        ->defaults('mediaRouteName', 'game.madrid.taxi.media')
         ->middleware(['entitled:trial_week', 'throttle:120,1'])
         ->name('game.madrid.taxi.content');
+    Route::get('/spelen/madrid/taxi/media/{version}/{role}', EntitledConversationMediaController::class)
+        ->defaults('scenarioSlug', 'taxi-diego')
+        ->defaults('requiredEntitlement', 'trial_week')
+        ->whereNumber('version')
+        ->where('role', '[a-z0-9_]+')
+        ->middleware(['entitled:trial_week', 'throttle:120,1'])
+        ->name('game.madrid.taxi.media');
     Route::post('/spelen/madrid/taxi/transcriptie', SpeechTranscriptionController::class)
         ->middleware(['entitled:trial_week', 'throttle:speech-transcriptions'])
         ->name('game.madrid.taxi.transcription');
@@ -146,8 +154,16 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/spelen/madrid/restaurant/content', EntitledConversationController::class)
         ->defaults('scenarioSlug', 'restaurant-el-reloj')
         ->defaults('requiredEntitlement', 'trial_week')
+        ->defaults('mediaRouteName', 'game.madrid.restaurant.media')
         ->middleware(['entitled:trial_week', 'throttle:120,1'])
         ->name('game.madrid.restaurant.content');
+    Route::get('/spelen/madrid/restaurant/media/{version}/{role}', EntitledConversationMediaController::class)
+        ->defaults('scenarioSlug', 'restaurant-el-reloj')
+        ->defaults('requiredEntitlement', 'trial_week')
+        ->whereNumber('version')
+        ->where('role', '[a-z0-9_]+')
+        ->middleware(['entitled:trial_week', 'throttle:120,1'])
+        ->name('game.madrid.restaurant.media');
     Route::post('/spelen/madrid/restaurant/transcriptie', SpeechTranscriptionController::class)
         ->middleware(['entitled:trial_week', 'throttle:speech-transcriptions'])
         ->name('game.madrid.restaurant.transcription');
@@ -177,8 +193,16 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/spelen/madrid/gezondheid/content', EntitledConversationController::class)
         ->defaults('scenarioSlug', 'consulta-elena')
         ->defaults('requiredEntitlement', 'trial_week')
+        ->defaults('mediaRouteName', 'game.madrid.health.media')
         ->middleware(['entitled:trial_week', 'throttle:120,1'])
         ->name('game.madrid.health.content');
+    Route::get('/spelen/madrid/gezondheid/media/{version}/{role}', EntitledConversationMediaController::class)
+        ->defaults('scenarioSlug', 'consulta-elena')
+        ->defaults('requiredEntitlement', 'trial_week')
+        ->whereNumber('version')
+        ->where('role', '[a-z0-9_]+')
+        ->middleware(['entitled:trial_week', 'throttle:120,1'])
+        ->name('game.madrid.health.media');
     Route::post('/spelen/madrid/gezondheid/transcriptie', SpeechTranscriptionController::class)
         ->middleware(['entitled:trial_week', 'throttle:speech-transcriptions'])
         ->name('game.madrid.health.transcription');

@@ -20,6 +20,7 @@ final class BetaOperationsSnapshot
      *   checks: list<array{key: string, label: string, ready: bool, detail: string, action: string}>,
      *   ready_count: int,
      *   check_count: int,
+     *   content_items: list<array<string, mixed>>,
      *   incidents: array{past_due: int, paused: int, overdue_emails: int, exhausted_emails: int},
      *   scheduler_last_seen_at: ?CarbonImmutable
      * }
@@ -28,6 +29,9 @@ final class BetaOperationsSnapshot
     {
         $runtimeItems = $this->runtimeReadiness->items();
         $runtimeReadyCount = collect($runtimeItems)->where('ready', true)->count();
+        $trialItems = collect($runtimeItems)->whereNotNull('day');
+        $trialReadyCount = $trialItems->where('ready', true)->count();
+        $worldReady = (bool) data_get(collect($runtimeItems)->firstWhere('day', null), 'ready', false);
         $overdueEmails = BillingEmailDelivery::query()
             ->whereNull('sent_at')
             ->whereNull('cancelled_at')
@@ -49,9 +53,9 @@ final class BetaOperationsSnapshot
             ),
             $this->check(
                 'content',
-                'Speelcontent gepubliceerd',
+                'Proefweekcontent gepubliceerd',
                 $runtimeReadyCount === count($runtimeItems) && $runtimeItems !== [],
-                "{$runtimeReadyCount}/".count($runtimeItems).' vereiste runtimecontracten zijn speelbaar.',
+                "{$trialReadyCount}/{$trialItems->count()} proefweekdagen speelbaar; Madrid-wereld ".($worldReady ? 'gereed.' : 'nog niet gereed.'),
                 'Review en publiceer de ontbrekende content of media in de Content Studio.',
             ),
             $this->check(
@@ -97,6 +101,7 @@ final class BetaOperationsSnapshot
             'checks' => $checks,
             'ready_count' => collect($checks)->where('ready', true)->count(),
             'check_count' => count($checks),
+            'content_items' => $runtimeItems,
             'incidents' => [
                 'past_due' => Subscription::query()->where('status', SubscriptionStatus::PastDue)->count(),
                 'paused' => Subscription::query()->where('status', SubscriptionStatus::Paused)->count(),

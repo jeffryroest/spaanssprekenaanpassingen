@@ -55,9 +55,9 @@ class DemoContentInstallerTest extends TestCase
 
         $this->assertDatabaseCount('content_nodes', 7);
         $this->assertDatabaseCount('content_revisions', 7);
-        $this->assertDatabaseCount('media_assets', 5);
-        $this->assertDatabaseCount('content_media', 7);
-        $this->assertDatabaseCount('audit_logs', 12);
+        $this->assertDatabaseCount('media_assets', 11);
+        $this->assertDatabaseCount('content_media', 13);
+        $this->assertDatabaseCount('audit_logs', 18);
         $this->assertSame(7, ContentNode::query()->where('status', ContentStatus::Draft->value)->count());
 
         foreach (['madrid', 'la-espiga-lucia', 'taxi-diego', 'restaurant-el-reloj', 'consulta-elena', 'estacion-mateo', 'madrid-final-lucia'] as $slug) {
@@ -70,9 +70,9 @@ class DemoContentInstallerTest extends TestCase
 
         $this->assertDatabaseCount('content_nodes', 7);
         $this->assertDatabaseCount('content_revisions', 7);
-        $this->assertDatabaseCount('media_assets', 5);
-        $this->assertDatabaseCount('content_media', 7);
-        $this->assertDatabaseCount('audit_logs', 12);
+        $this->assertDatabaseCount('media_assets', 11);
+        $this->assertDatabaseCount('content_media', 13);
+        $this->assertDatabaseCount('audit_logs', 18);
     }
 
     public function test_installer_safely_upgrades_an_untouched_older_madrid_demo_with_visual_media(): void
@@ -101,7 +101,7 @@ class DemoContentInstallerTest extends TestCase
             $madrid->revisions()->where('version', 2)->firstOrFail()->mediaAssets()->get()->pluck('pivot.role')->all(),
         );
         $this->assertDatabaseCount('content_nodes', 7);
-        $this->assertDatabaseCount('media_assets', 5);
+        $this->assertDatabaseCount('media_assets', 11);
     }
 
     public function test_installer_never_overwrites_existing_edited_content(): void
@@ -187,8 +187,8 @@ class DemoContentInstallerTest extends TestCase
 
         $this->assertDatabaseCount('content_nodes', 7);
         $this->assertDatabaseCount('content_revisions', 9);
-        $this->assertDatabaseCount('media_assets', 5);
-        $this->assertDatabaseCount('content_media', 7);
+        $this->assertDatabaseCount('media_assets', 11);
+        $this->assertDatabaseCount('content_media', 13);
 
         foreach ([
             'madrid' => 'madrid_hub',

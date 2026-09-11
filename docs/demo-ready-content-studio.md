@@ -53,7 +53,7 @@ Het pakket bevat:
 - Estación del Centro met Mateo.
 - slotmissie in La Espiga met Lucía en structureel NPC-geheugen.
 
-Vanaf pakket `2026.09.1` bevat het pakket zeven conceptrecords en vijf toegankelijke, rechtenbeschreven spelassets: de Madrid-wereld, het interieur van La Espiga, Lucía met drie reactiestaten, Estación del Centro en Mateo met drie reactiestaten. De finale hergebruikt bewust de gereviewde La Espiga- en Lucía-assets. Een ongewijzigd ouder Madrid- of La Espiga-democoncept zonder media krijgt veilig een nieuwe conceptrevisie. Nieuwe starters worden als afzonderlijke concepten toegevoegd; eigen tekst- of mediakeuzes veroorzaken altijd een conflict en worden nooit overschreven.
+Vanaf pakket `2026.09.2` bevat het pakket zeven contentrecords en elf toegankelijke, rechtenbeschreven spelassets. Naast Madrid, La Espiga, Lucía, Estación del Centro en Mateo hebben nu ook de taxi met Diego, Café El Reloj met Carmen en Consulta La Luz met Elena een eigen scèneachtergrond en een karakterblad met drie reactiestaten. De finale hergebruikt bewust de gereviewde La Espiga- en Lucía-assets. Een ongewijzigd ouder democoncept zonder de verwachte media krijgt veilig een nieuwe conceptrevisie. Nieuwe starters worden als afzonderlijke concepten toegevoegd; eigen tekst- of mediakeuzes veroorzaken altijd een conflict en worden nooit overschreven.
 
 Het commando is veilig om opnieuw uit te voeren. Exact gelijke records blijven ongemoeid. Zodra een bestaand record inhoudelijk afwijkt, stopt de volledige installatie met een conflict en wordt niets overschreven.
 
@@ -93,10 +93,21 @@ Installatie maakt uitsluitend conceptrevisies. Daarna blijven de normale stappen
 
 Er wordt geen proefabonnement, testspeler, prijs of recht aangemaakt. Toegang tot taxi, restaurant, gezondheid, station en finale blijft via het bestaande `trial_week`-recht lopen.
 
+Voor de gesloten bèta kan een beheerder de volledige set eerst zonder wijzigingen controleren en daarna, met een andere bevoegde reviewer, in één versiegebonden productierelease uitvoeren:
+
+```bash
+php artisan game:publish-trial-week-content --actor=uitgever@example.com --reviewer=reviewer@example.com --dry-run
+php artisan game:publish-trial-week-content --actor=uitgever@example.com --reviewer=reviewer@example.com --confirm=PUBLICEREN
+```
+
+Het commando gebruikt dezelfde reviewacties, preflight, auditlogs en releasegrenzen als de Content Studio. De reviewer moet een ander account zijn; bestaande afwijkende content, een onveilige status of ontbrekende rechten blokkeert de hele handeling. Een droge controle schrijft niets. De dynamische dag 4 wordt niet als los contentrecord gepubliceerd: de persoonlijke kaartenbak wordt veilig samengesteld uit de werkelijk voltooide, nog gepubliceerde dagen 1 tot en met 3.
+
+Een exact door dit pakket beheerd, al gepubliceerd record uit versie `2026.09.1` zonder media kan gecontroleerd worden opgewaardeerd. Het commando maakt dan binnen dezelfde databasetransactie een nieuwe revisie, laat die onafhankelijk beoordelen en publiceert de vervanging pas bij de geslaagde totaalrelease. Afwijkende inhoud en gedeeltelijk of handmatig gekoppelde media blijven bewust een blokkade.
+
 ## Acceptatiecriteria
 
 - Een droge controle schrijft geen content of auditgebeurtenis.
-- Een lege database krijgt zeven coherente conceptrecords en vijf gedeelde gouden-route-assets.
+- Een lege database krijgt zeven coherente conceptrecords en elf gedeelde proefweekassets.
 - Een tweede installatie maakt geen duplicaten of revisies.
 - Handmatig gewijzigde, gearchiveerde of gepubliceerde afwijkende content wordt nooit overschreven.
 - Alleen een beheerder kan met een dubbele expliciete bevestiging een aantoonbaar onvolledige en nooit gepubliceerde placeholder als nieuwe conceptrevisie vervangen.

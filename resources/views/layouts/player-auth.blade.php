@@ -15,10 +15,7 @@
         <section class="player-auth-scene" aria-labelledby="auth-world-title">
             <img src="{{ asset('images/game/madrid-morning.webp') }}" alt="" width="1672" height="941">
             <div aria-hidden="true"></div>
-            <a href="{{ route('home') }}" class="world-brand">
-                <span aria-hidden="true">S</span>
-                <strong>Spaansspreken<em>.nl</em></strong>
-            </a>
+            <x-player.brand class="player-brand-on-dark" />
             <div class="player-auth-scene-copy">
                 <p>Jouw Spaanse wereld</p>
                 <h1 id="auth-world-title">Madrid onthoudt waar je bent.</h1>
@@ -33,10 +30,7 @@
 
         <section id="auth-content" class="player-auth-panel" aria-labelledby="auth-title">
             <div class="w-full max-w-md">
-                <a href="{{ route('home') }}" class="world-brand mb-10 lg:hidden">
-                    <span aria-hidden="true">S</span>
-                    <strong class="!block">Spaansspreken<em>.nl</em></strong>
-                </a>
+                <x-player.brand class="mb-10 lg:hidden" />
 
                 @yield('content')
 

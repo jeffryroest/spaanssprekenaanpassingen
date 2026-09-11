@@ -8,10 +8,10 @@
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-screen bg-[#f7f1e7] text-[#302722] antialiased">
-    <main class="mx-auto max-w-2xl px-5 py-12 sm:px-8 sm:py-20">
-        <a href="{{ route('trial-week.show') }}" class="text-sm font-bold text-[#a9472b] underline underline-offset-4">← Terug naar mijn proefweek</a>
+    <x-player.header :back-url="route('trial-week.show')" back-label="Terug naar mijn proefweek" />
 
-        <section class="mt-8 rounded-3xl border border-[#493429]/10 bg-[#fffaf0] p-6 shadow-sm sm:p-9" aria-labelledby="payment-status-title">
+    <main class="mx-auto max-w-2xl px-5 py-12 sm:px-8 sm:py-20">
+        <section class="rounded-3xl border border-[#493429]/10 bg-[#fffaf0] p-6 shadow-sm sm:p-9" aria-labelledby="payment-status-title">
             <p class="text-xs font-black uppercase tracking-[0.16em] text-[#a9472b]">Bestelling</p>
             <h1 id="payment-status-title" class="mt-3 font-serif text-4xl font-black">{{ $order->payment_status->label() }}</h1>
 

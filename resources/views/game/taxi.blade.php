@@ -6,6 +6,8 @@
     <meta name="description" content="Oefen een volledige Spaanse taxirit met Diego in Madrid.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>En taxi · Spaansspreken.nl</title>
+    <link rel="preload" href="{{ asset('images/game/madrid-taxi-interior.webp') }}" as="image" type="image/webp">
+    <link rel="preload" href="{{ asset('images/game/diego-taxi-expressions.webp') }}" as="image" type="image/webp">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bakery-body taxi-body">
@@ -27,20 +29,14 @@
         data-completion-url="{{ route('game.madrid.taxi.complete') }}"
         data-progress-url="{{ route('player.progress') }}"
     >
-        <header class="bakery-topbar">
-            <a href="{{ route('trial-week.show') }}" class="bakery-back-link">
-                <span aria-hidden="true">←</span>
-                Terug naar de proefweek
-            </a>
-
+        <x-player.header :back-url="route('trial-week.show')" back-label="Terug naar de proefweek">
             <div class="bakery-mission-meta">
-                <a href="{{ route('player.progress') }}">Mijn voortgang</a>
                 <span class="bakery-mode-chip">Spreken + tekst</span>
                 <span data-level-chip>Niveau kiezen</span>
                 <button type="button" data-translation-toggle aria-pressed="false">Nederlandse vertaling</button>
                 <button type="button" data-restart-dialogue>Opnieuw beginnen</button>
             </div>
-        </header>
+        </x-player.header>
 
         <main id="dialogue-content" class="bakery-main">
             <section class="bakery-heading" aria-labelledby="taxi-title">
@@ -65,17 +61,23 @@
 
             <section class="bakery-stage" data-dialogue-stage hidden>
                 <aside class="bakery-scene taxi-scene" aria-label="Een gele taxi rijdt door Madrid">
-                    <div class="taxi-sky" aria-hidden="true"></div>
-                    <div class="taxi-city" aria-hidden="true">
+                    <div class="bakery-scene-art runtime-scene-art" aria-hidden="true"></div>
+                    <div class="taxi-sky runtime-scene-fallback" aria-hidden="true"></div>
+                    <div class="taxi-city runtime-scene-fallback" aria-hidden="true">
                         <span></span><span></span><span></span><span></span>
                     </div>
-                    <div class="taxi-road" aria-hidden="true"></div>
-                    <div class="taxi-car" aria-hidden="true">
+                    <div class="taxi-road runtime-scene-fallback" aria-hidden="true"></div>
+                    <div class="taxi-car runtime-scene-fallback" aria-hidden="true">
                         <span class="taxi-sign">TAXI</span>
                         <span class="taxi-window taxi-window-front"></span>
                         <span class="taxi-window taxi-window-back"></span>
                         <span class="taxi-wheel taxi-wheel-front"></span>
                         <span class="taxi-wheel taxi-wheel-back"></span>
+                    </div>
+
+                    <div class="bakery-lucia-frame runtime-npc-frame" data-npc-state="listening" aria-hidden="true">
+                        <img src="{{ asset('images/game/diego-taxi-expressions.webp') }}" width="2172" height="724" alt="" data-npc-expression-sheet>
+                        <span class="bakery-lucia-reaction" data-npc-reaction>Diego luistert</span>
                     </div>
 
                     <div class="bakery-npc-card taxi-npc-card">

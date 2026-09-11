@@ -11,25 +11,7 @@
 <body class="world-home-body">
     <a href="#main-content" class="hub-skip-link">Direct naar de eerste missie</a>
 
-    <header class="world-home-nav">
-        <a href="{{ route('home') }}" class="world-brand" aria-label="Spaansspreken.nl startpagina">
-            <span aria-hidden="true">S</span>
-            <strong>Spaansspreken<em>.nl</em></strong>
-        </a>
-        <nav aria-label="Account en voortgang">
-            @auth
-                <a href="{{ route('player.progress') }}">Mijn voortgang</a>
-                <a href="{{ route('trial-week.show') }}">Mijn proefweek</a>
-                <a href="{{ route('player.account') }}">Account</a>
-                @can('content-studio.view')
-                    <a href="{{ route('content-studio.dashboard') }}">Content Studio</a>
-                @endcan
-            @else
-                <a href="{{ route('login') }}">Inloggen</a>
-                <a href="{{ route('register') }}">Aanmelden</a>
-            @endauth
-        </nav>
-    </header>
+    <x-player.header />
 
     @if (session('success'))
         <div class="world-status-banner" role="status">

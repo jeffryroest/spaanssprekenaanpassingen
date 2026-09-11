@@ -8,10 +8,10 @@
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-screen bg-stone-950 text-stone-100 antialiased">
-    <main class="mx-auto max-w-3xl px-5 py-12 sm:py-20">
-        <a href="{{ route('game.madrid') }}" class="text-sm font-semibold text-orange-300 underline underline-offset-4">← Terug naar Madrid</a>
+    <x-player.header :back-url="route('game.madrid')" back-label="Terug naar Madrid" />
 
-        <p class="mt-10 text-sm font-bold uppercase tracking-[0.18em] text-orange-300">Spaansspreken.nl</p>
+    <main class="mx-auto max-w-3xl px-5 py-12 sm:py-20">
+        <p class="text-sm font-bold uppercase tracking-[0.18em] text-orange-300">Spaansspreken.nl</p>
         <h1 class="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl">Privacy bij spelen en betalen</h1>
         <p class="mt-5 text-lg leading-8 text-stone-300">Deze pagina beschrijft welke gegevens de huidige speelbare versie technisch verwerkt.</p>
 

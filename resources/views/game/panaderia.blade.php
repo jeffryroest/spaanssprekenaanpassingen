@@ -30,24 +30,14 @@
         data-completion-url="{{ route('game.madrid.panaderia.complete') }}"
         data-progress-url="{{ route('player.progress') }}"
     >
-        <header class="bakery-topbar">
-            <a href="{{ route('game.madrid') }}" class="bakery-back-link">
-                <span aria-hidden="true">←</span>
-                Terug naar Madrid
-            </a>
-
+        <x-player.header :back-url="route('game.madrid')" back-label="Terug naar Madrid">
             <div class="bakery-mission-meta">
-                @auth
-                    <a href="{{ route('player.progress') }}">Mijn voortgang</a>
-                @else
-                    <a href="{{ route('login', ['redirect' => route('game.madrid.panaderia', absolute: false)]) }}">Inloggen</a>
-                @endauth
                 <span class="bakery-mode-chip">Spreken + tekst</span>
                 <span data-level-chip>Niveau kiezen</span>
                 <button type="button" data-translation-toggle aria-pressed="false">Nederlandse vertaling</button>
                 <button type="button" data-restart-dialogue>Opnieuw beginnen</button>
             </div>
-        </header>
+        </x-player.header>
 
         <main id="dialogue-content" class="bakery-main">
             <section class="bakery-heading" aria-labelledby="bakery-title">

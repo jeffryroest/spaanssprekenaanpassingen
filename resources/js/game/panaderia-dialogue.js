@@ -113,12 +113,14 @@ if (dialogueRoot) {
 
         if (scene?.kind === 'image' && typeof scene.url === 'string') {
             dialogueRoot.style.setProperty('--bakery-scene-image', `url("${scene.url}")`);
+            dialogueRoot.dataset.runtimeScene = 'true';
         }
 
         if (expressions?.kind === 'image' && typeof expressions.url === 'string') {
             elements.npcSheets.forEach((image) => {
                 image.src = expressions.url;
             });
+            dialogueRoot.dataset.runtimeCharacter = 'true';
         }
     };
 

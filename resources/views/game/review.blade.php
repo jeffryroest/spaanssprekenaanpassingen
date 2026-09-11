@@ -11,18 +11,16 @@
 <body class="review-body">
     <a href="#review-content" class="hub-skip-link">Ga naar je herhaling</a>
 
+    <x-player.header :back-url="route('trial-week.show')" back-label="Terug naar de proefweek">
+        <div class="review-day-mark"><span>4</span><strong>Mi repaso</strong></div>
+    </x-player.header>
+
     <main
         id="review-content"
         class="review-shell"
         data-personal-review
         data-completion-url="{{ route('game.madrid.review.complete') }}"
     >
-        <header class="review-topbar">
-            <a href="{{ route('trial-week.show') }}" class="bakery-back-link"><span aria-hidden="true">←</span>Terug naar de proefweek</a>
-            <div class="review-day-mark"><span>4</span><strong>Mi repaso</strong></div>
-            <a href="{{ route('player.progress') }}" class="bakery-back-link">Mijn voortgang</a>
-        </header>
-
         <section class="review-hero" aria-labelledby="review-title">
             <div>
                 <p class="bakery-eyebrow">Dag 4 · persoonlijke herhaling</p>

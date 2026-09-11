@@ -390,11 +390,11 @@
             linear-gradient(0deg, rgb(13 31 31 / 72%) 0%, transparent 58%);
     }
 
-    .player-auth-scene .world-brand {
+    .player-auth-scene .player-brand {
         @apply relative z-10 w-fit text-white focus:ring-offset-[#17313b];
     }
 
-    .player-auth-scene .world-brand strong {
+    .player-auth-scene .player-brand strong {
         @apply block;
     }
 
@@ -1368,6 +1368,37 @@
     .bakery-scene-art {
         @apply absolute inset-0 -z-20 bg-cover bg-center;
         background-image: var(--bakery-scene-image, url('/images/game/la-espiga-interior.webp'));
+    }
+
+    .runtime-scene-art,
+    .runtime-npc-frame {
+        display: none;
+    }
+
+    .bakery-app[data-runtime-scene='true'] .runtime-scene-art,
+    .bakery-app[data-runtime-character='true'] .runtime-npc-frame {
+        display: block;
+    }
+
+    .taxi-body .runtime-scene-art {
+        background-image: var(--bakery-scene-image, url('/images/game/madrid-taxi-interior.webp'));
+    }
+
+    .restaurant-body .runtime-scene-art {
+        background-image: var(--bakery-scene-image, url('/images/game/cafe-el-reloj-interior.webp'));
+    }
+
+    .health-body .runtime-scene-art {
+        background-image: var(--bakery-scene-image, url('/images/game/consulta-la-luz-interior.webp'));
+    }
+
+    .runtime-scene-fallback {
+        transition: opacity 240ms ease;
+    }
+
+    .bakery-app[data-runtime-scene='true'] .runtime-scene-fallback {
+        opacity: 0;
+        pointer-events: none;
     }
 
     .bakery-scene-light {
@@ -2441,6 +2472,96 @@
 @keyframes bakery-breathe {
     0%, 100% { transform: translateX(-50%) scaleY(1); }
     50% { transform: translateX(-50%) scaleY(1.012); }
+}
+
+@layer components {
+    .player-site-header {
+        @apply sticky top-0 z-50 border-b border-[#493429]/10 bg-[#fffaf0]/95 text-[#302722] shadow-sm backdrop-blur;
+    }
+
+    .player-site-header-main {
+        @apply mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8;
+    }
+
+    .player-brand {
+        @apply inline-flex shrink-0 items-center gap-2.5 rounded-xl font-black tracking-tight text-[#302722] focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2;
+    }
+
+    .player-brand-mark {
+        @apply grid size-10 place-items-center rounded-xl bg-[#172c36] font-serif text-lg text-[#f5b94f] shadow-sm;
+    }
+
+    .player-brand strong {
+        @apply text-base sm:text-lg;
+    }
+
+    .player-brand strong > span {
+        @apply text-[#bd5a34];
+    }
+
+    .player-brand-on-dark {
+        @apply text-white focus:ring-offset-[#172c36];
+    }
+
+    .player-nav {
+        @apply items-center gap-1;
+    }
+
+    .player-nav-desktop {
+        @apply hidden lg:flex;
+    }
+
+    .player-nav form {
+        @apply contents;
+    }
+
+    .player-nav-link {
+        @apply inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-xl px-3.5 py-2 text-sm font-bold text-[#60483c] transition hover:bg-[#f4e7d6] hover:text-[#302722] focus:outline-none focus:ring-2 focus:ring-[#bd5a34] focus:ring-offset-2;
+    }
+
+    .player-nav-link-active {
+        @apply bg-[#172c36] text-white shadow-sm hover:bg-[#213c48] hover:text-white;
+    }
+
+    .player-nav-link-studio {
+        @apply text-[#315d47];
+    }
+
+    .player-nav-logout {
+        @apply cursor-pointer text-[#8a3838];
+    }
+
+    .player-nav-menu {
+        @apply relative lg:hidden;
+    }
+
+    .player-nav-menu > summary {
+        @apply flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-xl border border-[#493429]/15 bg-white px-3.5 text-sm font-black text-[#493a32] focus:outline-none focus:ring-2 focus:ring-[#bd5a34];
+    }
+
+    .player-nav-menu > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .player-nav-mobile {
+        @apply absolute right-0 top-[calc(100%+0.5rem)] z-50 flex w-60 flex-col items-stretch rounded-2xl border border-[#493429]/10 bg-[#fffaf0] p-2 shadow-2xl;
+    }
+
+    .player-nav-mobile .player-nav-link {
+        @apply w-full justify-start;
+    }
+
+    .player-context-bar {
+        @apply mx-auto flex max-w-7xl flex-col gap-3 border-t border-[#493429]/10 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8;
+    }
+
+    .player-context-back {
+        @apply inline-flex min-h-11 shrink-0 items-center gap-2 self-start rounded-xl px-2 text-sm font-black text-[#7b4937] hover:bg-[#f4e7d6] focus:outline-none focus:ring-2 focus:ring-[#bd5a34];
+    }
+
+    .player-context-actions {
+        @apply flex flex-wrap items-center gap-2;
+    }
 }
 
 @keyframes bakery-character-arrive {

@@ -66,7 +66,7 @@ Fase 3C1 voegt via dezelfde migratiestap `user_practice_items` toe. Deze tabel b
 
 Vanaf fase 3B4 worden privé-redactiemedia standaard onder `storage/app/private/content-media` opgeslagen. Neem deze map samen met de database op in de Ploi-back-up en controleer dat de sitegebruiker er kan schrijven. Gebruik alleen een andere `CONTENT_STUDIO_MEDIA_DISK` nadat die Laravel-disk duurzaam en privé is ingericht.
 
-Vanaf fase 3B6 levert het demopakket vijf gouden-route-assets mee: Madrid, La Espiga, Lucía, Estación del Centro en Mateo. `game:install-demo-content` installeert ze op diezelfde privé-disk en maakt de stationsmissie als concept aan. Voer het commando na deployment bewust als bestaande beheerder uit, controleer de conceptrevisies en media in de preview en publiceer ze daarna via de normale releaseflow. De installatie reviewt of publiceert niets automatisch.
+Vanaf fase 4B3 levert pakket `2026.09.2` elf proefweekassets mee: de wereldillustratie en voor iedere vaste gespreksdag een scène en karakterblad, waarbij de finale de gereviewde La Espiga- en Lucía-media hergebruikt. `game:install-demo-content` installeert ze op dezelfde privé-disk. De installatie reviewt of publiceert niets automatisch.
 
 Wanneer de droge controle uitsluitend oude, onvolledige Madrid- of La Espiga-placeholders zonder `scene`, media en releasekoppeling meldt, kan een beheerder ze gecontroleerd vervangen:
 
@@ -77,13 +77,20 @@ php artisan game:install-demo-content --actor=beheerder@example.com --replace-ex
 
 Gebruik deze optie nooit als vervanging voor inhoudelijke vergelijking. De commandogrens weigert zelf alle werkelijk speelbare, gepubliceerde, gearchiveerde of releasegebonden content en bewaart de oude placeholder als onveranderlijke revisie.
 
-Controleer na een fase-3B6-deploy eerst zonder mutaties welke pakketonderdelen ontbreken:
+Controleer na een fase-4B3-deploy eerst zonder mutaties welke pakketonderdelen ontbreken:
 
 ```bash
 php artisan game:install-demo-content --actor=beheerder@example.com --dry-run
 ```
 
-Voer het commando daarna zonder `--dry-run` uit wanneer de stationsstarter als `create` wordt gemeld. De route `/spelen/madrid/station` wordt pas speelbaar nadat `estacion-mateo` inhoudelijk is gecontroleerd, gereviewd en via een expliciete productierelease is gepubliceerd.
+Gebruik voor de bèta-vrijgave bij voorkeur de volledige vier-ogencontrole. De uitgever moet beheerder zijn; de reviewer is een ander account met minimaal de rol Taalreviewer:
+
+```bash
+php artisan game:publish-trial-week-content --actor=uitgever@example.com --reviewer=reviewer@example.com --dry-run
+php artisan game:publish-trial-week-content --actor=uitgever@example.com --reviewer=reviewer@example.com --confirm=PUBLICEREN
+```
+
+Het tweede commando installeert alleen ontbrekende, ongewijzigde pakketonderdelen, registreert de reviewbeslissingen, maakt één versiegebonden productierelease en voert de bestaande preflight uit. Conflicten of onveilige workflowstatussen stoppen de volledige handeling. Voeg dit commando daarom niet toe aan het algemene deployscript.
 
 Voer bij de eerste deployment vóór `php artisan migrate --force` eenmaal uit:
 

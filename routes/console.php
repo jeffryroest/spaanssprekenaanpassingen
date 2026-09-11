@@ -3,6 +3,7 @@
 use App\Actions\ContentStudio\AssignContentRole;
 use App\Billing\MollieMonthlyOffer;
 use App\ContentStudio\DemoContentInstaller;
+use App\ContentStudio\TrialWeekContentRelease;
 use App\Enums\BillingInterval;
 use App\Enums\ContentPermission;
 use App\Enums\ContentRole;
@@ -138,6 +139,87 @@ Artisan::command('game:install-demo-content
 
     return Command::SUCCESS;
 })->purpose('Installeer het versiegebonden speelbare demopakket als veilige conceptcontent');
+
+Artisan::command('game:publish-trial-week-content
+    {--actor= : E-mailadres van de bestaande Content Studio-uitgever}
+    {--reviewer= : E-mailadres van een onafhankelijke Content Studio-reviewer}
+    {--dry-run : Controleer de volledige workflow zonder iets te wijzigen}
+    {--confirm= : Vereist PUBLICEREN voor een echte productierelease}', function () {
+    $publisherEmail = Str::lower(trim((string) $this->option('actor')));
+    $reviewerEmail = Str::lower(trim((string) $this->option('reviewer')));
+
+    if ($publisherEmail === '' || $reviewerEmail === '') {
+        $this->error('Geef zowel --actor=uitgever@example.com als --reviewer=reviewer@example.com mee.');
+
+        return Command::FAILURE;
+    }
+
+    $publisher = User::query()->where('email', $publisherEmail)->first();
+    $reviewer = User::query()->where('email', $reviewerEmail)->first();
+
+    if ($publisher === null || $reviewer === null) {
+        $this->error('De opgegeven uitgever of reviewer bestaat niet. Provision beide accounts eerst bewust.');
+
+        return Command::FAILURE;
+    }
+
+    try {
+        $service = app(TrialWeekContentRelease::class);
+        $plan = $service->plan($publisher, $reviewer);
+    } catch (Throwable $exception) {
+        $this->error($exception->getMessage());
+
+        return Command::FAILURE;
+    }
+
+    $this->info('Proefweekpakket '.$plan['package_version'].($this->option('dry-run') ? ' · controlemodus' : ''));
+    $this->table(
+        ['Sleutel', 'Slug', 'Huidige status', 'Vervolg', 'Blokkade'],
+        array_map(static fn (array $item): array => [
+            $item['key'],
+            $item['slug'],
+            $item['status'],
+            $item['action'],
+            $item['blocker'] ?? '—',
+        ], $plan['items']),
+    );
+
+    if (! $plan['ready']) {
+        $this->error('Er is niets gewijzigd. Los de getoonde blokkades eerst inhoudelijk op.');
+
+        return Command::FAILURE;
+    }
+
+    if ($this->option('dry-run')) {
+        $this->comment('Controle voltooid; content, reviews, releases en media zijn niet gewijzigd.');
+
+        return Command::SUCCESS;
+    }
+
+    if ($this->option('confirm') !== 'PUBLICEREN') {
+        $this->error('Bevestig de productierelease expliciet met --confirm=PUBLICEREN. Er is niets gewijzigd.');
+
+        return Command::FAILURE;
+    }
+
+    try {
+        $result = $service->publish($publisher, $reviewer);
+    } catch (Throwable $exception) {
+        $this->error($exception->getMessage());
+
+        return Command::FAILURE;
+    }
+
+    if ($result['release'] === null) {
+        $this->info("Alle {$result['already_published_count']} contentonderdelen stonden al als exacte pakketversie op productie.");
+
+        return Command::SUCCESS;
+    }
+
+    $this->info("Productierelease #{$result['release']->getKey()} is uitgevoerd: {$result['published_count']} gepubliceerd, {$result['already_published_count']} al actueel.");
+
+    return Command::SUCCESS;
+})->purpose('Controleer, review en publiceer het complete zevendaagse proefweekpakket met vier-ogencontrole');
 
 Artisan::command('subscriptions:install-mollie-monthly {--dry-run : Controleer zonder de database te wijzigen}', function () {
     $offer = app(MollieMonthlyOffer::class);
