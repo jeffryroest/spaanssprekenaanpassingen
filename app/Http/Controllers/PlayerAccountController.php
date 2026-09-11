@@ -20,6 +20,7 @@ final class PlayerAccountController extends Controller
 
         return response()->view('player.account', [
             'access' => $entitlements->snapshotFor($user)->toArray(),
+            'latestDeletionRequest' => $user->deletionRequests()->latest('id')->first(),
             'latestOrder' => SubscriptionOrder::query()
                 ->where('user_id', $user->getKey())
                 ->latest('id')

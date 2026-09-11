@@ -9,7 +9,7 @@
     "build:verify": "npm run build && node scripts/verify-built-assets.mjs",
     "smoke:live": "node scripts/smoke-live-frontend.mjs",
     "dev": "vite",
-    "validate": "npm run validate:foundation && npm run validate:laravel && npm run validate:api && npm run validate:quality && npm run validate:hub && npm run validate:panaderia && npm run validate:speech && npm run validate:feedback && npm run validate:progress && npm run validate:access && npm run validate:taxi && npm run validate:playable-frontend && npm run validate:restaurant && npm run validate:health && npm run validate:demo-ready && npm run validate:content-builder && npm run validate:golden-route && npm run validate:activation && npm run validate:station && npm run validate:review && npm run validate:final && npm run validate:mollie && npm run validate:beta && npm run validate:player-auth-account",
+    "validate": "npm run validate:foundation && npm run validate:laravel && npm run validate:api && npm run validate:quality && npm run validate:hub && npm run validate:panaderia && npm run validate:speech && npm run validate:feedback && npm run validate:progress && npm run validate:access && npm run validate:taxi && npm run validate:playable-frontend && npm run validate:restaurant && npm run validate:health && npm run validate:demo-ready && npm run validate:content-builder && npm run validate:golden-route && npm run validate:activation && npm run validate:station && npm run validate:review && npm run validate:final && npm run validate:mollie && npm run validate:beta && npm run validate:player-auth-account && npm run validate:account-support",
     "validate:foundation": "node scripts/validate-foundation.mjs",
     "validate:laravel": "node scripts/validate-laravel-foundation.mjs",
     "validate:api": "node scripts/validate-public-content-api.mjs",
@@ -33,7 +33,8 @@
     "validate:final": "node scripts/validate-final-mission.mjs",
     "validate:mollie": "node scripts/validate-mollie-conversion.mjs",
     "validate:beta": "node scripts/validate-beta-readiness.mjs",
-    "validate:player-auth-account": "node scripts/validate-player-auth-account.mjs"
+    "validate:player-auth-account": "node scripts/validate-player-auth-account.mjs",
+    "validate:account-support": "node scripts/validate-account-support.mjs"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
