@@ -16,6 +16,7 @@ use App\Enums\ContentReleaseStatus;
 use App\Enums\ContentReviewAction;
 use App\Enums\ContentRole;
 use App\Enums\ContentStatus;
+use App\Models\ContentNode;
 use App\Models\ContentRelease;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -64,7 +65,7 @@ class TrialWeekContentReleaseTest extends TestCase
         $this->assertDatabaseCount('media_assets', 11);
         $this->assertDatabaseCount('content_media', 13);
         $this->assertDatabaseCount('content_reviews', 14);
-        $this->assertSame(7, \App\Models\ContentNode::query()->where('status', ContentStatus::Published->value)->count());
+        $this->assertSame(7, ContentNode::query()->where('status', ContentStatus::Published->value)->count());
         $this->assertDatabaseHas('content_releases', [
             'target_channel' => 'production',
             'status' => ContentReleaseStatus::Published->value,
