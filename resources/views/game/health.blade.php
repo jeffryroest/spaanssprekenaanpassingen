@@ -6,6 +6,8 @@
     <meta name="description" content="Oefen met een fictieve rolkaart hoe je in het Spaans een eenvoudige klacht uitlegt en om schriftelijke uitleg vraagt.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>En la consulta · Spaansspreken.nl</title>
+    <link rel="preload" href="{{ asset('images/game/consulta-la-luz-interior.webp') }}" as="image" type="image/webp">
+    <link rel="preload" href="{{ asset('images/game/elena-doctor-expressions.webp') }}" as="image" type="image/webp">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bakery-body health-body">
@@ -28,16 +30,14 @@
         data-completion-url="{{ route('game.madrid.health.complete') }}"
         data-progress-url="{{ route('player.progress') }}"
     >
-        <header class="bakery-topbar">
-            <a href="{{ route('trial-week.show') }}" class="bakery-back-link"><span aria-hidden="true">←</span>Terug naar de proefweek</a>
+        <x-player.header :back-url="route('trial-week.show')" back-label="Terug naar de proefweek">
             <div class="bakery-mission-meta">
-                <a href="{{ route('player.progress') }}">Mijn voortgang</a>
                 <span class="bakery-mode-chip">Fictief rollenspel</span>
                 <span data-level-chip>Niveau kiezen</span>
                 <button type="button" data-translation-toggle aria-pressed="false">Nederlandse vertaling</button>
                 <button type="button" data-restart-dialogue>Opnieuw beginnen</button>
             </div>
-        </header>
+        </x-player.header>
 
         <main id="dialogue-content" class="bakery-main">
             <section class="bakery-heading" aria-labelledby="health-title">
@@ -72,14 +72,19 @@
 
             <section class="bakery-stage" data-dialogue-stage hidden>
                 <aside class="bakery-scene health-scene" aria-label="Een rustige, moderne spreekkamer in Madrid">
-                    <div class="health-wall" aria-hidden="true"></div>
-                    <div class="health-window" aria-hidden="true"><span></span></div>
-                    <div class="health-poster" aria-hidden="true"><span>+</span><small>CONSULTA</small></div>
-                    <div class="health-plant" aria-hidden="true"><i></i><i></i><i></i><span></span></div>
-                    <div class="health-desk" aria-hidden="true">
+                    <div class="bakery-scene-art runtime-scene-art" aria-hidden="true"></div>
+                    <div class="health-wall runtime-scene-fallback" aria-hidden="true"></div>
+                    <div class="health-window runtime-scene-fallback" aria-hidden="true"><span></span></div>
+                    <div class="health-poster runtime-scene-fallback" aria-hidden="true"><span>+</span><small>CONSULTA</small></div>
+                    <div class="health-plant runtime-scene-fallback" aria-hidden="true"><i></i><i></i><i></i><span></span></div>
+                    <div class="health-desk runtime-scene-fallback" aria-hidden="true">
                         <span class="health-clipboard"></span>
                         <span class="health-lamp"></span>
                         <span class="health-pencil"></span>
+                    </div>
+                    <div class="bakery-lucia-frame runtime-npc-frame" data-npc-state="listening" aria-hidden="true">
+                        <img src="{{ asset('images/game/elena-doctor-expressions.webp') }}" width="2172" height="724" alt="" data-npc-expression-sheet>
+                        <span class="bakery-lucia-reaction" data-npc-reaction>Elena luistert</span>
                     </div>
                     <div class="bakery-npc-card health-npc-card">
                         <span class="bakery-npc-avatar health-avatar" aria-hidden="true">E</span>

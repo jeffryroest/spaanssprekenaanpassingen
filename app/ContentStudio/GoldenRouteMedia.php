@@ -40,6 +40,48 @@ final class GoldenRouteMedia
                 'description' => 'Karakterblad met luisteren, aanmoedigen en het vieren van de geslaagde bestelling.',
                 'alt_text' => 'Lucía, de bakker, luistert aandachtig, moedigt de speler aan en overhandigt daarna een broodzak.',
             ],
+            'madrid_taxi_interior' => [
+                'path' => resource_path('game-assets/golden-route/madrid-taxi-interior.webp'),
+                'original_name' => 'madrid-taxi-interior.webp',
+                'title' => 'Taxirit door Madrid',
+                'description' => 'Brede scèneachtergrond voor het dag-2-gesprek met Diego.',
+                'alt_text' => 'Uitzicht vanuit een taxi op een zonnige boulevard in Madrid, met het dashboard en de binnenspiegel op de voorgrond.',
+            ],
+            'diego_taxi_expressions' => [
+                'path' => resource_path('game-assets/golden-route/diego-taxi-expressions.webp'),
+                'original_name' => 'diego-taxi-expressions.webp',
+                'title' => 'Diego · drie reacties',
+                'description' => 'Karakterblad met luisteren, aanmoedigen en het vieren van de geslaagde taxirit.',
+                'alt_text' => 'Taxichauffeur Diego luistert aandachtig, moedigt de speler aan en viert daarna de geslaagde rit.',
+            ],
+            'cafe_el_reloj_interior' => [
+                'path' => resource_path('game-assets/golden-route/cafe-el-reloj-interior.webp'),
+                'original_name' => 'cafe-el-reloj-interior.webp',
+                'title' => 'Interieur van Café El Reloj',
+                'description' => 'Brede scèneachtergrond voor het dag-3-gesprek met Carmen.',
+                'alt_text' => 'Een warm verlicht Madrileens restaurant met gedekte tafels, blauwe tegels en een houten bar.',
+            ],
+            'carmen_restaurant_expressions' => [
+                'path' => resource_path('game-assets/golden-route/carmen-restaurant-expressions.webp'),
+                'original_name' => 'carmen-restaurant-expressions.webp',
+                'title' => 'Carmen · drie reacties',
+                'description' => 'Karakterblad met luisteren, aanmoedigen en het vieren van het geslaagde restaurantgesprek.',
+                'alt_text' => 'Serveerster Carmen luistert aandachtig, moedigt de speler aan en presenteert daarna glimlachend de rekeningmap.',
+            ],
+            'consulta_la_luz_interior' => [
+                'path' => resource_path('game-assets/golden-route/consulta-la-luz-interior.webp'),
+                'original_name' => 'consulta-la-luz-interior.webp',
+                'title' => 'Spreekkamer van Consulta La Luz',
+                'description' => 'Brede scèneachtergrond voor het fictieve dag-5-rollenspel met Elena.',
+                'alt_text' => 'Een rustige lichte spreekkamer in Madrid met een houten bureau, twee groene stoelen en een onderzoeksbank.',
+            ],
+            'elena_doctor_expressions' => [
+                'path' => resource_path('game-assets/golden-route/elena-doctor-expressions.webp'),
+                'original_name' => 'elena-doctor-expressions.webp',
+                'title' => 'Elena · drie reacties',
+                'description' => 'Karakterblad met luisteren, geruststellen en het vieren van het geslaagde taalrollenspel.',
+                'alt_text' => 'Arts Elena luistert aandachtig, stelt de speler gerust en viert daarna het geslaagde fictieve taalrollenspel.',
+            ],
             'madrid_station_hall' => [
                 'path' => resource_path('game-assets/golden-route/madrid-station-hall.webp'),
                 'original_name' => 'madrid-station-hall.webp',
@@ -65,6 +107,18 @@ final class GoldenRouteMedia
             'panaderia' => [
                 'scene_background' => 'la_espiga_interior',
                 'npc_expression_sheet' => 'lucia_expressions',
+            ],
+            'taxi' => [
+                'scene_background' => 'madrid_taxi_interior',
+                'npc_expression_sheet' => 'diego_taxi_expressions',
+            ],
+            'restaurant' => [
+                'scene_background' => 'cafe_el_reloj_interior',
+                'npc_expression_sheet' => 'carmen_restaurant_expressions',
+            ],
+            'health' => [
+                'scene_background' => 'consulta_la_luz_interior',
+                'npc_expression_sheet' => 'elena_doctor_expressions',
             ],
             'final' => [
                 'scene_background' => 'la_espiga_interior',

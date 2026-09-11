@@ -58,8 +58,9 @@
 
 - **4A — bèta-gereedheid (gerealiseerd):** beheerder-only cohortmeting zonder nieuwe tracking of vrije leerdata, operationele productiechecks, scheduler-heartbeat en compatibele browserbeveiligingsheaders.
 - **4B1 — spelersentree en accountbasis (gerealiseerd):** Nederlandstalige aanmeld- en inlogroutes, veilig wachtwoordherstel via de bestaande mailer, spelersgericht accountbeheer en een beheerder-only supportoverzicht van accounts zonder vrije leerdata.
+- **4B2 — beheer en support (gerealiseerd):** geaudite roltoekenning en -intrekking met bescherming van beheerders, afgeschermd accountdetail, minimale supportnotities zonder vrije leerdata en een dubbel bevestigd verwijderproces dat speldata wist maar fiscale gegevens met een berekende bewaartermijn behoudt.
+- **4B3 — proefweekcontent en uniforme spelersinterface (gerealiseerd op fasebranch):** expliciete gereedheidsmatrix voor Madrid plus alle zeven dagen, elf beheerde en toegankelijk beschreven beeldassets, vier-ogenpublicatie van het volledige pakket en één responsieve header, logo- en menustructuur op alle spelerspagina's.
 - Verdiepende beveiligings- en privacyreview, inclusief volledige CSP, retentie en verwijderproces.
-- **4B2 — beheer en support (gerealiseerd op fasebranch):** geaudite roltoekenning en -intrekking met bescherming van beheerders, afgeschermd accountdetail, minimale supportnotities zonder vrije leerdata en een dubbel bevestigd verwijderproces dat speldata wist maar fiscale gegevens met een berekende bewaartermijn behoudt.
 - **4C — Content Studio 2.0 (volgend):** relatiegerichte missiebouwer, visuele gespreksgrafiek met toegankelijke lijstweergave, auditlog, taxonomieën en importstaging.
 - Gesloten bèta.
 - Nieuwe Spaanse steden als contentpakketten.

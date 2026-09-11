@@ -11,25 +11,7 @@
 <body class="min-h-screen bg-[#f7f1e7] text-[#302722] antialiased">
     <a href="#account-content" class="hub-skip-link">Ga naar accountbeheer</a>
 
-    <header class="border-b border-[#493429]/10 bg-[#fffaf0]/90 backdrop-blur">
-        <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
-            <a href="{{ route('home') }}" class="flex items-center gap-3 rounded-xl font-black tracking-tight text-[#302722] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]">
-                <span class="grid size-10 place-items-center rounded-xl bg-[#172c36] text-[#f5b94f]" aria-hidden="true">S</span>
-                <span>Spaansspreken<span class="text-[#bd5a34]">.nl</span></span>
-            </a>
-            <nav class="flex flex-wrap items-center gap-2" aria-label="Spelersnavigatie">
-                <a href="{{ route('player.progress') }}" class="player-account-nav">Mijn voortgang</a>
-                <a href="{{ route('trial-week.show') }}" class="player-account-nav">Proefweek en abonnement</a>
-                @can('content-studio.view')
-                    <a href="{{ route('content-studio.dashboard') }}" class="player-account-nav">Content Studio</a>
-                @endcan
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="player-account-nav">Uitloggen</button>
-                </form>
-            </nav>
-        </div>
-    </header>
+    <x-player.header />
 
     <main id="account-content" class="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
         <section class="grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.75fr)] lg:items-end" aria-labelledby="account-title">

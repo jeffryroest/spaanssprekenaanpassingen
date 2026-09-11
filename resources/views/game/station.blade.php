@@ -29,16 +29,14 @@
         data-completion-url="{{ route('game.madrid.station.complete') }}"
         data-progress-url="{{ route('player.progress') }}"
     >
-        <header class="bakery-topbar">
-            <a href="{{ route('trial-week.show') }}" class="bakery-back-link"><span aria-hidden="true">←</span>Terug naar de proefweek</a>
+        <x-player.header :back-url="route('trial-week.show')" back-label="Terug naar de proefweek">
             <div class="bakery-mission-meta">
-                <a href="{{ route('player.progress') }}">Mijn voortgang</a>
                 <span class="bakery-mode-chip">Fictieve oefenreis</span>
                 <span data-level-chip>Niveau kiezen</span>
                 <button type="button" data-translation-toggle aria-pressed="false">Nederlandse vertaling</button>
                 <button type="button" data-restart-dialogue>Opnieuw beginnen</button>
             </div>
-        </header>
+        </x-player.header>
 
         <main id="dialogue-content" class="bakery-main">
             <section class="bakery-heading" aria-labelledby="station-title">

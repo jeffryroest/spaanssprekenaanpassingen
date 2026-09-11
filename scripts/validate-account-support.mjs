@@ -44,7 +44,7 @@ assert(adminController.includes("'current_password:web'") && adminController.inc
 assert(eraser.includes("DB::table('mission_attempts')") && eraser.includes('billingRetentionDate') && !eraser.includes("DB::table('subscription_orders')->delete"), 'De wisactie scheidt speldata en fiscale gegevens niet');
 assert(migration.includes('account_support_notes') && migration.includes('account_deletion_requests') && migration.includes('privacy_erased_at'), 'De support- en verwijderstatus is niet duurzaam gemodelleerd');
 assert(accountView.includes('Verwijderverzoek indienen') && adminView.includes('Neem geen antwoorden, transcripties, audio of AI-feedback over'), 'De gebruikersinterface bewaakt de bevestiging of privacygrens niet');
-assert(privacyView.includes('zeven jaar') && roadmap.includes('4B2 — beheer en support (gerealiseerd op fasebranch)'), 'Privacy-uitleg of roadmap is niet bijgewerkt');
+assert(privacyView.includes('zeven jaar') && roadmap.includes('4B2 — beheer en support (gerealiseerd)'), 'Privacy-uitleg of roadmap is niet bijgewerkt');
 assert(tests.includes('retains_billing_until_the_fiscal_deadline') && tests.includes('active_subscription_blocks_erasure'), 'De kritieke retentie- en abonnementsgrenzen missen regressiedekking');
 
 console.log('Fase 4B2 geldig: geaudite rollen, minimale support en gecontroleerde accountwissing met fiscale retentie.');

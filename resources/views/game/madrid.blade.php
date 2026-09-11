@@ -24,18 +24,8 @@
         data-progress-url="{{ route('game.progress') }}"
         data-trial-week-url="{{ route('game.trial-week.status') }}"
     >
-        <header class="hub-topbar">
-            <a href="{{ route('home') }}" class="hub-brand" aria-label="Spaansspreken.nl startpagina">
-                <span class="hub-brand-mark" aria-hidden="true">S</span>
-                <span>Spaansspreken<span>.nl</span></span>
-            </a>
-
+        <x-player.header>
             <div class="hub-topbar-actions" aria-label="Spelinstellingen">
-                @auth
-                    <a href="{{ route('player.progress') }}" class="hub-icon-button">Mijn voortgang</a>
-                @else
-                    <a href="{{ route('login') }}" class="hub-icon-button">Inloggen</a>
-                @endauth
                 <span class="hub-live-chip"><span aria-hidden="true"></span> Madrid</span>
                 <button type="button" class="hub-icon-button" data-hub-sound aria-pressed="false">
                     <span aria-hidden="true">♪</span>
@@ -46,7 +36,7 @@
                     <span data-view-label>Lijstweergave</span>
                 </button>
             </div>
-        </header>
+        </x-player.header>
 
         <main id="hub-content" class="hub-main">
             <section class="hub-intro" aria-labelledby="hub-title">

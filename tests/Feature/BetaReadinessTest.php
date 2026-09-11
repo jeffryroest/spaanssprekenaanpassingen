@@ -82,6 +82,8 @@ class BetaReadinessTest extends TestCase
                     && $counts->get('customers') === 1;
             })
             ->assertSee('Bètastatus')
+            ->assertSee('Proefweekcontent en media')
+            ->assertSee('Persoonlijke herhaling')
             ->assertDontSee('verborgen@example.com')
             ->assertDontSee('Niet tonen');
     }

@@ -10,27 +10,7 @@
 <body class="min-h-screen bg-[#f7f1e7] text-[#302722] antialiased">
     <a href="#progress-content" class="hub-skip-link">Ga naar je voortgang</a>
 
-    <header class="border-b border-[#493429]/10 bg-[#fffaf0]/90 backdrop-blur">
-        <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
-            <a href="{{ route('home') }}" class="flex items-center gap-3 rounded-xl font-black tracking-tight text-[#302722] focus:outline-none focus:ring-2 focus:ring-[#bd5a34]">
-                <span class="grid size-10 place-items-center rounded-xl bg-[#a9472b] text-white" aria-hidden="true">S</span>
-                <span>Spaansspreken<span class="text-[#bd5a34]">.nl</span></span>
-            </a>
-
-            <nav class="flex flex-wrap items-center gap-2" aria-label="Accountnavigatie">
-                <a href="{{ route('trial-week.show') }}" class="inline-flex min-h-11 items-center rounded-xl border border-[#493429]/15 bg-white px-4 text-sm font-bold text-[#60483c] hover:border-[#bd5a34]/40 focus:outline-none focus:ring-2 focus:ring-[#bd5a34]">Mijn proefweek</a>
-                <a href="{{ route('game.madrid') }}" class="inline-flex min-h-11 items-center rounded-xl border border-[#493429]/15 bg-white px-4 text-sm font-bold text-[#60483c] hover:border-[#bd5a34]/40 focus:outline-none focus:ring-2 focus:ring-[#bd5a34]">Naar Madrid</a>
-                <a href="{{ route('player.account') }}" class="inline-flex min-h-11 items-center rounded-xl border border-[#493429]/15 bg-white px-4 text-sm font-bold text-[#60483c] hover:border-[#bd5a34]/40 focus:outline-none focus:ring-2 focus:ring-[#bd5a34]">Account</a>
-                @can('content-studio.view')
-                    <a href="{{ route('content-studio.dashboard') }}" class="inline-flex min-h-11 items-center rounded-xl border border-[#493429]/15 bg-white px-4 text-sm font-bold text-[#60483c] hover:border-[#bd5a34]/40 focus:outline-none focus:ring-2 focus:ring-[#bd5a34]">Content Studio</a>
-                @endcan
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="inline-flex min-h-11 items-center rounded-xl px-4 text-sm font-bold text-[#78685e] hover:bg-[#493429]/5 focus:outline-none focus:ring-2 focus:ring-[#bd5a34]">Uitloggen</button>
-                </form>
-            </nav>
-        </div>
-    </header>
+    <x-player.header />
 
     <main id="progress-content" class="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
         <section class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end" aria-labelledby="progress-title">

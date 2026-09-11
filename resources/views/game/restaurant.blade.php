@@ -6,6 +6,8 @@
     <meta name="description" content="Oefen een volledig Spaans restaurantgesprek met Carmen in Café El Reloj.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>En el restaurante · Spaansspreken.nl</title>
+    <link rel="preload" href="{{ asset('images/game/cafe-el-reloj-interior.webp') }}" as="image" type="image/webp">
+    <link rel="preload" href="{{ asset('images/game/carmen-restaurant-expressions.webp') }}" as="image" type="image/webp">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bakery-body restaurant-body">
@@ -27,16 +29,14 @@
         data-completion-url="{{ route('game.madrid.restaurant.complete') }}"
         data-progress-url="{{ route('player.progress') }}"
     >
-        <header class="bakery-topbar">
-            <a href="{{ route('trial-week.show') }}" class="bakery-back-link"><span aria-hidden="true">←</span>Terug naar de proefweek</a>
+        <x-player.header :back-url="route('trial-week.show')" back-label="Terug naar de proefweek">
             <div class="bakery-mission-meta">
-                <a href="{{ route('player.progress') }}">Mijn voortgang</a>
                 <span class="bakery-mode-chip">Spreken + tekst</span>
                 <span data-level-chip>Niveau kiezen</span>
                 <button type="button" data-translation-toggle aria-pressed="false">Nederlandse vertaling</button>
                 <button type="button" data-restart-dialogue>Opnieuw beginnen</button>
             </div>
-        </header>
+        </x-player.header>
 
         <main id="dialogue-content" class="bakery-main">
             <section class="bakery-heading" aria-labelledby="restaurant-title">
@@ -55,17 +55,22 @@
 
             <section class="bakery-stage" data-dialogue-stage hidden>
                 <aside class="bakery-scene restaurant-scene" aria-label="Een warme tafel in Café El Reloj">
-                    <div class="restaurant-wall" aria-hidden="true">
+                    <div class="bakery-scene-art runtime-scene-art" aria-hidden="true"></div>
+                    <div class="restaurant-wall runtime-scene-fallback" aria-hidden="true">
                         <span class="restaurant-clock"><i></i><b></b></span>
                         <span class="restaurant-window"><i></i></span>
                         <span class="restaurant-menu">MENÚ<br><small>del día</small></span>
                     </div>
-                    <div class="restaurant-tiles" aria-hidden="true"></div>
-                    <div class="restaurant-table" aria-hidden="true">
+                    <div class="restaurant-tiles runtime-scene-fallback" aria-hidden="true"></div>
+                    <div class="restaurant-table runtime-scene-fallback" aria-hidden="true">
                         <span class="restaurant-plate"></span>
                         <span class="restaurant-glass"></span>
                         <span class="restaurant-bottle"></span>
                         <span class="restaurant-candle"></span>
+                    </div>
+                    <div class="bakery-lucia-frame runtime-npc-frame" data-npc-state="listening" aria-hidden="true">
+                        <img src="{{ asset('images/game/carmen-restaurant-expressions.webp') }}" width="2172" height="724" alt="" data-npc-expression-sheet>
+                        <span class="bakery-lucia-reaction" data-npc-reaction>Carmen luistert</span>
                     </div>
                     <div class="bakery-npc-card restaurant-npc-card">
                         <span class="bakery-npc-avatar restaurant-avatar" aria-hidden="true">C</span>

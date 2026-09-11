@@ -19,47 +19,87 @@ final class RuntimeReadiness
     /** @return list<array<string, mixed>> */
     public function items(): array
     {
+        $madrid = $this->item(
+            'Madrid-wereld met Consulta La Luz',
+            ContentType::Region,
+            'madrid',
+            'madrid_hub',
+            'Openbare startwereld',
+            true,
+            null,
+            'madrid.consulta.luz',
+            ['map_background'],
+        );
+        $panaderia = $this->item(
+            'La Espiga met Lucía',
+            ContentType::ConversationScenario,
+            'la-espiga-lucia',
+            'panaderia_text_dialogue',
+            'Openbare eerste missie',
+            true,
+            1,
+            requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
+        );
+        $taxi = $this->item(
+            'Taxi met Diego',
+            ContentType::ConversationScenario,
+            'taxi-diego',
+            'taxi_text_dialogue',
+            'Proefweek · recht vereist',
+            false,
+            2,
+            requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
+        );
+        $restaurant = $this->item(
+            'Café El Reloj met Carmen',
+            ContentType::ConversationScenario,
+            'restaurant-el-reloj',
+            'restaurant_text_dialogue',
+            'Proefweek · recht vereist',
+            false,
+            3,
+            requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
+        );
+        $health = $this->item(
+            'Consulta La Luz met Elena',
+            ContentType::ConversationScenario,
+            'consulta-elena',
+            'health_text_dialogue',
+            'Proefweek · fictief rollenspel · recht vereist',
+            false,
+            5,
+            requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
+        );
+        $station = $this->item(
+            'Estación del Centro met Mateo',
+            ContentType::ConversationScenario,
+            'estacion-mateo',
+            'station_text_dialogue',
+            'Proefweek · fictieve reis · recht vereist',
+            false,
+            6,
+            requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
+        );
+        $final = $this->item(
+            'Slotmissie met Lucía',
+            ContentType::ConversationScenario,
+            'madrid-final-lucia',
+            'final_text_dialogue',
+            'Proefweek · structureel NPC-geheugen · recht vereist',
+            false,
+            7,
+            requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
+        );
+
         return [
-            $this->item(
-                'Madrid-wereld met Consulta La Luz',
-                ContentType::Region,
-                'madrid',
-                'madrid_hub',
-                'Openbare startwereld',
-                true,
-                'madrid.consulta.luz',
-                ['map_background'],
-            ),
-            $this->item(
-                'La Espiga met Lucía',
-                ContentType::ConversationScenario,
-                'la-espiga-lucia',
-                'panaderia_text_dialogue',
-                'Openbare eerste missie',
-                true,
-                requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
-            ),
-            $this->item('Taxi met Diego', ContentType::ConversationScenario, 'taxi-diego', 'taxi_text_dialogue', 'Proefweek · recht vereist', false),
-            $this->item('Café El Reloj met Carmen', ContentType::ConversationScenario, 'restaurant-el-reloj', 'restaurant_text_dialogue', 'Proefweek · recht vereist', false),
-            $this->item('Consulta La Luz met Elena', ContentType::ConversationScenario, 'consulta-elena', 'health_text_dialogue', 'Proefweek · fictief rollenspel · recht vereist', false),
-            $this->item(
-                'Estación del Centro met Mateo',
-                ContentType::ConversationScenario,
-                'estacion-mateo',
-                'station_text_dialogue',
-                'Proefweek · fictieve reis · recht vereist',
-                false,
-                requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
-            ),
-            $this->item(
-                'Slotmissie met Lucía',
-                ContentType::ConversationScenario,
-                'madrid-final-lucia',
-                'final_text_dialogue',
-                'Proefweek · structureel NPC-geheugen · recht vereist',
-                false,
-                requiredMediaRoles: ['scene_background', 'npc_expression_sheet'],
-            ),
+            $madrid,
+            $panaderia,
+            $taxi,
+            $restaurant,
+            $this->personalReviewItem([$panaderia, $taxi, $restaurant]),
+            $health,
+            $station,
+            $final,
         ];
     }
 
@@ -71,6 +111,7 @@ final class RuntimeReadiness
         string $expectedScene,
         string $scope,
         bool $public,
+        ?int $trialDay,
         ?string $requiredHotspotId = null,
         array $requiredMediaRoles = [],
     ): array {
@@ -98,6 +139,7 @@ final class RuntimeReadiness
 
         return [
             'label' => $label,
+            'day' => $trialDay,
             'slug' => $slug,
             'scope' => $scope,
             'ready' => $ready,
@@ -115,6 +157,26 @@ final class RuntimeReadiness
                 'estacion-mateo' => 'station',
                 'madrid-final-lucia' => 'final',
             },
+        ];
+    }
+
+    /** @param list<array<string, mixed>> $sourceItems @return array<string, mixed> */
+    private function personalReviewItem(array $sourceItems): array
+    {
+        $readySources = collect($sourceItems)->where('ready', true)->count();
+        $ready = $readySources === count($sourceItems);
+
+        return [
+            'label' => 'Persoonlijke herhaling',
+            'day' => 4,
+            'slug' => 'persoonlijke-herhaling',
+            'scope' => 'Proefweek · dynamisch uit voltooide missies',
+            'ready' => $ready,
+            'status' => $ready ? 'Dynamisch speelbaar' : 'Bronmissies ontbreken',
+            'missing_media_roles' => [],
+            'content_node' => null,
+            'template' => null,
+            'detail' => "{$readySources}/".count($sourceItems).' bronmissies zijn gepubliceerd en speelbaar.',
         ];
     }
 }
